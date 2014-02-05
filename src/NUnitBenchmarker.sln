@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("2774fbd4-1bf9-41cc-a187-6e76fd576fb4") = "NUnitBenchmarker.Core", "NUnitBenchmarker.Core\NUnitBenchmarker.Core.csproj", "bd9925c6-42fc-4ef7-b7f1-e1f6a0e87f74"
+EndProject
+Project("62c40305-3575-4206-a4ab-c5fb079df749") = "NUnitBenchmarker.Core.Tests", "NUnitBenchmarker.Core.Tests\NUnitBenchmarker.Core.Tests.csproj", "bd9925c6-42fc-4ef7-b7f1-e1f6a0e87f74"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		bd9925c6-42fc-4ef7-b7f1-e1f6a0e87f74.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		bd9925c6-42fc-4ef7-b7f1-e1f6a0e87f74.Debug|Any CPU.Build.0 = Debug|Any CPU
+		bd9925c6-42fc-4ef7-b7f1-e1f6a0e87f74.Release|Any CPU.ActiveCfg = Release|Any CPU
+		bd9925c6-42fc-4ef7-b7f1-e1f6a0e87f74.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
