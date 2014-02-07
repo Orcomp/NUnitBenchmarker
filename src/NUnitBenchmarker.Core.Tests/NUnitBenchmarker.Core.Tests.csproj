@@ -66,6 +66,10 @@
       <Project>{b9fab394-ab01-4f81-82c3-100b991377ef}</Project>
       <Name>NUnitBenchmarker.Tests.Targets</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NUnitBenchmarker.UIClient\NUnitBenchmarker.UIClient.csproj">
+      <Project>{1AFE6F25-1F3F-4061-87A6-DD99C5239C1C}</Project>
+      <Name>NUnitBenchmarker.UIClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

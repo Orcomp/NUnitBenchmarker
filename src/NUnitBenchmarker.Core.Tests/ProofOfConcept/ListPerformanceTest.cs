@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using NUnit.Framework;
 using NUnitBenchmarker.Core.Benchmark;
+using NUnitBenchmarker.UIClient;
 
 namespace NUnitBenchmarker.Core.Tests.ProofOfConcept
 {
@@ -30,9 +31,16 @@ namespace NUnitBenchmarker.Core.Tests.ProofOfConcept
 		}
 
 		[Test]
-		public void Dummy()
+		public void WcfCommunicationProofofConcept()
 		{
-			
+			// To use the UI (from any runner, or any host process) simply do the following:
+			// 1) Reference the NUnitBenchmarker.UIClient assembly
+			// 2) Use the static UIService class in it.
+			// (make sure the UI is running, autostart optionally is coming later
+			// for example:
+
+			var response = UIService.Ping("Hello from the runner.");
+			Assert.AreEqual("Welcome to the machine: Hello from the runner.", response);
 		}
 
 		/// <summary>

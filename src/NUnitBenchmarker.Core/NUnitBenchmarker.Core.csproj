@@ -77,12 +77,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Benchmark\Benchmarker.cs" />
+    <Compile Include="Infrastructure\DependencyInjection\Dependency.cs" />
+    <Compile Include="Infrastructure\DependencyInjection\IResolver.cs" />
+    <Compile Include="Infrastructure\DependencyInjection\NinjectResolver.cs" />
+    <Compile Include="Infrastructure\Logging\ILogger.cs" />
+    <Compile Include="Infrastructure\Logging\ILogListener.cs" />
+    <Compile Include="Infrastructure\Logging\Log4NetLogger.cs" />
+    <Compile Include="Infrastructure\Logging\LogListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="NUnitBenchmarker.log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

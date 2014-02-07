@@ -3,30 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fasterflect;
+using NUnitBenchmarker.UIClient;
 
 namespace NUnitBenchmarker.Core.Tests.ProofOfConcept
 {
 	public class ListPerformanceTestFactory<T>
 	{
-		public List<Type> Implementations { get; private set; }
+		public IList<Type> Implementations { get; private set; }
 
 		public ListPerformanceTestFactory()
 		{
-			Implementations = FindImplementations();
+			Implementations = FindImplementations().ToList();
 		}
 
-		private List<Type> FindImplementations()
+		private IEnumerable<Type> FindImplementations()
 		{
-			// TODO: Instead of Assembly.Load we could look at the current directory and LoadFrom() all the assemblies we find in it.
-			try
+			// Legacy proof of concept:
+			// return Assembly.Load("NUnitBenchmarker.Tests.Targets").Types().Where(x => x.Implements(typeof(IList<>))).Select(x => x).ToList();
+
+			var result = new List<Type>();
+			var assemblyNames = UIService.GetAssemblyNames();
+			foreach (var assemblyName in assemblyNames)
 			{
-				return Assembly.Load("NUnitBenchmarker.Tests.Targets").Types().Where(x => x.Implements(typeof(IList<>))).Select(x => x).ToList();
+				result.AddRange(Assembly.LoadFrom(assemblyName)
+					.Types()
+					.Where(x => x.Implements(typeof(IList<>)))
+					.ToList());
 			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				return null;
-			}
+			return result;
 		}
 
 		public IEnumerable<ListPerformanceTestConfiguration<T>> TestCases()
