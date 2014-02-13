@@ -82,5 +82,76 @@ namespace NUnitBenchmarker.UI.Properties {
                 this["MainWindowMaximized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public string SplitHeightTop {
+            get {
+                return ((string)(this["SplitHeightTop"]));
+            }
+            set {
+                this["SplitHeightTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public string SplitWidthLeft {
+            get {
+                return ((string)(this["SplitWidthLeft"]));
+            }
+            set {
+                this["SplitWidthLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlwaysOnTop {
+            get {
+                return ((bool)(this["AlwaysOnTop"]));
+            }
+            set {
+                this["AlwaysOnTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection LoadedAssemblies {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["LoadedAssemblies"]));
+            }
+            set {
+                this["LoadedAssemblies"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public string SplitHeightBottom {
+            get {
+                return ((string)(this["SplitHeightBottom"]));
+            }
+            set {
+                this["SplitHeightBottom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public string SplitWidthRight {
+            get {
+                return ((string)(this["SplitWidthRight"]));
+            }
+            set {
+                this["SplitWidthRight"] = value;
+            }
+        }
     }
 }

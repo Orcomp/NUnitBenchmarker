@@ -1,0 +1,26 @@
+<UserControl x:Class="NUnitBenchmarker.UI.Views.PlotTabView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:oxy="http://oxyplot.codeplex.com">
+<Grid>
+    <oxy:Plot Title="{Binding PlotTitle}" Model="{Binding PlotModel}" Margin="10">
+    </oxy:Plot>
+        <!--<Label 
+      Content="_Name:" 
+      HorizontalAlignment="Right"
+      Target="{Binding ElementName=firstNameTxt}"
+      />
+    
+    <TextBox 
+      x:Name="firstNameTxt"
+      Text="{Binding Path=FirstName }" 
+      />
+    <Button 
+      Command="{Binding Path=SaveCommand}"
+      Content="_Save"
+      HorizontalAlignment="Right"
+      Margin="4,2" 
+      MinWidth="60" 
+      />-->
+    </Grid>
+</UserControl>

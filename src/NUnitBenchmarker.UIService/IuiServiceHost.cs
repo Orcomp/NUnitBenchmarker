@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NUnitBenchmarker.UIService.Data;
 
 namespace NUnitBenchmarker.UIService
 {
@@ -11,6 +12,9 @@ namespace NUnitBenchmarker.UIService
 		event Func<IEnumerable<string>> GetAssemblyNames;
 		IEnumerable<string> OnGetAssemblyNames();
 
+		event Action<BenchmarkResult> UpdateResult;
+		void OnUpdateResult(BenchmarkResult result);
+
 
 		/// <summary>
 		///     Starts the Runner - UI communication service.
@@ -21,5 +25,7 @@ namespace NUnitBenchmarker.UIService
 		///     Stops the Runner - UI communication service.
 		/// </summary>
 		void Stop();
+
+		
 	}
 }

@@ -1,0 +1,161 @@
+﻿<Window
+    x:Class="NUnitBenchmarker.UI.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
+    xmlns:resources="clr-namespace:NUnitBenchmarker.UI.Resources"
+    xmlns:behaviors="clr-namespace:NUnitBenchmarker.UI.Views.Behaviors"
+    xmlns:valueConverters="clr-namespace:NUnitBenchmarker.UI.Views.ValueConverters"
+    xmlns:views="clr-namespace:NUnitBenchmarker.UI.Views"
+    FontSize="14"
+    Title="{Binding Title}"
+    Top="{Binding Path=MainWindowTop, Mode=TwoWay}"
+    Left="{Binding Path=MainWindowLeft, Mode=TwoWay}"
+    Width="{Binding Path=MainWindowWidth, Mode=TwoWay}"
+    Height="{Binding Path=MainWindowHeight, Mode=TwoWay}"
+    WindowState="{Binding Path=MainWindowState, Mode=TwoWay}"
+    Topmost="{Binding Path=AlwaysOnTop}"
+    DataContext="{Binding Path=Main, Source={StaticResource Locator}}"
+    Icon="/NUnitBenchmarker.UI;component/NunitBenchmarker.ico">
+
+    <Window.Resources>
+        <ResourceDictionary Source="MainWindowResources.xaml" />
+    </Window.Resources>
+    
+    <behaviors:Piper.DataPipes>
+        <behaviors:DataPipeCollection>
+            <behaviors:DataPipe
+                Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=RestoreBounds}"
+                Target="{Binding Path=RestoreBounds, Mode=OneWayToSource}" />
+        </behaviors:DataPipeCollection>
+    </behaviors:Piper.DataPipes>
+
+    <DockPanel Name="DockPanel">
+        <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="{Binding ElementName=DockPanel, Path=ActualWidth}">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open Assembly...">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger
+                            EventName="Click">
+                            <mvvm:EventToCommand
+                                Command="{Binding Path=OpenMenuItemClickCommand, Mode=OneTime}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Exit">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger
+                            EventName="Click">
+                            <mvvm:EventToCommand
+                                Command="{Binding Path=ExitMenuItemClickCommand, Mode=OneTime}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Command="ApplicationCommands.Copy" />
+                <MenuItem Command="ApplicationCommands.Cut" />
+                <MenuItem Command="ApplicationCommands.Paste" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Hints" />
+            </MenuItem>
+        </Menu>
+        <ToolBar Name="ToolBar" DockPanel.Dock="Top">
+            <CheckBox
+                IsChecked="{Binding Path=AlwaysOnTop}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0"
+                Content="{x:Static resources:UIStrings.AlwaysOnTopCheckBoxContent}"
+                IsThreeState="False"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Padding="0" />
+        </ToolBar>
+        <StatusBar
+            DockPanel.Dock="Bottom"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Stretch"
+            Height="Auto">
+            <StatusBarItem
+                BorderThickness="1"
+                Padding="10,3,3,3">
+                <TextBlock
+                    Text="{Binding Path=StatusBarText}" />
+            </StatusBarItem>
+        </StatusBar>
+
+        <Grid DockPanel.Dock="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="{Binding SplitHeightTop, Mode=TwoWay, Converter={StaticResource GridLengthValueConverter}}" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="{Binding SplitWidthLeft, Mode=TwoWay, Converter={StaticResource GridLengthValueConverter}}" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!--<Label Content="Left" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
+                <ListBox Grid.Column="0" ItemsSource="{Binding AssemblyListItemsSource}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <CheckBox
+                                    Content="{Binding ShortName}"
+                                    IsChecked="{Binding IsChecked}"
+                                    ToolTip="{Binding FullName}">
+                                    <CheckBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="_Remove from the list...">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="Click">
+                                                        <mvvm:EventToCommand
+                                                            Command="{Binding Path=RemoveMenuItemClickCommand, Mode=OneTime}" />
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </MenuItem>
+
+                                        </ContextMenu>
+                                    </CheckBox.ContextMenu>
+                                </CheckBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <GridSplitter HorizontalAlignment="Right"
+                              VerticalAlignment="Stretch"
+                              Grid.Column="1" ResizeBehavior="PreviousAndNext"
+                              Width="5" Background="#FFBCBCBC" />
+                <!--<Label Content="Right" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
+                <ContentControl
+                    Grid.Column="2"
+                    Content="{Binding Path=Tabs}"
+                    ContentTemplate="{StaticResource TabsDataTemplate}"
+                    Style="{StaticResource TabsContentStyle}" />
+
+            </Grid>
+            <GridSplitter Grid.Row="1" VerticalAlignment="Bottom"
+                          HorizontalAlignment="Stretch"
+                          ResizeBehavior="PreviousAndNext"
+                          Height="5" Background="#FFBCBCBC" />
+            <!--<Label Grid.Row="2" Content="Log" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
+            <ListBox Grid.Row="2" ItemsSource="{Binding LogItems}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Path=Message}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>            
+        </Grid>
+    </DockPanel>
+
+</Window>

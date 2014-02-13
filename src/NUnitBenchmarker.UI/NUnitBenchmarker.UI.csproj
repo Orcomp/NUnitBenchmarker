@@ -85,26 +85,41 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Behaviors\Piper.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="ViewModels\PlotTabViewModel.cs" />
+    <Compile Include="ViewModels\TabViewModel.cs" />
+    <Compile Include="Views\PlotTabView.xaml.cs">
+      <DependentUpon>PlotTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Behaviors\Piper.cs" />
     <Compile Include="Bootstapper.cs" />
     <Compile Include="Resources\UIStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UIStrings.resx</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\AssemblyListItem.cs" />
-    <Compile Include="ViewModel\IViewService.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="ViewModel\WpfViewService.cs" />
-    <Compile Include="View\MainWindow.xaml.cs">
+    <Compile Include="ViewModels\AssemblyListItem.cs" />
+    <Compile Include="ViewModels\IViewService.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="ViewModels\WpfViewService.cs" />
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\MainWindow.xaml">
+    <Compile Include="Views\ValueConverters\GridLengthValueConverter.cs" />
+    <Page Include="Views\MainWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlotTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -126,9 +141,15 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NUnitBenchmarker.Benchmark\NUnitBenchmarker.Benchmark.csproj">
+      <Project>{957ddc89-4e75-db09-9590-cb56f3bd5269}</Project>
+      <Name>NUnitBenchmarker.Benchmark</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NUnitBenchmarker.Core\NUnitBenchmarker.Core.csproj">
       <Project>{CB56F3BD-DB09-4E75-9590-957DDC895269}</Project>
       <Name>NUnitBenchmarker.Core</Name>

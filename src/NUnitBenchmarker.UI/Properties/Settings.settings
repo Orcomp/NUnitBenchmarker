@@ -17,5 +17,23 @@
     <Setting Name="MainWindowMaximized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="SplitHeightTop" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*</Value>
+    </Setting>
+    <Setting Name="SplitWidthLeft" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*</Value>
+    </Setting>
+    <Setting Name="AlwaysOnTop" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="LoadedAssemblies" Type="System.Collections.Generic.List<Sytem.String>" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SplitHeightBottom" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*</Value>
+    </Setting>
+    <Setting Name="SplitWidthRight" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using NUnitBenchmarker.UIService.Data;
 
 namespace NUnitBenchmarker.UIService
 {
@@ -33,6 +34,18 @@ namespace NUnitBenchmarker.UIService
 				return handler();
 			}
 			return null;
+		}
+
+		public event Action<BenchmarkResult> UpdateResult;
+		public void OnUpdateResult(BenchmarkResult result)
+		{
+			// Prevent race condition if other thread accidentally unsubscribes
+			var handler = UpdateResult;
+			// Call the handler if any:
+			if (handler != null)
+			{
+				handler(result);
+			}
 		}
 
 		/// <summary>

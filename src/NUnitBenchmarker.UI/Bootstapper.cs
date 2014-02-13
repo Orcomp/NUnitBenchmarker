@@ -1,7 +1,8 @@
 ﻿using Ninject;
 using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
 using NUnitBenchmarker.Core.Infrastructure.Logging;
-using NUnitBenchmarker.UI.ViewModel;
+using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
+using NUnitBenchmarker.UI.ViewModels;
 using NUnitBenchmarker.UIService;
 
 namespace NUnitBenchmarker.UI
@@ -49,16 +50,18 @@ namespace NUnitBenchmarker.UI
 		{
 			kernel.Bind<ILogger>().To<Log4NetLogger>().InThreadScope();
 			kernel.Bind<IViewService>().To<WpfViewService>().InSingletonScope();
-			kernel.Bind<ILogListener>().To<LogListener>().InThreadScope();
-
+			
+			kernel.Bind<PublisherAppender>().ToMethod(PublisherAppender.GetCurrent);
 			
 			kernel.Bind<MainViewModel>().ToConstructor(x => new MainViewModel(
 				x.Inject<ILogger>(), 
-				x.Inject<IViewService>())).InSingletonScope();
+				x.Inject<IViewService>(),
+				x.Inject<PublisherAppender>())).InSingletonScope();
 			
 			
 			//kernel.Bind<IUIMarshaller>().To<WpfUIMarshaller>().InSingletonScope();
 
+			
 			kernel.Bind<IUIServiceHost>().To<UIServiceHost>().InSingletonScope();
 		}
 

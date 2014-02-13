@@ -3,7 +3,7 @@ using System.Threading;
 using System.Windows;
 using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
 using NUnitBenchmarker.Core.Infrastructure.Logging;
-using NUnitBenchmarker.UI.ViewModel;
+using NUnitBenchmarker.UI.ViewModels;
 
 namespace NUnitBenchmarker.UI
 {

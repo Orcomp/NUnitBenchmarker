@@ -23,6 +23,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -76,20 +79,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Benchmark\Benchmarker.cs" />
     <Compile Include="Infrastructure\DependencyInjection\Dependency.cs" />
     <Compile Include="Infrastructure\DependencyInjection\IResolver.cs" />
     <Compile Include="Infrastructure\DependencyInjection\NinjectResolver.cs" />
     <Compile Include="Infrastructure\Logging\ILogger.cs" />
-    <Compile Include="Infrastructure\Logging\ILogListener.cs" />
-    <Compile Include="Infrastructure\Logging\Log4NetLogger.cs" />
-    <Compile Include="Infrastructure\Logging\LogListener.cs" />
+    <Compile Include="Infrastructure\Logging\Log4Net\Log4NetLogger.cs" />
+    <Compile Include="Infrastructure\Logging\Log4Net\PublisherAppender.cs" />
+    <Compile Include="Infrastructure\Logging\Log4Net\SerializableLoggingEventData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <None Include="NUnitBenchmarker.log4net.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
