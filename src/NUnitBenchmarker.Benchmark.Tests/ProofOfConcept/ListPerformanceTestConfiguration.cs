@@ -37,6 +37,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			// exchange like key/value or an anonymous type where the propertyname/value pairs serves the 
 			// same data exchange functionality.
 			return string.Format("{0}_{1}", Size, TestDelay);
+			//return string.Format("{0}", Size);
 		}
 	}
 }

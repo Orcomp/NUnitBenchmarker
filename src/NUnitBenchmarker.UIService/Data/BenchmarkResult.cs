@@ -11,5 +11,8 @@ namespace NUnitBenchmarker.UIService.Data
 
 		[DataMember]
 		public Dictionary<string, List<KeyValuePair<string, double>>> Values { get; set; }
+
+		[DataMember]
+		public string[] TestCases { get; set; }
 	}
 }

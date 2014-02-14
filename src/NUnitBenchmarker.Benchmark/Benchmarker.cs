@@ -47,7 +47,7 @@ namespace NUnitBenchmarker.Benchmark
 			UI.Logger.Info("[{0}] {1} - {2}: {3} ms", testGroup, testName, testCase, result.AverageExecutionTime);
 
 			Save(testGroup, testName, testCase, result.AverageExecutionTime);
-			UI.UpdateResult(new BenchmarkResult {Key = testName, Values = _results[testName]});
+			UI.UpdateResult(new BenchmarkResult {Key = testName, Values = _results[testName], TestCases = _testCases.ToArray()});
 		}
 
 		public static void Benchmark(this Action action, string testGroup, string testName, int testCase)
@@ -69,7 +69,7 @@ namespace NUnitBenchmarker.Benchmark
 
 			_results[testName][testGroup].Add(new KeyValuePair<string, double>(testCase, ellapsedTime));
 
-			// NOTE we could update the plot after each save.
+			// NOTE we could update the plot after each save. 
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace NUnitBenchmarker.Benchmark
 		{
 			foreach (var result in _results)
 			{
-				var plotModel = CreatePlotModel(new BenchmarkResult { Key = result.Key, Values = result.Value });
+				var plotModel = CreatePlotModel(new BenchmarkResult { Key = result.Key, Values = result.Value, TestCases = _testCases.ToArray()});
 				ExportResults(plotModel, result.Key);
 			}
 		}
@@ -150,7 +150,7 @@ namespace NUnitBenchmarker.Benchmark
 		{
 			foreach (var result in _results)
 			{
-				var plotModel = CreateCategoryPlotModel(new BenchmarkResult { Key = result.Key, Values = result.Value });
+				var plotModel = CreateCategoryPlotModel(new BenchmarkResult { Key = result.Key, Values = result.Value, TestCases = _testCases.ToArray() });
 				ExportResults(plotModel, result.Key);
 			}
 		}
@@ -165,7 +165,7 @@ namespace NUnitBenchmarker.Benchmark
 			plotModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
 			plotModel.LegendBorder = OxyColors.Black;
 
-			var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", _testCases.ToArray());
+			var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases);
 			plotModel.Axes.Add(dateAxis);
 
 			var valueAxis = new LinearAxis(AxisPosition.Left, 0)

@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -20,7 +19,6 @@ using NUnitBenchmarker.UI.Properties;
 using NUnitBenchmarker.UI.Resources;
 using NUnitBenchmarker.UIService;
 using NUnitBenchmarker.UIService.Data;
-
 using ILogger = NUnitBenchmarker.Core.Infrastructure.Logging.ILogger;
 
 namespace NUnitBenchmarker.UI.ViewModels
@@ -37,6 +35,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private ObservableCollection<AssemblyListItem> assemblyListItemsSource;
 		private ICommand exitMenuItemClickCommand;
 		private string lastPingMessage;
+		private ObservableCollection<LogItemViewModel> logItems; // Backing field for property LogItems
 		private int mainWindowHeight;
 		private int mainWindowLeft;
 		private WindowState mainWindowState;
@@ -326,14 +325,13 @@ namespace NUnitBenchmarker.UI.ViewModels
 			}
 		}
 
-		private ObservableCollection<LogItemViewModel> logItems; // Backing field for property LogItems
-
 		/// <summary>
-		/// Observable property for MVVM. Gets or sets state LogItems. 
-		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
+		///     Observable property for MVVM. Gets or sets state LogItems.
+		///     Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface
 		/// </summary>
-		/// <value>The property value. If the new value is the same as the current property value
-		/// then no PropertyChange event is raised.
+		/// <value>
+		///     The property value. If the new value is the same as the current property value
+		///     then no PropertyChange event is raised.
 		/// </value>
 		public ObservableCollection<LogItemViewModel> LogItems
 		{
@@ -365,9 +363,8 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 		private void LoggingEventAppended(LoggingEvent @event, string renderedMessage)
 		{
-			//StatusBarText = @event.RenderedMessage; // This does not seem to use the renderers
-			//StatusBarText = renderedMessage;
-			LogItems.Add(new LogItemViewModel(@event.TimeStamp.ToString(), @event.Level.ToString(), @event.RenderedMessage.ToString()));
+			// log4net's @event.RenderedMessage does not seem to use the renderers despite its name
+			LogItems.Add(new LogItemViewModel(@event.TimeStamp.ToString(), @event.Level.ToString(), @event.RenderedMessage));
 		}
 
 		private IEnumerable<string> GetAssemblyNames()
@@ -537,33 +534,36 @@ namespace NUnitBenchmarker.UI.ViewModels
 		{
 			PlotTabViewModel model = GetPlotTabViewModel(result.Key, true);
 			ActivateTab(model.Key);
-			model.PlotModel = Benchmarker.CreateCategoryPlotModel(result);
+
+			int dummy;
+			model.PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
+				? Benchmarker.CreatePlotModel(result)
+				: Benchmarker.CreateCategoryPlotModel(result);
 		}
 
 		private void ActivateTab(string key)
 		{
-			var found = Tabs.FirstOrDefault(pt => ((PlotTabViewModel)pt).Key == key);
+			TabViewModel found = Tabs.FirstOrDefault(pt => ((PlotTabViewModel) pt).Key == key);
 			if (found != null)
 			{
 				SetActiveTab(found);
 			}
-			
 		}
 
-		void SetActiveTab(TabViewModel tabViewModel)
+		private void SetActiveTab(TabViewModel tabViewModel)
 		{
 			ICollectionView collectionView = CollectionViewSource.GetDefaultView(Tabs);
 			if (collectionView != null)
 			{
 				collectionView.MoveCurrentTo(tabViewModel);
 			}
-				
 		}
 
 		private PlotTabViewModel GetPlotTabViewModel(string key, bool create)
 		{
-			var found = (PlotTabViewModel)Tabs.Where(t => t is PlotTabViewModel).FirstOrDefault(pt => ((PlotTabViewModel)pt).Key == key);
-				
+			var found =
+				(PlotTabViewModel) Tabs.Where(t => t is PlotTabViewModel).FirstOrDefault(pt => ((PlotTabViewModel) pt).Key == key);
+
 			if (found == null && create)
 			{
 				found = new PlotTabViewModel(key, key);
