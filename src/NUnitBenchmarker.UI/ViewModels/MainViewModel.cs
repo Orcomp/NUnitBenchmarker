@@ -534,11 +534,11 @@ namespace NUnitBenchmarker.UI.ViewModels
 		{
 			PlotTabViewModel model = GetPlotTabViewModel(result.Key, true);
 			ActivateTab(model.Key);
-
 			int dummy;
 			model.PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
 				? Benchmarker.CreatePlotModel(result)
 				: Benchmarker.CreateCategoryPlotModel(result);
+
 		}
 
 		private void ActivateTab(string key)
