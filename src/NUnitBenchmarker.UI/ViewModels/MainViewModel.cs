@@ -12,7 +12,6 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using log4net.Core;
-using NUnitBenchmarker.Benchmark;
 using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
 using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
 using NUnitBenchmarker.UI.Properties;
@@ -79,6 +78,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 			LogItems = new ObservableCollection<LogItemViewModel>();
 			RestoreMainWindow();
+			//Tabs.Add(new PlotTabViewModel("test", "test"));
 		}
 
 		/// <summary>
@@ -276,6 +276,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			}
 		}
 
+		
 		/// <summary>
 		///     Gets the exit menu item click command for MVVM binding.
 		/// </summary>
@@ -347,6 +348,12 @@ namespace NUnitBenchmarker.UI.ViewModels
 				RaisePropertyChanged(() => LogItems);
 			}
 		}
+
+		public ICommand SwitchTimeAxis
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 
 		/// <summary>
 		///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -527,18 +534,16 @@ namespace NUnitBenchmarker.UI.ViewModels
 		}
 
 		/// <summary>
-		///     Event handler for client's UpdateResult message
+		///     Event handler for client's UpdateResult message.
+		///		Routes the message to the addressed PlotTabViewModel instance,
+		///		and creates it if does not exist yet
 		/// </summary>
 		/// <param name="result">Benchmark results coming from the client</param>
 		private void UpdateResults(BenchmarkResult result)
 		{
-			PlotTabViewModel model = GetPlotTabViewModel(result.Key, true);
+			var model = GetPlotTabViewModel(result.Key, true);
 			ActivateTab(model.Key);
-			int dummy;
-			model.PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
-				? Benchmarker.CreatePlotModel(result)
-				: Benchmarker.CreateCategoryPlotModel(result);
-
+			model.UpdateResults(result);
 		}
 
 		private void ActivateTab(string key)
@@ -572,18 +577,43 @@ namespace NUnitBenchmarker.UI.ViewModels
 			return found;
 		}
 
-		public class LogItemViewModel
-		{
-			public LogItemViewModel(string dateTime, string level, string message)
-			{
-				DateTime = dateTime;
-				Level = level;
-				Message = message;
-			}
+		private ICommand switchTimeAxisCommand;
 
-			public string DateTime { get; set; }
-			public string Level { get; set; }
-			public string Message { get; set; }
+		/// <summary>
+		///     Gets the SwitchTimeAxis command for MVVM binding.
+		/// </summary>
+		/// <value>The SwitchTimeAxis command.</value>
+		public ICommand SwitchTimeAxisCommand
+		{
+			get { return switchTimeAxisCommand ?? (switchTimeAxisCommand = new RelayCommand<object>(SwitchTimeAxisAction)); }
 		}
+
+		/// <summary>
+		///     SwitchTimeAxis event handler.
+		/// </summary>
+		/// <param name="dummy">not used here</param>
+		private void SwitchTimeAxisAction(object dummy)
+		{
+			// TODO: Implement
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
 	}
 }

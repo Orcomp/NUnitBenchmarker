@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using NUnitBenchmarker.Benchmark;
+using NUnitBenchmarker.UIService.Data;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -11,8 +14,6 @@ namespace NUnitBenchmarker.UI.ViewModels
 {
 	public class PlotTabViewModel : TabViewModel
 	{
-		RelayCommand demoCommand;
-
 		private string key; // Backing field for property Key
 		private string plotTitle; // Backing field for property PlotTitle
 
@@ -22,7 +23,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			this.plotTitle = plotTitle;
 			Title = plotTitle; // This is the inherited Tab Title
 			PlotModel = new PlotModel(plotTitle);
-			SetUpModel();
+			isLinear = true;
 		}
 
 		/// <summary>
@@ -93,87 +94,39 @@ namespace NUnitBenchmarker.UI.ViewModels
 			}
 		}
 
+		private ICommand switchTimeAxisCommand;
+		private BenchmarkResult result;
+		private bool isLinear;
+
 		/// <summary>
-		/// Returns a demo command
+		///     Gets the SwitchTimeAxis command for MVVM binding.
 		/// </summary>
-		public ICommand DemoCommand
+		/// <value>The SwitchTimeAxis command.</value>
+		public ICommand SwitchTimeAxisCommand
 		{
-			get
+			get { return switchTimeAxisCommand ?? (switchTimeAxisCommand = new RelayCommand<object>(SwitchTimeAxisAction)); }
+		}
+
+		/// <summary>
+		///     SwitchTimeAxis event handler.
+		/// </summary>
+		/// <param name="dummy">not used here</param>
+		private void SwitchTimeAxisAction(object dummy)
+		{
+			isLinear = !isLinear;
+			if (result != null)
 			{
-				if (demoCommand == null)
-				{
-					demoCommand = new RelayCommand(Demo, () => true);
-				}
-				return demoCommand;
+				UpdateResults(result);
 			}
 		}
 
-		public void Demo()
+		public void UpdateResults(BenchmarkResult result)
 		{
-			Debug.WriteLine("Demo");
+			this.result = result;
+			int dummy;
+			PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
+				? Benchmarker.CreatePlotModel(result, isLinear)
+				: Benchmarker.CreateCategoryPlotModel(result, isLinear);
 		}
-
-		public PlotModel SetUpModel()
-		{
-			var plotModel = new PlotModel("sss");
-			plotModel.LegendTitle = "Legend";
-			plotModel.LegendOrientation = LegendOrientation.Horizontal;
-			plotModel.LegendPlacement = LegendPlacement.Outside;
-			plotModel.LegendPosition = LegendPosition.TopRight;
-			plotModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
-			plotModel.LegendBorder = OxyColors.Black;
-
-			var dateAxis = new DateTimeAxis(AxisPosition.Bottom, "Date", "dd/MM/yy HH:mm") { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
-			plotModel.Axes.Add(dateAxis);
-			var valueAxis = new LinearAxis(AxisPosition.Left, 0) { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value" };
-			plotModel.Axes.Add(valueAxis);
-			return plotModel;
-		}
-
-		private void LoadData()
-		{
-			//List<Measurement> measurements = Data.GetData();
-
-			//var dataPerDetector = measurements.GroupBy(m => m.DetectorId).ToList();
-
-			//foreach (var data in dataPerDetector)
-			//{
-			//	var lineSerie = new LineSeries
-			//	{
-			//		StrokeThickness = 2,
-			//		MarkerSize = 3,
-			//		MarkerStroke = colors[data.Key],
-			//		MarkerType = markerTypes[data.Key],
-			//		CanTrackerInterpolatePoints = false,
-			//		Title = string.Format("Detector {0}", data.Key),
-			//		Smooth = false,
-			//	};
-
-			//	data.ToList().ForEach(d => lineSerie.Points.Add(new DataPoint(DateTimeAxis.ToDouble(d.DateTime), d.Value)));
-			//	PlotModel.Series.Add(lineSerie);
-			//}
-		}
-
-
-		private readonly List<OxyColor> colors = new List<OxyColor>
-                                            {
-                                                OxyColors.Green,
-                                                OxyColors.IndianRed,
-                                                OxyColors.Coral,
-                                                OxyColors.Chartreuse,
-                                                OxyColors.Azure
-                                            };
-
-		private readonly List<MarkerType> markerTypes = new List<MarkerType>
-                                                   {
-                                                       MarkerType.Plus,
-                                                       MarkerType.Star,
-                                                       MarkerType.Diamond,
-                                                       MarkerType.Triangle,
-                                                       MarkerType.Cross
-                                                   };
-
-
-
 	}
 }

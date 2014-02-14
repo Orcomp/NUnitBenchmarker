@@ -85,7 +85,7 @@ namespace NUnitBenchmarker.Benchmark
 			}
 		}
 
-		public static PlotModel CreatePlotModel(BenchmarkResult result)
+		public static PlotModel CreatePlotModel(BenchmarkResult result, bool isLinear = true)
 		{
 			var plotModel = new PlotModel(result.Key);
 			plotModel.LegendTitle = "Legend";
@@ -98,14 +98,29 @@ namespace NUnitBenchmarker.Benchmark
 			var xAxis = new LinearAxis(AxisPosition.Bottom);
 			plotModel.Axes.Add(xAxis);
 
-			var yAxis = new LogarithmicAxis(AxisPosition.Left, 0)
+			Axis yAxis;
+			if (isLinear)
 			{
-				MajorGridlineStyle = LineStyle.Solid,
-				MinorGridlineStyle = LineStyle.Dot,
-				Title = "Time (ms)",
-				Minimum = 0.01,
-				UseSuperExponentialFormat = true
-			};
+				yAxis = new LinearAxis(AxisPosition.Left, 0)
+				{
+					MajorGridlineStyle = LineStyle.Solid,
+					MinorGridlineStyle = LineStyle.Dot,
+					Title = "Time (ms)",
+				};
+				
+			}
+			else
+			{
+				yAxis = new LogarithmicAxis(AxisPosition.Left, 0)
+				{
+					MajorGridlineStyle = LineStyle.Solid,
+					MinorGridlineStyle = LineStyle.Dot,
+					Title = "Time (ms)",
+					Minimum = 0.01,
+					UseSuperExponentialFormat = true
+				};
+			}
+
 
 			plotModel.Axes.Add(yAxis);
 
@@ -155,7 +170,7 @@ namespace NUnitBenchmarker.Benchmark
 			}
 		}
 
-		public static PlotModel CreateCategoryPlotModel(BenchmarkResult result)
+		public static PlotModel CreateCategoryPlotModel(BenchmarkResult result, bool isLinear = false)
 		{
 			var plotModel = new PlotModel(result.Key);
 			plotModel.LegendTitle = "Legend";
@@ -168,21 +183,38 @@ namespace NUnitBenchmarker.Benchmark
 			var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases);
 			plotModel.Axes.Add(dateAxis);
 
-			var valueAxis = new LinearAxis(AxisPosition.Left, 0)
+			Axis valueAxis;
+			if (isLinear)
 			{
-				MajorGridlineStyle = LineStyle.Solid,
-				MinorGridlineStyle = LineStyle.Dot,
-				Title = "Time (ms)"
-			};
+				valueAxis = new LinearAxis(AxisPosition.Left, 0)
+				{
+					MajorGridlineStyle = LineStyle.Solid,
+					MinorGridlineStyle = LineStyle.Dot,
+					Title = "Time (ms)"
+				};
+			}
+			else
+			{
+				valueAxis = new LogarithmicAxis(AxisPosition.Left, 0)
+				{
+					MajorGridlineStyle = LineStyle.Solid,
+					MinorGridlineStyle = LineStyle.Dot,
+					Title = "Time (ms)",
+					Minimum = 0.01,
+					UseSuperExponentialFormat = true,
+					StartPosition = 1,
+					EndPosition = 0
+				};
+			}
+
+
 			plotModel.Axes.Add(valueAxis);
 
 			foreach (var series in result.Values)
 			{
-				var columnSeries = new ColumnSeries();
-				columnSeries.Title = series.Key;
+				var columnSeries = new ColumnSeries {Title = series.Key};
 
 				var categoryIndex = 0;
-
 				foreach (var dataPoint in series.Value)
 				{
 					columnSeries.Items.Add(new ColumnItem(dataPoint.Value, categoryIndex));

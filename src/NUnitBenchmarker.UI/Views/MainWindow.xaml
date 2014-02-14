@@ -138,7 +138,13 @@
                     Grid.Column="2"
                     Content="{Binding Path=Tabs}"
                     ContentTemplate="{StaticResource TabsDataTemplate}"
-                    Style="{StaticResource TabsContentStyle}" />
+                    Style="{StaticResource TabsContentStyle}" >
+                    <ContentControl.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="_Switch" Command="{Binding SwitchTimeAxisCommand}"/>
+                        </ContextMenu>
+                    </ContentControl.ContextMenu>
+                </ContentControl>
 
             </Grid>
             <GridSplitter Grid.Row="1" VerticalAlignment="Bottom"

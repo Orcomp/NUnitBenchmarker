@@ -86,6 +86,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Settings.cs" />
+    <Compile Include="ViewModels\LogItemViewModel.cs" />
     <Compile Include="ViewModels\PlotTabViewModel.cs" />
     <Compile Include="ViewModels\TabViewModel.cs" />
     <Compile Include="Views\PlotTabView.xaml.cs">
