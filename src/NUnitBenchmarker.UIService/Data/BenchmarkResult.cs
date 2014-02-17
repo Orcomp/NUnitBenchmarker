@@ -14,5 +14,8 @@ namespace NUnitBenchmarker.UIService.Data
 
 		[DataMember]
 		public string[] TestCases { get; set; }
+
+		[DataMember]
+		public bool IsLast { get; set; }
 	}
 }

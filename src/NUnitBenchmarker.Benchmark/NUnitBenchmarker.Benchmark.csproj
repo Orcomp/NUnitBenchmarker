@@ -80,6 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Benchmarker.cs" />
+    <Compile Include="Configuration\IPerformanceTestCaseConfiguration.cs" />
+    <Compile Include="Configuration\PerformanceTestCaseConfigurationBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

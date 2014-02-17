@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProofOfConcept\ListPerformanceTest.cs" />
-    <Compile Include="ProofOfConcept\ListPerformanceTestConfiguration.cs" />
+    <Compile Include="ProofOfConcept\ListPerformanceTestCaseConfiguration.cs" />
     <Compile Include="ProofOfConcept\ListPerformanceTestFactory.cs" />
     <Compile Include="ProofOfConcept\ListPerformanceTestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

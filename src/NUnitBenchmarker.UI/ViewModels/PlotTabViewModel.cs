@@ -14,38 +14,14 @@ namespace NUnitBenchmarker.UI.ViewModels
 {
 	public class PlotTabViewModel : TabViewModel
 	{
-		private string key; // Backing field for property Key
 		private string plotTitle; // Backing field for property PlotTitle
 
-		public PlotTabViewModel(string key, string plotTitle)
+		public PlotTabViewModel(string key, string plotTitle) : base(key)
 		{
-			this.key = key;
 			this.plotTitle = plotTitle;
-			Title = plotTitle; // This is the inherited Tab Title
+			Title = string.Format("{0} graph", plotTitle); 
 			PlotModel = new PlotModel(plotTitle);
 			isLinear = true;
-		}
-
-		/// <summary>
-		/// Observable property for MVVM. Gets or sets state Key. 
-		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
-		/// </summary>
-		/// <value>The property value. If the new value is the same as the current property value
-		/// then no PropertyChange event is raised.
-		/// </value>
-		public string Key
-		{
-			get { return key; }
-
-			set
-			{
-				if (key == value)
-				{
-					return;
-				}
-				key = value;
-				RaisePropertyChanged(() => Key);
-			}
 		}
 
 		/// <summary>

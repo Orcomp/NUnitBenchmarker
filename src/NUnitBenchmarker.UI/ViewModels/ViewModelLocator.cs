@@ -17,6 +17,14 @@ namespace NUnitBenchmarker.UI.ViewModels
 			}
 		}
 
+		public DataTabViewModel DataTab
+		{
+			get
+			{
+				return Dependency.Resolve<DataTabViewModel>();
+			}
+		}
+
 		public static void Cleanup()
 		{
 			// TODO Clear the ViewModels

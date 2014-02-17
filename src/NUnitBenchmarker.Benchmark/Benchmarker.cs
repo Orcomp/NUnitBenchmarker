@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using MigraDoc.DocumentObjectModel.Internals;
+using NUnitBenchmarker.Benchmark.Configuration;
 using NUnitBenchmarker.UIClient;
 using NUnitBenchmarker.UIService.Data;
 using OxyPlot;
@@ -32,8 +36,9 @@ namespace NUnitBenchmarker.Benchmark
 
 		private const int NumberOfIterations = 5;
 
-		public static void Benchmark(this Action action, string testGroup, string testName, string testCase)
+		public static void Benchmark(this Action action, IPerformanceTestCaseConfiguration conf, string testName, string testCase)
 		{
+			string testGroup = conf.Identifier;
 			// Check config file to see if TestName should be ingored or not. 
 			// If it should be ignored then 
 
@@ -47,12 +52,12 @@ namespace NUnitBenchmarker.Benchmark
 			UI.Logger.Info("[{0}] {1} - {2}: {3} ms", testGroup, testName, testCase, result.AverageExecutionTime);
 
 			Save(testGroup, testName, testCase, result.AverageExecutionTime);
-			UI.UpdateResult(new BenchmarkResult {Key = testName, Values = _results[testName], TestCases = _testCases.ToArray()});
+			UI.UpdateResult(new BenchmarkResult {Key = testName, Values = _results[testName], TestCases = _testCases.ToArray(), IsLast = conf.IsLast});
 		}
 
-		public static void Benchmark(this Action action, string testGroup, string testName, int testCase)
+		public static void Benchmark(this Action action, IPerformanceTestCaseConfiguration conf, string testName, int testCase)
 		{
-			Benchmark(action, testGroup, testName, testCase.ToString());
+			Benchmark(action, conf, testName, testCase.ToString());
 		}
 
 		private static void Save(string testGroup, string testName, string testCase, double ellapsedTime)
@@ -167,7 +172,15 @@ namespace NUnitBenchmarker.Benchmark
 			{
 				var plotModel = CreateCategoryPlotModel(new BenchmarkResult { Key = result.Key, Values = result.Value, TestCases = _testCases.ToArray() });
 				ExportResults(plotModel, result.Key);
+				//var d =
+				//	BenchmarkFinalTabularData.Create(new BenchmarkResult
+				//	{
+				//		Key = result.Key,
+				//		Values = result.Value,
+				//		TestCases = _testCases.ToArray()
+				//	});
 			}
+			
 		}
 
 		public static PlotModel CreateCategoryPlotModel(BenchmarkResult result, bool isLinear = false)
@@ -257,7 +270,7 @@ namespace NUnitBenchmarker.Benchmark
 
 				foreach (var series in testResults)
 				{
-					sb.AppendLine(series.Key + "," + string.Join(",", series.Value));
+					sb.AppendLine(series.Key + "," + string.Join(",", series.Value.ToString()));
 				}
 
 				sb.AppendLine();
@@ -265,10 +278,41 @@ namespace NUnitBenchmarker.Benchmark
 
 			File.WriteAllText(filePath, sb.ToString());
 		}
+	}
 
-		public static void Enumerate<T>(this IEnumerable<T> enumerable)
+	public class BenchmarkFinalTabularData
+	{
+		const string DescriptionColumnName = "Description";
+		
+		public string Title { get; set; }
+		public DataTable DataTable { get; set; }
+
+
+		public BenchmarkFinalTabularData(BenchmarkResult result)
 		{
-			foreach (var item in enumerable) ;
+			Title = result.Key;
+			var table = DataTable = new DataTable(Title);
+
+
+
+			table.Columns.Add(DescriptionColumnName, typeof(string));
+			foreach (var dataPoint in result.Values.FirstOrDefault().Value)
+			{
+				table.Columns.Add(dataPoint.Key, typeof(double));	
+			}
+
+			foreach (var series in result.Values)
+			{
+				var row = table.NewRow();
+				table.Rows.Add(row);
+				row[DescriptionColumnName] = series.Key;
+				
+				foreach (var dataPoint in series.Value)
+				{
+					row[dataPoint.Key] = dataPoint.Value;
+					//row[dataPoint.Key] = dataPoint.Value.ToString("F");
+				}
+			}
 		}
 	}
 }

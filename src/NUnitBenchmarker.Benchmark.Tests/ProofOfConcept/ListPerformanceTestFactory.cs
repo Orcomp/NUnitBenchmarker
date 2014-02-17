@@ -33,25 +33,51 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			return result;
 		}
 
-		public IEnumerable<ListPerformanceTestConfiguration<T>> TestCases()
+		public IEnumerable<ListPerformanceTestCaseConfiguration<T>> TestCases()
 		{
-			//var result = new List<ListPerformanceTestConfiguration<T>>();
+			var lastImplementation = Implementations.LastOrDefault();
+
 			foreach (var implementation in Implementations)
 			{
-				//var identifier = string.Format("{0} : {1}", implementation.Namespace, implementation.Name);
 				var identifier = string.Format("{0}", implementation.Name);
 
-				yield return new ListPerformanceTestConfiguration<T>(identifier, implementation, 100, 0);
-				yield return new ListPerformanceTestConfiguration<T>(identifier, implementation, 1000, 0);
-				yield return new ListPerformanceTestConfiguration<T>(identifier, implementation, 10000, 0);
-				yield return new ListPerformanceTestConfiguration<T>(identifier, implementation, 100000, 0);
-				
-				//result.Add(new ListPerformanceTestConfiguration<T>(identifier, implementation, 1000, 0));
-				//result.Add(new ListPerformanceTestConfiguration<T>(identifier, implementation, 10000, 0));
-				//result.Add(new ListPerformanceTestConfiguration<T>(identifier, implementation, 100000, 0));
-				//result.Add(new ListPerformanceTestConfiguration<T>(identifier, implementation, 1000000, 0));
+				yield return new ListPerformanceTestCaseConfiguration<T>()
+				{
+					Identifier = identifier,
+					TargetImplementationType = implementation,
+					IsLast = false,
+					Size = 100,
+					DummyForTesting = 0
+				};
+
+				yield return new ListPerformanceTestCaseConfiguration<T>()
+				{
+					Identifier = identifier,
+					TargetImplementationType = implementation,
+					IsLast = false,
+					Size = 1000,
+					DummyForTesting = 0
+				};
+
+
+				yield return new ListPerformanceTestCaseConfiguration<T>()
+				{
+					Identifier = identifier,
+					TargetImplementationType = implementation,
+					IsLast = false,
+					Size = 10000,
+					DummyForTesting = 0
+				};
+
+				yield return new ListPerformanceTestCaseConfiguration<T>()
+				{
+					Identifier = identifier,
+					TargetImplementationType = implementation,
+					IsLast = implementation == lastImplementation,
+					Size = 100000,
+					DummyForTesting = 0
+				};
 			}
-			//return result;
 		}
 	}
 }

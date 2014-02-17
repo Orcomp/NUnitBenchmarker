@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using log4net.Core;
+using NUnitBenchmarker.Benchmark;
 using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
 using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
 using NUnitBenchmarker.UI.Properties;
@@ -78,7 +80,11 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 			LogItems = new ObservableCollection<LogItemViewModel>();
 			RestoreMainWindow();
-			//Tabs.Add(new PlotTabViewModel("test", "test"));
+			//var dataTabViewModel = new DataTabViewModel("test1", "test2");
+			//dataTabViewModel.DataTable = CreateDemoTable();
+			//Tabs.Add(dataTabViewModel);
+
+
 		}
 
 		/// <summary>
@@ -542,13 +548,21 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private void UpdateResults(BenchmarkResult result)
 		{
 			var model = GetPlotTabViewModel(result.Key, true);
-			ActivateTab(model.Key);
+			ActivateTab<PlotTabViewModel>(model.Key);
 			model.UpdateResults(result);
+
+			if (!result.IsLast)
+			{
+				return;
+			}
+			var dataTabViewModel = GetDataTabViewModel(result.Key, true);
+			dataTabViewModel.UpdateResults(result);
+			ActivateTab<DataTabViewModel>(dataTabViewModel.Key);
 		}
 
-		private void ActivateTab(string key)
+		private void ActivateTab<T>(string key)
 		{
-			TabViewModel found = Tabs.FirstOrDefault(pt => ((PlotTabViewModel) pt).Key == key);
+			TabViewModel found = Tabs.FirstOrDefault(pt => pt is T && pt.Key == key);
 			if (found != null)
 			{
 				SetActiveTab(found);
@@ -577,6 +591,20 @@ namespace NUnitBenchmarker.UI.ViewModels
 			return found;
 		}
 
+		private DataTabViewModel GetDataTabViewModel(string key, bool create)
+		{
+			var found =
+				(DataTabViewModel)Tabs.Where(t => t is DataTabViewModel).FirstOrDefault(pt => ((DataTabViewModel)pt).Key == key);
+
+			if (found == null && create)
+			{
+				found = new DataTabViewModel(key, key);
+				Tabs.Add(found);
+			}
+			return found;
+		}
+
+
 		private ICommand switchTimeAxisCommand;
 
 		/// <summary>
@@ -595,6 +623,30 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private void SwitchTimeAxisAction(object dummy)
 		{
 			// TODO: Implement
+		}
+
+
+		private static DataTable CreateDemoTable()
+		{
+			var table = new DataTable("Demo");
+
+			int colummnCount = 5;
+			int rowCount = 5;
+			for(int i = 1; i<= colummnCount; i++)
+			{
+				table.Columns.Add(string.Format("Column{0}", i), typeof(double));
+			}
+
+			for (int r = 1; r <= rowCount; r++)
+			{
+				var row = table.NewRow();
+				table.Rows.Add(row);
+				for (int i = 1; i <= colummnCount; i++)
+				{
+					row[string.Format("Column{0}", i)] = i * r;
+				}
+			}
+			return table;
 		}
 
 

@@ -13,9 +13,37 @@ namespace NUnitBenchmarker.UI.ViewModels
 	/// </summary>
 	public abstract class TabViewModel : ViewModelBase
 	{
+		private string key; // Backing field for property Key
 		ICommand closeCommand;
 
+		protected TabViewModel(string key)
+		{
+			this.key = key;
+		}
 
+		/// <summary>
+		/// Observable property for MVVM. Gets or sets state Key. 
+		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
+		/// </summary>
+		/// <value>The property value. If the new value is the same as the current property value
+		/// then no PropertyChange event is raised.
+		/// </value>
+		public string Key
+		{
+			get { return key; }
+
+			set
+			{
+				if (key == value)
+				{
+					return;
+				}
+				key = value;
+				RaisePropertyChanged(() => Key);
+			}
+		}
+
+		
 		/// <summary>
 		/// Returns the command that, when invoked, attempts
 		/// to remove this tab from the user interface.

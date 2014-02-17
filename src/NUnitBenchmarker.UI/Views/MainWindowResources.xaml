@@ -8,6 +8,10 @@
         <vw:PlotTabView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:DataTabViewModel}">
+        <vw:DataTabView />
+    </DataTemplate>
+
 
     <Style x:Key="TabsContentStyle" TargetType="{x:Type ContentControl}">
         <Setter Property="IsTabStop" Value="False" />

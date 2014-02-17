@@ -44,7 +44,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 
 
 		[Test]
-		public void RemoteLogginhProofofConcept()
+		public void RemoteLoggingProofOfConcept()
 		{
 			UI.Logger.Info("Test log message");
 		}
@@ -66,7 +66,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		/// <param name="conf">The conf.</param>
 		[Test, TestCaseSource(typeof(ListPerformanceTestFactory<int>), "TestCases")]
 		[MaxTime(10000)]
-		public void AddTest(ListPerformanceTestConfiguration<int> conf)
+		public void AddTest(ListPerformanceTestCaseConfiguration<int> conf)
 		{
 			var itemsToAdd = ListPerformanceTestHelper<int>.GenerateItemsToAdd(conf).ToArray();
 			var target = ListPerformanceTestHelper<int>.CreateListInstance(conf);
@@ -79,7 +79,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 				}
 			});
 
-			action.Benchmark(conf.Identifier, "Add", conf.ToString());
+			action.Benchmark(conf, "Add", conf.ToString());
 		}
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		/// <param name="conf">The conf.</param>
 		[Test, TestCaseSource(typeof(ListPerformanceTestFactory<int>), "TestCases")]
 		[MaxTime(10000)]
-		public void RemoveTest(ListPerformanceTestConfiguration<int> conf)
+		public void RemoveTest(ListPerformanceTestCaseConfiguration<int> conf)
 		{
 			var itemsToAdd = ListPerformanceTestHelper<int>.GenerateItemsToAdd(conf).ToArray();
 			var target = ListPerformanceTestHelper<int>.CreateListInstance(conf);
@@ -105,7 +105,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 				}
 			});
 
-			action.Benchmark(conf.Identifier, "Remove", conf.ToString());
+			action.Benchmark(conf, "Remove", conf.ToString());
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 	{
 		private static Random random;
 
-		public static IEnumerable<T> GenerateItemsToAdd(ListPerformanceTestConfiguration<T> conf)
+		public static IEnumerable<T> GenerateItemsToAdd(ListPerformanceTestCaseConfiguration<T> conf)
 		{
 			random = new Random(0);
 			for (int i = 0; i < conf.Size; i++)
@@ -35,9 +35,9 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		}
 
 
-		public static IList<T> CreateListInstance<T>(ListPerformanceTestConfiguration<T> conf)
+		public static IList<T> CreateListInstance<T>(ListPerformanceTestCaseConfiguration<T> conf)
 		{
-			return conf.ListType.MakeGenericType(typeof(T)).CreateInstance() as IList<T>;
+			return conf.TargetImplementationType.MakeGenericType(typeof(T)).CreateInstance() as IList<T>;
 		}
 	}
 }
