@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -27,6 +28,9 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			// We can then pass the assemblies the user has selected to the TestFactory class below.
 
 			// var test = new ListPerformanceTestFactory<int>();
+
+			// NUnit issue: This will run _later_ than constructor and factory methods of TestCaseSource...
+			Benchmarker.FindImplementations(typeof(IList<>), true);
 		}
 
 		[Test]
@@ -39,9 +43,15 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			// for example:
 
 			var response = UI.Ping("Hello from the runner.");
-			Assert.AreEqual("Welcome to the machine: Hello from the runner.", response);
+			if (UI.DisplayUI)
+			{
+				Assert.AreEqual("Welcome to the machine: Hello from the runner.", response);
+			}
+			else
+			{
+				Assert.AreEqual("Welcome to the loopback: Hello from the runner.", response);
+			}
 		}
-
 
 		[Test]
 		public void RemoteLoggingProofOfConcept()

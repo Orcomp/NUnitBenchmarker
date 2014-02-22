@@ -3,13 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.ServiceModel;
 using System.Text;
 using System.Xml.Serialization;
 using log4net.Core;
 using NUnitBenchmarker.Core.Infrastructure.Logging;
 using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
+using NUnitBenchmarker.UIClient.Properties;
 using NUnitBenchmarker.UIClient.UIServiceReference;
 using NUnitBenchmarker.UIService.Data;
 using ILogger = NUnitBenchmarker.Core.Infrastructure.Logging.ILogger;
@@ -50,6 +54,11 @@ namespace NUnitBenchmarker.UIClient
 
 		private static void LoggingEventAppended(LoggingEvent loggingEvent, string renderedMessage)
 		{
+			if (!DisplayUI)
+			{
+				return;
+			}
+
 			string loggingEventString;
 			using (var memoryStream = new MemoryStream())
 			{
@@ -58,32 +67,129 @@ namespace NUnitBenchmarker.UIClient
 				loggingEventString = Encoding.UTF8.GetString(memoryStream.ToArray());
 			}
 
-			Client.Log(loggingEventString);
+			if (Start(false))
+			{
+				Client.Log(loggingEventString);
+				return;
+			}
+			// Note: We can not log here. We are in an appender....
 		}
 
 		public static ILogger Logger { get; private set; }
+		public static bool DisplayUI { get; set; }
 
 		public static string Ping(string message)
 	    {
-		    return Client.Ping(message);
+			return SendMessageFunc(() => Client.Ping(message), string.Format(Resources.UI_Communication_welcome_to_the_loopback, message));
 	    }
 
 		public static IEnumerable<string> GetAssemblyNames()
 		{
-			return Client.GetAssemblyNames();
+			return SendMessageFunc<IEnumerable<string>>(() => Client.GetAssemblyNames(), new List<string>());
 		}
 
 		public static void UpdateResult(BenchmarkResult result)
 		{
-			Client.UpdateResult(result);
+			SendMessageAction(()=>Client.UpdateResult(result));
 		}
 
-
-	    public static void Start()
-	    {
-		    throw new NotImplementedException();
-	    }
-
 		
+		private static void SendMessageAction(Action action, [CallerMemberName] string memberName = "")
+		{
+			if (!DisplayUI)
+			{
+				return;
+			}
+
+			if (Start())
+			{
+				action();
+				return;
+			}
+			
+			Logger.Warn(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
+		}
+
+		private static T SendMessageFunc<T>(Func<T> func, T defaultResult, string memberName = "")
+		{
+			if (!DisplayUI)
+			{
+				return defaultResult;
+			}
+
+			if (Start())
+			{
+				return func();
+			}
+			Logger.Warn(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
+			return defaultResult;
+		}
+		private const string UIProcessName = "..\\NUnitBenchmarker.UI\\NUnitBenchmarker.UI.exe";
+		
+		// TODO: Make this thread safe (possibly involves refactor UI class from static to instance)
+
+		public static bool Start(bool forceStart = true)
+		{
+			if (!DisplayUI)
+			{
+				return true;
+			}
+			var x = Path.GetFileNameWithoutExtension(UIProcessName);
+			var ps = Process.GetProcesses();
+			var process = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(UIProcessName)).FirstOrDefault();
+			var starting = false;
+			var timeout = 500; // Normal check timout
+
+			// TODO: Implement using full path. Currently the UI executable must be copied to the test directory
+			if (process == null)
+			{
+				if (!forceStart)
+				{
+					return false;
+				}
+				starting = true;
+				timeout = 5000; // Start timeout
+				try
+				{
+					process = Process.Start(UIProcessName);
+				}
+				catch (Exception e)
+				{
+					Logger.Error(e, Resources.UI_Message_can_not_start_ui_process);
+					return false;
+				}
+				Logger.Info(Resources.UI_Message_starting_ui_process);
+			}
+			if (process == null)
+			{
+				Logger.Info(Resources.UI_Message_starting_ui_process);
+				return false;
+			}
+
+			// Wait to start (or check if responding):
+			bool success = process.WaitForInputIdle(timeout);
+
+
+			// Log only if process just was started:
+			if (starting)
+			{
+				if (success)
+				{
+					Logger.Info(Resources.UI_Message_start_ui_process_successfully_started);
+				}
+				else
+				{
+					Logger.Error(Resources.UI_Message_can_not_start_ui_process);
+				}
+			}
+			else
+			{
+				SetForegroundWindow(process.MainWindowHandle);
+			}
+			return success;
+
+		}
+		[DllImport("user32.dll")]
+		private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }

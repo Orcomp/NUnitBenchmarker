@@ -46,6 +46,7 @@
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,9 +58,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+    <Content Include="TestConfigurations\Empty.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestConfigurations\MissingSection.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestConfigurations\MissingDefinition.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="TestConfigurations\Full.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigurationTest.cs" />
     <Compile Include="ProofOfConcept\ListPerformanceTest.cs" />
     <Compile Include="ProofOfConcept\ListPerformanceTestCaseConfiguration.cs" />
     <Compile Include="ProofOfConcept\ListPerformanceTestFactory.cs" />

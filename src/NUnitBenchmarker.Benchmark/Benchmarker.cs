@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Odbc;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using Fasterflect;
 using MigraDoc.DocumentObjectModel.Internals;
 using NUnitBenchmarker.Benchmark.Configuration;
 using NUnitBenchmarker.UIClient;
@@ -20,21 +24,113 @@ namespace NUnitBenchmarker.Benchmark
 {
 	public static class Benchmarker
 	{
+		// Testname, TestGroup, Tuple<TestCase, ellapsedTime>
+		private static readonly Dictionary<string, Dictionary<string, List<KeyValuePair<string, double>>>> _results;
+		private static readonly HashSet<string> _testCases;
+		private static DateTime _timestamp;
+		private static bool _displayUI;
+		private const int NumberOfIterations = 5;
+		private static NUnitBenchmarkerConfigurationSection _configuration;
+		private static bool _hasConfiguration;
+		private static Type _interfaceType;
+		private static IEnumerable<ImplementationInfo> _implementationInfos;
+
 		static Benchmarker()
 		{
 			_results = new Dictionary<string, Dictionary<string, List<KeyValuePair<string, double>>>>();
 			_testCases = new HashSet<string>();
 			_timestamp = DateTime.Now;
+
+			_configuration = ConfigurationHelper.Load();
+			_hasConfiguration = _configuration.ConfigFile != null;
 		}
 
-		// Testname, TestGroup, Tuple<TestCase, ellapsedTime>
-		private static Dictionary<string, Dictionary<string, List<KeyValuePair<string, double>>>> _results;
+		public static void FindImplementations(Type interfaceType, bool displayUI = false)
+		{
+			// Override settings if there was no configuration file
+			if (!_hasConfiguration)
+			{
+				_configuration.DisplayUI = displayUI;
+			}
 
-		private static HashSet<string> _testCases;
+			_interfaceType = interfaceType;
+			UI.DisplayUI = _configuration.DisplayUI;
 
-		private static DateTime _timestamp;
+			_implementationInfos = FindImplementations(interfaceType, _configuration.SearchFolders);
+		}
 
-		private const int NumberOfIterations = 5;
+		private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType, SearchFolderCollection searchFolders)
+		{
+			var result = new List<ImplementationInfo>();
+			foreach ( SearchFolder searchFolder in _configuration.SearchFolders)
+			{
+				result.AddRange(FindImplementations(interfaceType, searchFolder));
+			}
+			return result;
+		}
+
+		private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType, SearchFolder searchFolder)
+		{
+			var result = new List<ImplementationInfo>();
+			var assemblyFileNames = GetAssemblyFileNames(searchFolder);
+			foreach (var assemblyFileName in assemblyFileNames)
+			{
+				result.AddRange(FindImplementations(interfaceType, assemblyFileName));
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType, string assemblyFileName)
+		{
+			return Assembly.LoadFrom(assemblyFileName)
+				.Types()
+				.Where(x => x.Implements(interfaceType))
+				.Select(x => new ImplementationInfo()
+				{
+					AssemblyFileName = assemblyFileName,
+					AssemblyQualifiedName = x.AssemblyQualifiedName,
+					TypeName = x.FullName,
+					Type = x
+				})
+				.ToList();
+		}
+
+		private static IEnumerable<string> GetAssemblyFileNames(SearchFolder searchFolder)
+		{
+			var result = new List<string>();
+			if (searchFolder.Folder == null)
+			{
+				return result;
+			}
+
+			var di = new DirectoryInfo(Path.GetFullPath(searchFolder.Folder));
+			var fileInfos = di.GetFiles("*.dll", SearchOption.TopDirectoryOnly);
+			result.AddRange(fileInfos.Select(fileInfo => fileInfo.FullName));
+
+			fileInfos = di.GetFiles("*.exe", SearchOption.TopDirectoryOnly);
+			result.AddRange(fileInfos.Select(fileInfo => fileInfo.FullName));
+
+			result = ApplyFilter(result, searchFolder);
+			return result;
+		}
+
+		private static List<string> ApplyFilter(IEnumerable<string> source, SearchFolder searchFolder)
+		{
+			var removables = new List<string>();
+			if (searchFolder.Include.Length > 0)
+			{
+				removables.AddRange(source.Where(name => !name.Contains(searchFolder.Include)));
+			}
+
+			if (searchFolder.Exclude.Length > 0)
+			{
+				removables.AddRange(source.Where(name => name.Contains(searchFolder.Exclude)));
+			}
+			
+			return source.Where(name => !removables.Contains(name)).ToList();
+		}
+
 
 		public static void Benchmark(this Action action, IPerformanceTestCaseConfiguration conf, string testName, string testCase)
 		{
@@ -47,8 +143,6 @@ namespace NUnitBenchmarker.Benchmark
 			var test = new TestGroup(testGroup);
 
 			var result = test.PlanAndExecute(testName, action, NumberOfIterations, new ExcludeMinAndMaxTestOutcomeFilter());
-			
-			//Log.InfoFormat("[{0}] {1} - {2}: {3} ms", testGroup, testName, testCase, result.AverageExecutionTime);
 			UI.Logger.Info("[{0}] {1} - {2}: {3} ms", testGroup, testName, testCase, result.AverageExecutionTime);
 
 			Save(testGroup, testName, testCase, result.AverageExecutionTime);
@@ -278,6 +372,56 @@ namespace NUnitBenchmarker.Benchmark
 
 			File.WriteAllText(filePath, sb.ToString());
 		}
+
+		public static IEnumerable<Type> GetImplementations()
+		{
+			var result = new List<Type>();
+			var assemblyNames = UI.GetAssemblyNames();
+			foreach (var assemblyName in assemblyNames)
+			{
+				result.AddRange(Assembly.LoadFrom(assemblyName)
+					.Types()
+					.Where(x => x.Implements(typeof(IList<>)))
+					.ToList());
+			}
+			result.AddRange(_implementationInfos.Select(i=>i.Type));
+			result = RemoveDuplicates(result).ToList();
+			return result;
+		}
+
+		static IEnumerable<T> RemoveDuplicates<T>(IEnumerable<T> items)
+		{
+			//foreach (var type in items)
+			//{
+			//	Debug.WriteLine(type.GetHashCode());
+			//}
+
+			
+			var set = new HashSet<string>();
+			var result = new List<T>();
+
+			foreach (T item in items)
+			{
+				// About this string stuff: Strange but the duplicates have _different_ hashcode...
+				// so them workaround here is using their string repr.
+				if (!set.Contains(item.ToString()))
+				{
+					set.Add(item.ToString());
+					result.Add(item);
+				}
+			}
+			return result;
+		}
+
+
+	}
+
+	internal class ImplementationInfo
+	{
+		public string AssemblyFileName { get; set; }
+		public string TypeName { get; set; }
+		public Type Type { get; set; }
+		public string AssemblyQualifiedName { get; set; }
 	}
 
 	public class BenchmarkFinalTabularData
@@ -292,8 +436,6 @@ namespace NUnitBenchmarker.Benchmark
 		{
 			Title = result.Key;
 			var table = DataTable = new DataTable(Title);
-
-
 
 			table.Columns.Add(DescriptionColumnName, typeof(string));
 			foreach (var dataPoint in result.Values.FirstOrDefault().Value)
