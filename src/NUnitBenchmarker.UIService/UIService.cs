@@ -44,15 +44,17 @@ namespace NUnitBenchmarker.UIService
 			return host.OnPing(message);			
 		}
 
+
 		/// <summary>
-		/// Gets choosen assembly names.
+		/// Gets the implementations to test
 		/// </summary>
-		/// <returns>IEnumerable{System.String}.</returns>
-		public IEnumerable<string> GetAssemblyNames()
+		/// <param name="interfaceType">Type of the interface.</param>
+		/// <returns>IEnumerable{TypeSpecification}.</returns>
+		public IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
 		{
 			LogCall(null);
 			var host = Dependency.Resolve<IUIServiceHost>();
-			return host.OnGetAssemblyNames();			
+			return host.OnGetImplementations(interfaceType);	
 		}
 
 		/// <summary>

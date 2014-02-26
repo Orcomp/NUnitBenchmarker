@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Fasterflect;
+using NUnitBenchmarker.Benchmark.Helper;
 using NUnitBenchmarker.UIClient;
 
 namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
@@ -37,7 +38,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 
 			foreach (var implementation in Implementations)
 			{
-				var identifier = string.Format("{0}", implementation.Name);
+				var identifier = string.Format("{0}", implementation.GetFriendlyName());
 
 				yield return new ListPerformanceTestCaseConfiguration<T>()
 				{

@@ -21,11 +21,11 @@ namespace NUnitBenchmarker.UIClient.UIServiceReference {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/Ping", ReplyAction="http://tempuri.org/IUIService/PingResponse")]
         System.Threading.Tasks.Task<string> PingAsync(string message);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/GetAssemblyNames", ReplyAction="http://tempuri.org/IUIService/GetAssemblyNamesResponse")]
-        string[] GetAssemblyNames();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/GetImplementations", ReplyAction="http://tempuri.org/IUIService/GetImplementationsResponse")]
+        NUnitBenchmarker.UIService.Data.TypeSpecification[] GetImplementations(NUnitBenchmarker.UIService.Data.TypeSpecification interfaceType);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/GetAssemblyNames", ReplyAction="http://tempuri.org/IUIService/GetAssemblyNamesResponse")]
-        System.Threading.Tasks.Task<string[]> GetAssemblyNamesAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/GetImplementations", ReplyAction="http://tempuri.org/IUIService/GetImplementationsResponse")]
+        System.Threading.Tasks.Task<NUnitBenchmarker.UIService.Data.TypeSpecification[]> GetImplementationsAsync(NUnitBenchmarker.UIService.Data.TypeSpecification interfaceType);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/Log", ReplyAction="http://tempuri.org/IUIService/LogResponse")]
         void Log(string loggingEventString);
@@ -75,12 +75,12 @@ namespace NUnitBenchmarker.UIClient.UIServiceReference {
             return base.Channel.PingAsync(message);
         }
         
-        public string[] GetAssemblyNames() {
-            return base.Channel.GetAssemblyNames();
+        public NUnitBenchmarker.UIService.Data.TypeSpecification[] GetImplementations(NUnitBenchmarker.UIService.Data.TypeSpecification interfaceType) {
+            return base.Channel.GetImplementations(interfaceType);
         }
         
-        public System.Threading.Tasks.Task<string[]> GetAssemblyNamesAsync() {
-            return base.Channel.GetAssemblyNamesAsync();
+        public System.Threading.Tasks.Task<NUnitBenchmarker.UIService.Data.TypeSpecification[]> GetImplementationsAsync(NUnitBenchmarker.UIService.Data.TypeSpecification interfaceType) {
+            return base.Channel.GetImplementationsAsync(interfaceType);
         }
         
         public void Log(string loggingEventString) {

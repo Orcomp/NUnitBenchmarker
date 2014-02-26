@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\BenchmarkResult.cs" />
+    <Compile Include="Data\TypeSpecification.cs" />
     <Compile Include="IUIService.cs" />
     <Compile Include="IUIServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

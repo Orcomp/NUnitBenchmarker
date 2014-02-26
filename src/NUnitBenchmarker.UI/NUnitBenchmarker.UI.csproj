@@ -39,6 +39,10 @@
     <ApplicationIcon>NunitBenchmarker.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight.Extras.WPF45">
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.Extras.WPF45.dll</HintPath>
     </Reference>
@@ -85,11 +89,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\AssemblyEntry.cs" />
+    <Compile Include="Model\NameSpaceEntry.cs" />
+    <Compile Include="Model\ReflectionEntry.cs" />
+    <Compile Include="Model\TypeEntry.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ViewModels\AssemblyTree\TreeViewItemViewModel.cs" />
+    <Compile Include="ViewModels\AssemblyTree\ReflectionNodeViewModel.cs" />
     <Compile Include="ViewModels\LogItemViewModel.cs" />
     <Compile Include="ViewModels\DataTabViewModel.cs" />
     <Compile Include="ViewModels\PlotTabViewModel.cs" />
     <Compile Include="ViewModels\TabViewModel.cs" />
+    <Compile Include="Views\Behaviors\ListBoxBehavior.cs" />
     <Compile Include="Views\DataTabView.xaml.cs">
       <DependentUpon>DataTabView.xaml</DependentUpon>
     </Compile>
@@ -103,7 +114,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>UIStrings.resx</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\AssemblyListItem.cs" />
     <Compile Include="ViewModels\IViewService.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />

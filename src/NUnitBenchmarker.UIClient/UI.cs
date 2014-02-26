@@ -83,9 +83,9 @@ namespace NUnitBenchmarker.UIClient
 			return SendMessageFunc(() => Client.Ping(message), string.Format(Resources.UI_Communication_welcome_to_the_loopback, message));
 	    }
 
-		public static IEnumerable<string> GetAssemblyNames()
+		public static IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
 		{
-			return SendMessageFunc<IEnumerable<string>>(() => Client.GetAssemblyNames(), new List<string>());
+			return SendMessageFunc<IEnumerable<TypeSpecification>>(() => Client.GetImplementations(interfaceType), new List<TypeSpecification>());
 		}
 
 		public static void UpdateResult(BenchmarkResult result)
@@ -124,6 +124,9 @@ namespace NUnitBenchmarker.UIClient
 			Logger.Warn(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
 			return defaultResult;
 		}
+
+
+
 		private const string UIProcessName = "..\\NUnitBenchmarker.UI\\NUnitBenchmarker.UI.exe";
 		
 		// TODO: Make this thread safe (possibly involves refactor UI class from static to instance)

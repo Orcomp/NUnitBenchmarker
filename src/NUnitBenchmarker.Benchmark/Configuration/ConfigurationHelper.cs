@@ -71,24 +71,23 @@ namespace NUnitBenchmarker.Benchmark.Configuration
 				//configuration.SearchFolders.Add(new SearchFolder {Folder = exeFolder});
 			}
 
-			if (configuration.SearchFolders.Count == 0)
-			{
-				var oldConfiguration = configuration;
-				configuration = new NUnitBenchmarkerConfigurationSection();
-				configuration.SearchFolders.Add(new SearchFolder { Folder = "." });
-				//configuration.SearchFolders.Add(new SearchFolder { Folder = exeFolder });
-				configuration.DisplayUI = oldConfiguration.DisplayUI;
-				foreach (var item in oldConfiguration.ImplementationFilters)
-				{
-					configuration.ImplementationFilters.Add((ExcludeIncludeElement) item);
-				}
+			//if (configuration.SearchFolders.Count == 0)
+			//{
+			//	var oldConfiguration = configuration;
+			//	configuration = new NUnitBenchmarkerConfigurationSection();
+			//	configuration.SearchFolders.Add(new SearchFolder { Folder = "." });
+			//	//configuration.SearchFolders.Add(new SearchFolder { Folder = exeFolder });
+			//	configuration.DisplayUI = oldConfiguration.DisplayUI;
+			//	foreach (var item in oldConfiguration.ImplementationFilters)
+			//	{
+			//		configuration.ImplementationFilters.Add((ExcludeIncludeElement) item);
+			//	}
 
-				foreach (var item in oldConfiguration.TestCaseFilters)
-				{
-					configuration.TestCaseFilters.Add((ExcludeIncludeElement)item);
-				}
-
-			}
+			//	foreach (var item in oldConfiguration.TestCaseFilters)
+			//	{
+			//		configuration.TestCaseFilters.Add((ExcludeIncludeElement)item);
+			//	}
+			//}
 			
 			// TODO: Check for valid settings
 			return configuration;

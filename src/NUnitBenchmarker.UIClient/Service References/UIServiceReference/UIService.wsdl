@@ -4,8 +4,8 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data" />
+      <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data" />
+      <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
     </xsd:schema>
   </wsdl:types>
@@ -15,11 +15,11 @@
   <wsdl:message name="IUIService_Ping_OutputMessage">
     <wsdl:part name="parameters" element="tns:PingResponse" />
   </wsdl:message>
-  <wsdl:message name="IUIService_GetAssemblyNames_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetAssemblyNames" />
+  <wsdl:message name="IUIService_GetImplementations_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetImplementations" />
   </wsdl:message>
-  <wsdl:message name="IUIService_GetAssemblyNames_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetAssemblyNamesResponse" />
+  <wsdl:message name="IUIService_GetImplementations_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetImplementationsResponse" />
   </wsdl:message>
   <wsdl:message name="IUIService_Log_InputMessage">
     <wsdl:part name="parameters" element="tns:Log" />
@@ -38,9 +38,9 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IUIService/Ping" message="tns:IUIService_Ping_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IUIService/PingResponse" message="tns:IUIService_Ping_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="GetAssemblyNames">
-      <wsdl:input wsaw:Action="http://tempuri.org/IUIService/GetAssemblyNames" message="tns:IUIService_GetAssemblyNames_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IUIService/GetAssemblyNamesResponse" message="tns:IUIService_GetAssemblyNames_OutputMessage" />
+    <wsdl:operation name="GetImplementations">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUIService/GetImplementations" message="tns:IUIService_GetImplementations_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUIService/GetImplementationsResponse" message="tns:IUIService_GetImplementations_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="Log">
       <wsdl:input wsaw:Action="http://tempuri.org/IUIService/Log" message="tns:IUIService_Log_InputMessage" />
@@ -62,8 +62,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetAssemblyNames">
-      <soap:operation soapAction="http://tempuri.org/IUIService/GetAssemblyNames" style="document" />
+    <wsdl:operation name="GetImplementations">
+      <soap:operation soapAction="http://tempuri.org/IUIService/GetImplementations" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

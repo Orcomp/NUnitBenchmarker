@@ -1,8 +1,12 @@
 ﻿using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using NUnitBenchmarker.Benchmark.Helper;
 using NUnitBenchmarker.UIClient;
 
 namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
@@ -60,6 +64,19 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		}
 
 
+
+		static string GetTypeName(Type type)
+		{
+			var codeDomProvider = CodeDomProvider.CreateProvider("C#");
+			var typeReferenceExpression = new CodeTypeReferenceExpression(new CodeTypeReference(type));
+			using (var writer = new StringWriter())
+			{
+				codeDomProvider.GenerateCodeFromExpression(typeReferenceExpression, writer, new CodeGeneratorOptions());
+				return writer.GetStringBuilder().ToString();
+			}
+		}
+
+		 
 		/// <summary>
 		/// Plots the results.
 		/// </summary>

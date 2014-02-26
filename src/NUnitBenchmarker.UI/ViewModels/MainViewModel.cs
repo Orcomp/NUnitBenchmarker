@@ -13,11 +13,12 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using log4net.Core;
-using NUnitBenchmarker.Benchmark;
 using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
 using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
+using NUnitBenchmarker.UI.Model;
 using NUnitBenchmarker.UI.Properties;
 using NUnitBenchmarker.UI.Resources;
+using NUnitBenchmarker.UI.ViewModels.AssemblyTree;
 using NUnitBenchmarker.UIService;
 using NUnitBenchmarker.UIService.Data;
 using ILogger = NUnitBenchmarker.Core.Infrastructure.Logging.ILogger;
@@ -33,7 +34,6 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private readonly ILogger logger;
 		private readonly IViewService viewService;
 		private bool alwaysOnTop;
-		private ObservableCollection<AssemblyListItem> assemblyListItemsSource;
 		private ICommand exitMenuItemClickCommand;
 		private string lastPingMessage;
 		private ObservableCollection<LogItemViewModel> logItems; // Backing field for property LogItems
@@ -50,6 +50,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private string splitWidthRight;
 		private string statusBarText;
 		private ObservableCollection<TabViewModel> tabs;
+		private readonly ObservableCollection<ReflectionNodeViewModel> roots;
 
 
 		/// <summary>
@@ -57,10 +58,10 @@ namespace NUnitBenchmarker.UI.ViewModels
 		/// </summary>
 		public MainViewModel(ILogger logger, IViewService viewService, PublisherAppender appender)
 		{
-			assemblyListItemsSource = new ObservableCollection<AssemblyListItem>();
 			this.logger = logger;
 			this.viewService = viewService;
 			this.appender = appender;
+			roots = new ObservableCollection<ReflectionNodeViewModel>();
 
 			var serviceHost = Dependency.Resolve<IUIServiceHost>();
 			try
@@ -73,7 +74,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			}
 
 			serviceHost.Ping += OnPing;
-			serviceHost.GetAssemblyNames += GetAssemblyNames;
+			serviceHost.GetImplementations += GetImplementations;
 			serviceHost.UpdateResult += UpdateResults;
 
 			appender.LoggingEventAppended += LoggingEventAppended;
@@ -83,8 +84,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			//var dataTabViewModel = new DataTabViewModel("test1", "test2");
 			//dataTabViewModel.DataTable = CreateDemoTable();
 			//Tabs.Add(dataTabViewModel);
-
-
+			//roots.Add(new ReflectionNodeViewModel(new AssemblyEntry {Name="Assembly Name", UseIcons = false}, null));
 		}
 
 		/// <summary>
@@ -301,19 +301,6 @@ namespace NUnitBenchmarker.UI.ViewModels
 			get { return openMenuItemClickCommand ?? (openMenuItemClickCommand = new RelayCommand<object>(OpenAction)); }
 		}
 
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the the multiselect list of the loaded assemblies.
-		/// </summary>
-		/// <value>The title.</value>
-		public ObservableCollection<AssemblyListItem> AssemblyListItemsSource
-		{
-			get { return assemblyListItemsSource; }
-			set
-			{
-				assemblyListItemsSource = value;
-				RaisePropertyChanged(() => AssemblyListItemsSource);
-			}
-		}
 
 		/// <summary>
 		///     Returns the collection of available tabs to display.
@@ -370,7 +357,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			var serviceHost = Dependency.Resolve<IUIServiceHost>();
 			serviceHost.Stop();
 			serviceHost.Ping -= OnPing;
-			serviceHost.GetAssemblyNames -= GetAssemblyNames;
+			serviceHost.GetImplementations -= GetImplementations;
 			appender.LoggingEventAppended -= LoggingEventAppended;
 		}
 
@@ -378,11 +365,23 @@ namespace NUnitBenchmarker.UI.ViewModels
 		{
 			// log4net's @event.RenderedMessage does not seem to use the renderers despite its name
 			LogItems.Add(new LogItemViewModel(@event.TimeStamp.ToString(), @event.Level.ToString(), @event.RenderedMessage));
+			LogItemsSelectedIndex = LogItems.Count - 1;
 		}
 
-		private IEnumerable<string> GetAssemblyNames()
+		private IEnumerable<TypeSpecification> GetImplementations(TypeSpecification typeSpecification)
 		{
-			return AssemblyListItemsSource.Where(item => item.IsChecked).Select(item => item.Path);
+			var result = new List<TypeSpecification>();
+			foreach (var node in Roots)
+			{
+				result.AddRange(node.GetChildrenData()
+					.Where(e => e.LeafEntry)
+					.Select( e => new TypeSpecification
+					{	
+						AssemblyPath = e.Path,
+						FullName = ((TypeEntry) e).TypeFullName
+					}));	
+			}
+			return result;
 		}
 
 		/// <summary>
@@ -419,21 +418,25 @@ namespace NUnitBenchmarker.UI.ViewModels
 			{
 				try
 				{
-					if (AssemblyListItemsSource.Any(item => item.Path == fileName))
+					if (Roots.Any(item => ((AssemblyEntry)item.Data).Path == fileName))
 					{
 						viewService.ShowMessage(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
 						return;
 					}
+
 					Assembly assembly = Assembly.LoadFile(fileName);
 					string fullName = assembly.FullName.Replace(", ", "\n");
 
-					AssemblyListItemsSource.Add(new AssemblyListItem(this)
+					var nodeViewModel = new ReflectionNodeViewModel(new AssemblyEntry
 					{
 						Path = fileName,
-						ShortName = Path.GetFileName(fileName),
-						IsChecked = true,
-						FullName = string.Format("{0}\nLoaded from: {1}", fullName, fileName)
-					});
+						Name = Path.GetFileName(fileName),
+						Description = string.Format("{0}\nLoaded from: {1}", fullName, fileName)
+					}, null);
+					nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
+					Roots.Add(nodeViewModel);
+					var x = nodeViewModel.GetChildrenData();
+
 				}
 				catch (Exception e)
 				{
@@ -441,6 +444,18 @@ namespace NUnitBenchmarker.UI.ViewModels
 					logger.Error(e);
 				}
 			}
+		}
+
+		private void OnNodeViewModelOnRequestRemove(object sender, EventArgs eventArgs)
+		{
+			var node = sender as ReflectionNodeViewModel;
+			if (node == null)
+			{
+				return;
+			}
+			
+			node.RequestRemove -= OnNodeViewModelOnRequestRemove;
+			roots.Remove(node);
 		}
 
 
@@ -500,20 +515,12 @@ namespace NUnitBenchmarker.UI.ViewModels
 			Settings.Default.AlwaysOnTop = AlwaysOnTop;
 
 			var loadedAssemblies = new StringCollection();
-			loadedAssemblies.AddRange(GetAssemblyNames().ToArray());
+			//loadedAssemblies.AddRange(GetImplementations().ToArray());
 			Settings.Default.LoadedAssemblies = loadedAssemblies;
 
 			Settings.Default.Save();
 		}
 
-		/// <summary>
-		///     AssemblyListItem Remove Action event handler.
-		/// </summary>
-		/// <param name="item">Item to remove</param>
-		internal void RemoveAction(AssemblyListItem item)
-		{
-			AssemblyListItemsSource.Remove(item);
-		}
 
 		private void OnTabsChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
@@ -594,7 +601,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private DataTabViewModel GetDataTabViewModel(string key, bool create)
 		{
 			var found =
-				(DataTabViewModel)Tabs.Where(t => t is DataTabViewModel).FirstOrDefault(pt => ((DataTabViewModel)pt).Key == key);
+				(DataTabViewModel)Tabs.Where(t => t is DataTabViewModel).FirstOrDefault(pt => pt.Key == key);
 
 			if (found == null && create)
 			{
@@ -606,7 +613,6 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 
 		private ICommand switchTimeAxisCommand;
-
 		/// <summary>
 		///     Gets the SwitchTimeAxis command for MVVM binding.
 		/// </summary>
@@ -615,6 +621,44 @@ namespace NUnitBenchmarker.UI.ViewModels
 		{
 			get { return switchTimeAxisCommand ?? (switchTimeAxisCommand = new RelayCommand<object>(SwitchTimeAxisAction)); }
 		}
+
+		/// <summary>
+		///     Gets the roots collection to the tree display.
+		/// </summary>
+		/// <value>The root nodes (multiple)</value>
+// ReSharper disable once ReturnTypeCanBeEnumerable.Global
+		public ObservableCollection<ReflectionNodeViewModel> Roots
+		{
+			get
+			{
+				return roots;
+			}
+		}
+
+		private int logItemsSelectedIndex; // Backing field for property LogItemsSelectedIndex
+
+		/// <summary>
+		/// Observable property for MVVM. Gets or sets state LogItemsSelectedIndex. 
+		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
+		/// </summary>
+		/// <value>The property value. If the new value is the same as the current property value
+		/// then no PropertyChange event is raised.
+		/// </value>
+		public int LogItemsSelectedIndex
+		{
+			get { return logItemsSelectedIndex; }
+
+			set
+			{
+				if (logItemsSelectedIndex == value)
+				{
+					return;
+				}
+				logItemsSelectedIndex = value;
+				RaisePropertyChanged(() => LogItemsSelectedIndex);
+			}
+		}
+
 
 		/// <summary>
 		///     SwitchTimeAxis event handler.

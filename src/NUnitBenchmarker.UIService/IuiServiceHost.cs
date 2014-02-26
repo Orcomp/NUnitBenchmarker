@@ -9,8 +9,8 @@ namespace NUnitBenchmarker.UIService
 		event Func<string, string> Ping;
 		string OnPing(string message);
 
-		event Func<IEnumerable<string>> GetAssemblyNames;
-		IEnumerable<string> OnGetAssemblyNames();
+		event Func<TypeSpecification, IEnumerable<TypeSpecification>> GetImplementations;
+		IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification interfaceType);
 
 		event Action<BenchmarkResult> UpdateResult;
 		void OnUpdateResult(BenchmarkResult result);

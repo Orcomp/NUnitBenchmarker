@@ -8,6 +8,7 @@
     xmlns:behaviors="clr-namespace:NUnitBenchmarker.UI.Views.Behaviors"
     xmlns:valueConverters="clr-namespace:NUnitBenchmarker.UI.Views.ValueConverters"
     xmlns:views="clr-namespace:NUnitBenchmarker.UI.Views"
+    xmlns:tree="clr-namespace:NUnitBenchmarker.UI.ViewModels.AssemblyTree"
     FontSize="14"
     Title="{Binding Title}"
     Top="{Binding Path=MainWindowTop, Mode=TwoWay}"
@@ -22,7 +23,7 @@
     <Window.Resources>
         <ResourceDictionary Source="MainWindowResources.xaml" />
     </Window.Resources>
-    
+
     <behaviors:Piper.DataPipes>
         <behaviors:DataPipeCollection>
             <behaviors:DataPipe
@@ -102,33 +103,79 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <!--<Label Content="Left" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
-                <ListBox Grid.Column="0" ItemsSource="{Binding AssemblyListItemsSource}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <CheckBox
-                                    Content="{Binding ShortName}"
-                                    IsChecked="{Binding IsChecked}"
-                                    ToolTip="{Binding FullName}">
-                                    <CheckBox.ContextMenu>
+                <TreeView
+                ItemsSource="{Binding Roots}"
+                Margin="5,5,5,5"
+                Padding="3"
+                BorderThickness="1">
+                    <TreeView.ItemContainerStyle>
+                        <Style
+                        TargetType="{x:Type TreeViewItem}">
+                            <Setter
+                            Property="IsExpanded"
+                            Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                            <Setter
+                            Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}"/>
+                            <Setter
+                            Property="FontWeight"
+                            Value="Normal"/>
+                            <Style.Triggers>
+                                <Trigger
+                                Property="IsSelected"
+                                Value="True">
+                                    <!--<Setter
+                                    Property="FontWeight"
+                                    Value="Bold"/>-->
+                                    <!--<Setter
+                                    Property="Behaviors:TreeViewItemBehavior.BringIntoViewWhenSelected"
+                                    Value="True"/>-->
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate
+                        DataType="{x:Type tree:ReflectionNodeViewModel}"
+                        ItemsSource="{Binding Children}">
+                            <StackPanel
+                            Orientation="Horizontal">
+                                <Image
+                                Width="{Binding Path=ImageWidth}"
+                                Height="{Binding Path=ImageHeight}"
+                                Margin="{Binding Path=ImageMargin}"
+                                Source="{Binding Path=Image}"/>
+                                <CheckBox 
+                                    Margin="5,0" 
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center" 
+                                    IsChecked="{Binding Path=IsChecked}"
+                                    />
+                                <TextBlock
+                                    Text="{Binding Name}" 
+                                    ToolTip="{Binding ToolTip}"
+                                    VerticalAlignment="Center" 
+                                    HorizontalAlignment="Center">
+                                    <TextBlock.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="_Remove from the list...">
+                                            <MenuItem Header="_Remove from the tree...">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="Click">
                                                         <mvvm:EventToCommand
-                                                            Command="{Binding Path=RemoveMenuItemClickCommand, Mode=OneTime}" />
+                                                            Command="{Binding Path=RemoveCommand, Mode=OneTime}" />
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </MenuItem>
 
                                         </ContextMenu>
-                                    </CheckBox.ContextMenu>
-                                </CheckBox>
+                                    </TextBlock.ContextMenu>
+
+                                </TextBlock>
                             </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
                 <GridSplitter HorizontalAlignment="Right"
                               VerticalAlignment="Stretch"
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
@@ -138,24 +185,27 @@
                     Grid.Column="2"
                     Content="{Binding Path=Tabs}"
                     ContentTemplate="{StaticResource TabsDataTemplate}"
-                    Style="{StaticResource TabsContentStyle}" >
-                </ContentControl>
+                    Style="{StaticResource TabsContentStyle}" />
 
             </Grid>
             <GridSplitter Grid.Row="1" VerticalAlignment="Bottom"
                           HorizontalAlignment="Stretch"
                           ResizeBehavior="PreviousAndNext"
                           Height="5" Background="#FFBCBCBC" />
-            <!--<Label Grid.Row="2" Content="Log" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
-            <ListBox Grid.Row="2" ItemsSource="{Binding LogItems}">
+            <ListBox 
+                Grid.Row="2" 
+                ItemsSource="{Binding LogItems}"
+                SelectedIndex="{Binding LogItemsSelectedIndex}"
+                behaviors:ListBoxBehavior.ScrollOnNewItem="true"
+                >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding Path=Message}"></TextBlock>
+                            <TextBlock Text="{Binding Path=Message}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-            </ListBox>            
+            </ListBox>
         </Grid>
     </DockPanel>
 

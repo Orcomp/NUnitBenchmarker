@@ -376,14 +376,28 @@ namespace NUnitBenchmarker.Benchmark
 		public static IEnumerable<Type> GetImplementations()
 		{
 			var result = new List<Type>();
-			var assemblyNames = UI.GetAssemblyNames();
-			foreach (var assemblyName in assemblyNames)
+			var typeSpecifications = UI.GetImplementations(new TypeSpecification(_interfaceType));
+			
+			var assemblies = new Dictionary<string, Assembly>();
+			foreach (var spec in typeSpecifications)
 			{
-				result.AddRange(Assembly.LoadFrom(assemblyName)
+				Assembly assembly;
+				if (assemblies.ContainsKey(spec.AssemblyPath))
+				{
+					assembly = assemblies[spec.AssemblyPath];
+				}
+				else
+				{
+					assembly = Assembly.LoadFrom(spec.AssemblyPath);
+					assemblies.Add(spec.AssemblyPath, assembly);
+				}
+				result.AddRange(assembly
 					.Types()
-					.Where(x => x.Implements(typeof(IList<>)))
+					.Where(t => t.FullName.Equals(spec.FullName))
+					.Where(x => x.Implements(_interfaceType))
 					.ToList());
-			}
+			} 
+			
 			result.AddRange(_implementationInfos.Select(i=>i.Type));
 			result = RemoveDuplicates(result).ToList();
 			return result;

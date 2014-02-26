@@ -23,18 +23,20 @@ namespace NUnitBenchmarker.UIService
 
 		}
 
-		public event Func<IEnumerable<string>> GetAssemblyNames;
-		public IEnumerable<string> OnGetAssemblyNames()
+
+		public event Func<TypeSpecification, IEnumerable<TypeSpecification>> GetImplementations;
+		public IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification interfaceType)
 		{
 			// Prevent race condition if other thread accidentally unsubscribes
-			var handler = GetAssemblyNames;
+			var handler = GetImplementations;
 			// Call the handler if any:
 			if (handler != null)
 			{
-				return handler();
+				return handler(interfaceType);
 			}
 			return null;
 		}
+
 
 		public event Action<BenchmarkResult> UpdateResult;
 		public void OnUpdateResult(BenchmarkResult result)

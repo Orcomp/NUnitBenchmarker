@@ -16,11 +16,12 @@ namespace NUnitBenchmarker.UIService
 		string Ping(string message);
 
 		/// <summary>
-		/// Gets choosen assembly names.
+		/// Gets the implementations to test
 		/// </summary>
-		/// <returns>IEnumerable{System.String}.</returns>
+		/// <param name="interfaceType">Type of the interface.</param>
+		/// <returns>IEnumerable{TypeSpecification}.</returns>
 		[OperationContract]
-		IEnumerable<string> GetAssemblyNames();
+		IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType);
 
 
 		/// <summary>
@@ -34,9 +35,5 @@ namespace NUnitBenchmarker.UIService
 		/// </summary>
 		[OperationContract]
 		void UpdateResult(BenchmarkResult result);
-
-
-
-
 	}
 }
