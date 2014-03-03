@@ -18,7 +18,7 @@ namespace NUnitBenchmarker.UI.Model
 		public Assembly Assembly { get; set; }
 
 		public string Name { get; set; }
-		public string Description { get; set; }
+		public string Description { get; set; } 
 		public bool UseIcons { get; set; }
 		public bool LeafEntry { get; set; }
 		public ReflectionEntry Parent { get; set; }

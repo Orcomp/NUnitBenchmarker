@@ -20,21 +20,39 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 	[TestFixture]
 	public class ListPerformanceTest
 	{
+		static ListPerformanceTest()
+		{
+			
+		}
+		
 		/// <summary>
 		/// Setups this instance.
 		/// </summary>
 		[TestFixtureSetUp]
 		public void Setup()
 		{
-			// NOTE: There is nothing stopping us from showing up a User Interface here and allow the user to select the target assemblies.
-			// as well as allow them to select which tests they want to run etc...
-			// The key idea is that we can interact with the user at this point.
-			// We can then pass the assemblies the user has selected to the TestFactory class below.
-
-			// var test = new ListPerformanceTestFactory<int>();
-
 			// NUnit issue: This will run _later_ than constructor and factory methods of TestCaseSource...
-			Benchmarker.FindImplementations(typeof(IList<>), true);
+			// ...so we are late here. Commented out.
+			// Benchmarker.FindImplementations(typeof(IList<>), true);
+
+			// Workaround: 
+
+			// The end user will call Benchmarker.GetImplementations() to get implementations in the TestCaseSource 
+			// constructor. GetImplementations will message to UI to get the must updated UI selected/deselcted
+			// implementations. However GetImplementations will check if Benchmarker has internally filled discovered
+			// implementations by configuration or by convention. If it is not filled then calls FindImplementations
+			// and fills and caches this implementation list.  GetImplementation() returns always 
+			// A + B where:
+			// A: the lazy discovered (once) (and cached) implementations by configuration or by convention
+			// B: the actual response from UI
+			// Note: Both A and B can be empty.
+
+		}
+
+		[SetUp]
+		public void TSetup()
+		{
+			
 		}
 
 		[Test]
@@ -64,18 +82,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		}
 
 
-
-		static string GetTypeName(Type type)
-		{
-			var codeDomProvider = CodeDomProvider.CreateProvider("C#");
-			var typeReferenceExpression = new CodeTypeReferenceExpression(new CodeTypeReference(type));
-			using (var writer = new StringWriter())
-			{
-				codeDomProvider.GenerateCodeFromExpression(typeReferenceExpression, writer, new CodeGeneratorOptions());
-				return writer.GetStringBuilder().ToString();
-			}
-		}
-
 		 
 		/// <summary>
 		/// Plots the results.
@@ -87,7 +93,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			Benchmarker.PlotCategoryResults();
 		}
 
-		/// <summary>
+		/// <summary> 
 		/// Tests the IList Add() method performance
 		/// </summary>
 		/// <param name="conf">The conf.</param>

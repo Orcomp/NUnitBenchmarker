@@ -147,7 +147,7 @@ namespace NUnitBenchmarker.Benchmark.Configuration
 			set
 			{
 				this[IncludeAttributeName] = value;
-			}
+			} 
 		}
 
 	}
