@@ -8,6 +8,13 @@ namespace NUnitBenchmarker.Benchmark.Tests.Configuration
 	public class ConfigurationTest
 	{
 		[Test]
+		public void ImplementationFilterIncludeEmptyTest()
+		{
+			
+		}
+
+
+		[Test]
 		public void LoadConfigurationFull()
 		{
 			var configuration = ConfigurationHelper.Load("TestConfigurations\\Full.config");

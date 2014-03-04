@@ -2,12 +2,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using Fasterflect;
 using NUnitBenchmarker.Benchmark.Configuration;
 using NUnitBenchmarker.UIClient;
@@ -61,8 +63,34 @@ namespace NUnitBenchmarker.Benchmark
 			UI.DisplayUI = Configuration.DisplayUI;
 
 			// Refresh or get implementations:
-			_implementationInfos = FindImplementations(interfaceType, Configuration.SearchFolders);
+			IEnumerable<ImplementationInfo> findImplementations = FindImplementations(interfaceType, Configuration.SearchFolders);
+			_implementationInfos = ApplyImplementationFilter(findImplementations, Configuration.ImplementationFilters.Cast<ExcludeIncludeElement>());
+
+		} 
+
+		private static IEnumerable<ImplementationInfo> ApplyImplementationFilter(IEnumerable<ImplementationInfo> infos, IEnumerable<ExcludeIncludeElement> filters)
+		{
+			var excludeIncludeElements = filters as IList<ExcludeIncludeElement> ?? filters.ToList();
+			
+			var removables = new List<ImplementationInfo>();
+			var implementationInfos = infos as IList<ImplementationInfo> ?? infos.ToList();
+			if (excludeIncludeElements.Any(f => f.Include.Length > 0))
+			{
+				//removables.AddRange(implementationInfos.Where(i => excludeIncludeElements.Where(f => f.Include.Length > 0).All(f => !i.TypeName.Contains(f.Include))));
+				removables.AddRange(implementationInfos
+					.Where(i => excludeIncludeElements.Where(f => f.Include.Length > 0)
+					.All(f => !Regex.IsMatch(i.TypeName, f.Include))));
+			}
+
+			//removables.AddRange(implementationInfos.Where(i => excludeIncludeElements.Where(f => f.Exclude.Length > 0).Any(f => i.TypeName.Contains(f.Exclude))));
+			removables.AddRange(implementationInfos
+				.Where(i => excludeIncludeElements.Where(f => f.Exclude.Length > 0)
+				.Any(f => Regex.IsMatch(i.TypeName, f.Exclude))));
+			return implementationInfos.Where(i => !removables.Contains(i)).ToList();
 		}
+
+
+		
 
 		private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType,
 			SearchFolderCollection searchFolders)
@@ -83,7 +111,6 @@ namespace NUnitBenchmarker.Benchmark
 			{
 				result.AddRange(FindImplementations(interfaceType, assemblyFileName));
 			}
-
 			return result;
 		}
 
@@ -117,24 +144,24 @@ namespace NUnitBenchmarker.Benchmark
 			fileInfos = di.GetFiles("*.exe", SearchOption.TopDirectoryOnly);
 			result.AddRange(fileInfos.Select(fileInfo => fileInfo.FullName));
 
-			result = ApplyFilter(result, searchFolder);
+			result = ApplyNameFilter(result, searchFolder);
 			return result;
 		}
 
-		private static List<string> ApplyFilter(IList<string> source, SearchFolder searchFolder)
+		private static List<string> ApplyNameFilter(IList<string> assemblyNames, SearchFolder searchFolder)
 		{
 			var removables = new List<string>();
 			if (searchFolder.Include.Length > 0)
 			{
-				removables.AddRange(source.Where(name => !name.Contains(searchFolder.Include)));
+				removables.AddRange(assemblyNames.Where(an => !an.Contains(searchFolder.Include)));
 			}
 
 			if (searchFolder.Exclude.Length > 0)
 			{
-				removables.AddRange(source.Where(name => name.Contains(searchFolder.Exclude)));
+				removables.AddRange(assemblyNames.Where(an => an.Contains(searchFolder.Exclude)));
 			}
 
-			return source.Where(name => !removables.Contains(name)).ToList();
+			return assemblyNames.Where(an => !removables.Contains(an)).ToList();
 		}
 
 
@@ -144,8 +171,11 @@ namespace NUnitBenchmarker.Benchmark
 			string testCase)
 		{
 			var testGroup = conf.Identifier;
-			// TODO: Check config file to see if TestName should be ingored or not. 
 
+			if (FilterTestCaseOut(testCase, Configuration.TestCaseFilters.Cast<ExcludeIncludeElement>()))
+			{
+				return;
+			}
 
 			TestCases.Add(testCase);
 
@@ -162,6 +192,34 @@ namespace NUnitBenchmarker.Benchmark
 				TestCases = TestCases.ToArray(),
 				IsLast = conf.IsLast
 			});
+		}
+
+		private static bool FilterTestCaseOut(string testCase, IEnumerable<ExcludeIncludeElement> filters)
+		{
+			var excludeIncludeElements = filters as IList<ExcludeIncludeElement> ?? filters.ToList();
+
+			if (excludeIncludeElements.Any(f => f.Include.Length > 0))
+			{
+				if (excludeIncludeElements.Where(f => f.Include.Length > 0)
+					.All(f => !Regex.IsMatch(testCase, f.Include)))
+				{
+					return true;
+				}
+			}
+
+			if (excludeIncludeElements.Any(f => f.Exclude.Length > 0))
+			{
+				if (excludeIncludeElements.Where(f => f.Exclude.Length > 0)
+					.Any(f => Regex.IsMatch(testCase, f.Exclude)))
+				{
+					return true;
+				}
+			}
+			return false;
+
+
+
+
 		}
 
 		public static void Benchmark(this Action action, IPerformanceTestCaseConfiguration conf, string testName, int testCase)
@@ -432,46 +490,5 @@ namespace NUnitBenchmarker.Benchmark
 			}
 			return result;
 		}
-	}
-
-	internal class ImplementationInfo
-	{
-		public string AssemblyFileName { get; set; }
-		public string TypeName { get; set; }
-		public Type Type { get; set; }
-		public string AssemblyQualifiedName { get; set; }
-	}
-
-	public class BenchmarkFinalTabularData
-	{
-		private const string DescriptionColumnName = "Description";
-
-		public BenchmarkFinalTabularData(BenchmarkResult result)
-		{
-			Title = result.Key;
-			var table = DataTable = new DataTable(Title);
-
-			table.Columns.Add(DescriptionColumnName, typeof (string));
-			foreach (var dataPoint in result.Values.FirstOrDefault().Value)
-			{
-				table.Columns.Add(dataPoint.Key, typeof (double));
-			}
-
-			foreach (var series in result.Values)
-			{
-				var row = table.NewRow();
-				table.Rows.Add(row);
-				row[DescriptionColumnName] = series.Key;
-
-				foreach (var dataPoint in series.Value)
-				{
-					row[dataPoint.Key] = dataPoint.Value;
-					//row[dataPoint.Key] = dataPoint.Value.ToString("F");
-				}
-			}
-		}
-
-		public string Title { get; set; }
-		public DataTable DataTable { get; set; }
 	}
 }

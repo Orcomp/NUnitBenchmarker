@@ -81,10 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Benchmarker.cs" />
+    <Compile Include="BenchmarkFinalTabularData.cs" />
     <Compile Include="Configuration\ConfigurationHelper.cs" />
     <Compile Include="Configuration\IPerformanceTestCaseConfiguration.cs" />
     <Compile Include="Configuration\NUnitBenchmarkerConfigurationSection.cs" />
     <Compile Include="Configuration\PerformanceTestCaseConfigurationBase.cs" />
+    <Compile Include="ImplementationInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helper\ReflectionHelper.cs" />
   </ItemGroup>
