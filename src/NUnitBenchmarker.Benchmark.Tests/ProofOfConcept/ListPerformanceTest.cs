@@ -46,7 +46,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			// A: the lazy discovered (once) (and cached) implementations by configuration or by convention
 			// B: the actual response from UI
 			// Note: Both A and B can be empty.
-
 		}
 
 		[SetUp]
