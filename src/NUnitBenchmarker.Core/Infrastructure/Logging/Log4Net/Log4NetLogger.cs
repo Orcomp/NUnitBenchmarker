@@ -7,8 +7,6 @@ namespace NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net
 	public class Log4NetLogger : ILogger
 	{
 		private readonly ILog logger;
-		//private Type callerType;
-		//private string callerMemberName;
 
 		public Log4NetLogger()
 		{

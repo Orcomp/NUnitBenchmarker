@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>NUnitBenchmarker.Benchmark</id>
+    <version>@build.number@</version>
+	<title>NUnit Benchmarker</title>
+    <authors>Orcomp</authors>
+    <owners>Orcomp</owners>
+
+	<description>
+    A simple to use framework for setting up benchmarks and visualizing results in real time.
+  </description>
+	<summary>
+	</summary>
+	
+	<tags>nunit performance benchmark benchmarking test testing framework timing</tags>
+	<language>en-US</language>
+	<projectUrl>https://github.com/Orcomp/NUnitBenchmarker</projectUrl>
+	@dependencies@
+  </metadata>
+</package>

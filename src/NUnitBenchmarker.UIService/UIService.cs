@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Serialization;
@@ -91,11 +92,17 @@ namespace NUnitBenchmarker.UIService
 			host.OnUpdateResult(result);
 		}
 
+#if NET45
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void LogCall( object parameters, [CallerMemberName] string memberName = "" )
+#else
+		private void LogCall( object parameters, string memberName = "" )
+#endif
 		{
 			Dependency.Resolve<ILogger>().Info("UIService command '{0}' was received with the following parameters: {1}.", memberName, AnonymousToString(parameters));
 		}
+
+
 
 		private string AnonymousToString(object @object)
 		{
@@ -107,7 +114,7 @@ namespace NUnitBenchmarker.UIService
 				string.Empty, 
 				(current, propertyInfo) 
 					=> 
-				current + string.Format("'{0}': >{1}<, ", propertyInfo.Name, propertyInfo.GetValue(@object)));
+				current + string.Format("'{0}': >{1}<, ", propertyInfo.Name, propertyInfo.GetValue(@object, null)));
 
 			return result.Trim().Trim(',');
 		}

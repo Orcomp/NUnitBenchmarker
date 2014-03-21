@@ -93,8 +93,11 @@ namespace NUnitBenchmarker.UIClient
 			SendMessageAction(()=>Client.UpdateResult(result));
 		}
 
-		
+#if NET45		
 		private static void SendMessageAction(Action action, [CallerMemberName] string memberName = "")
+#else
+		private static void SendMessageAction(Action action, string memberName = "")
+#endif
 		{
 			if (!DisplayUI)
 			{

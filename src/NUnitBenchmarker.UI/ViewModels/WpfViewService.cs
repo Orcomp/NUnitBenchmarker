@@ -49,11 +49,11 @@ namespace NUnitBenchmarker.UI.ViewModels
 			{
 				var @event = new ManualResetEvent(false);
 				var result = MessageBoxResult.No;
-				dispatcher.Invoke(() =>
-									  {
-										  result = MessageBox.Show(GetActiveWindow(), message, "Question", MessageBoxButton.YesNo, MessageBoxImage.Question);
-										  @event.Set();
-									  });
+				dispatcher.Invoke(new Action(() =>
+				{
+					result = MessageBox.Show(GetActiveWindow(), message, "Question", MessageBoxButton.YesNo, MessageBoxImage.Question);
+					@event.Set();
+				}));
 				if (@event.WaitOne(1000))
 				{
 					return result == MessageBoxResult.Yes;
@@ -74,18 +74,18 @@ namespace NUnitBenchmarker.UI.ViewModels
 		{
 			bool? result = false;
 			OpenFileDialog dialog = null;
-			dispatcher.Invoke(() =>
-								  {
-									  // Set filter for file extension and default file extension
-									  dialog = new OpenFileDialog
-									  {
-										  DefaultExt = ".dll", 
-										  Filter = "Assembly Files (.dll, .exe)|*.dll;*.exe"
-									  };
+			dispatcher.Invoke(new Action(() =>
+			{
+				// Set filter for file extension and default file extension
+				dialog = new OpenFileDialog
+				{
+					DefaultExt = ".dll", 
+					Filter = "Assembly Files (.dll, .exe)|*.dll;*.exe"
+				};
 
-									  // Display OpenFileDialog by calling ShowDialog method
-									  result = dialog.ShowDialog(GetActiveWindow());
-								  });
+				// Display OpenFileDialog by calling ShowDialog method
+				result = dialog.ShowDialog(GetActiveWindow());
+			}));
 								  
 			fileName = dialog.FileName;
 			return result;
