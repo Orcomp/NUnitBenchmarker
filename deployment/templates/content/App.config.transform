@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <configSections>
+    <section name="NUnitBenchmarkerConfigSection" type="NUnitBenchmarker.Benchmark.Configuration.NUnitBenchmarkerConfigurationSection, NUnitBenchmarker.Benchmark"/>
+  </configSections>
+
+  <NUnitBenchmarkerConfigSection displayUI="true">
+    <SearchFolders>
+      <!--
+      Comment the line above to do not discover any implementation:
+      -->
+      <add Include ="Target" Exclude="" Folder="." />
+      
+    </SearchFolders>
+    <ImplementationFilters>
+      <add Include ="" Exclude="" />
+      <!--<add Include ="abc" Exclude="" />-->
+      <!--<add Include ="123" Exclude="abc" />-->
+    </ImplementationFilters> 
+    <TestCaseFilters>
+      <!--<add Include ="abc" Exclude="" />-->
+      <!--<add Include ="123" Exclude="abc" />-->
+    </TestCaseFilters>
+  </NUnitBenchmarkerConfigSection>
+</configuration>

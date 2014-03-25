@@ -128,11 +128,50 @@ namespace NUnitBenchmarker.UIClient
 			return defaultResult;
 		}
 
-
-
-		private const string UIProcessName = "..\\NUnitBenchmarker.UI\\NUnitBenchmarker.UI.exe";
+		
+		private static string uiExeName = "NUnitBenchmarker.UI.exe";
+		private static string uiProcessName = "..\\NUnitBenchmarker.UI\\" + uiExeName;
+		private static string uiProcessToolFolder = "..\\NUnitBenchmarker.UI\\" + uiExeName;
 		
 		// TODO: Make this thread safe (possibly involves refactor UI class from static to instance)
+
+		public static string GetUiProcessName()
+		{
+			if (File.Exists(uiProcessName))
+			{
+				return uiProcessName;
+			}
+
+			string result;
+			string start = "";
+			for (int i = 0; i < 10; i++, start += @"..\")
+			{
+				if (null != (result = GetUiProcessName(start)))
+				{
+					return result;
+				}
+			}
+			return null;
+		}
+
+		private static string GetUiProcessName(string start)
+		{
+			string startFolder = start + "packages";
+			if (!Directory.Exists(startFolder))
+			{
+				return null;
+			}
+
+			var di = new DirectoryInfo(startFolder);
+			var files = di.GetFiles(uiExeName, SearchOption.AllDirectories);
+			if (files.Length != 0)
+			{
+				return files[0].FullName;
+			}
+			return null;
+		}
+
+
 
 		public static bool Start(bool forceStart = true)
 		{
@@ -140,9 +179,11 @@ namespace NUnitBenchmarker.UIClient
 			{
 				return true;
 			}
-			var x = Path.GetFileNameWithoutExtension(UIProcessName);
-			var ps = Process.GetProcesses();
-			var process = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(UIProcessName)).FirstOrDefault();
+
+			uiProcessName = GetUiProcessName();
+
+
+			var process = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(uiProcessName)).FirstOrDefault();
 			var starting = false;
 			var timeout = 500; // Normal check timout
 
@@ -157,7 +198,7 @@ namespace NUnitBenchmarker.UIClient
 				timeout = 5000; // Start timeout
 				try
 				{
-					process = Process.Start(UIProcessName);
+					process = Process.Start(uiProcessName);
 				}
 				catch (Exception e)
 				{

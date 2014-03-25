@@ -42,9 +42,23 @@ namespace NUnitBenchmarker.Benchmark
 			TestCases = new HashSet<string>();
 			Configuration = ConfigurationHelper.Load();
 			HasConfiguration = Configuration.ConfigFile != null;
+			if (HasConfiguration)
+			{
+				UI.DisplayUI = Configuration.DisplayUI;	
+			}
 
 			_timestamp = DateTime.Now;
 		}
+
+
+		// Ensure static constructor was executed. This may or may not needed when using UI static class.
+		// TODO: Resolve this by more professional way. Benchmarker's constructor must run before than UI's constructor
+		// but this can not be achieved by referencing Benchmarker class in UI's static constructor because of circular reference
+		static public void Init()
+		{
+			// Dummy
+		}
+
 
 		private static void FindImplementations(Type interfaceType, bool displayUI = false)
 		{
@@ -60,7 +74,6 @@ namespace NUnitBenchmarker.Benchmark
 				Configuration.DisplayUI = displayUI;
 			}
 			_interfaceType = interfaceType;
-			UI.DisplayUI = Configuration.DisplayUI;
 
 			// Refresh or get implementations:
 			IEnumerable<ImplementationInfo> findImplementations = FindImplementations(interfaceType, Configuration.SearchFolders);

@@ -19,7 +19,12 @@ let deploymentDir  = @".\deployment\"
 let packagesDir = deploymentDir @@ "packages"
 
 let dllDeploymentDirs = netVersions |> List.map(fun v -> v, packagesDir @@ "work" @@ "lib" @@ v) |> dict
+let toolDeploymentDirs = netVersions |> List.map(fun v -> v, packagesDir @@ "work" @@ "tools" @@ v) |> dict
+let contentDeploymentDirs = netVersions |> List.map(fun v -> v, packagesDir @@ "work" @@ "content" @@ v) |> dict
 let nuspecTemplatesDir = deploymentDir @@ "templates"
+let contentTemplatesDir = nuspecTemplatesDir @@ "content"
+let toolTemplatesDir = nuspecTemplatesDir @@ "tools"
+
 
 //let nugetExePath = @".\tools\nuget\nuget.exe"
 let nugetExePath = @".\src\.nuget\nuget.exe"
@@ -28,15 +33,14 @@ let nugetAccessKey = if File.Exists(@".\Nuget.key") then File.ReadAllText(@".\Nu
 let version = File.ReadAllText(@".\version.txt")
 
 let solutionAssemblyInfoPath = srcDir @@ "SolutionInfo.cs"
-let projectsToPackageAssemblyNames = ["NUnitBenchmarker.Benchmark"]
-let projectsToPackageDependencies:^string list = []
+let projectsToPackageAssemblyNames = ["NUnitBenchmarker.Benchmark"; "NUnitBenchmarker.Core"; "NUnitBenchmarker.UIClient"; "NUnitBenchmarker.UIService"]
+let projectsToToolPackageAssemblyNames = ["NUnitBenchmarker.UI"]
+let projectsToPackageDependencies = ["SimpleSpeedTester"; "fasterflect"; "log4net"; "Ninject"; "NUnit"; "OxyPlot.Pdf"]
 
 let outputDir = @".\output\"
 let outputReleaseDir = outputDir @@ "release" ////@@ netVersion
 let outputBinDir = outputReleaseDir ////@@ binProjectName
 
-// Project output dirs are currently do
-//let getProjectOutputBinDirs netVersion projectName = outputBinDir @@ netVersion @@ projectName
 let getProjectOutputBinDirs netVersion projectName = outputBinDir @@ netVersion @@ projectName
 let testResultsDir = srcDir @@ "TestResults"
 
@@ -135,28 +139,57 @@ FinalTarget "CloseMSTestRunner" (fun _ ->
 
 Target "NuGet" (fun _ ->
     let nugetAccessPublishKey = getBuildParamOrDefault "nugetkey" nugetAccessKey
+    
     let getOutputFile netVersion projectName ext = sprintf @"%s\%s.%s" (getProjectOutputBinDirs netVersion projectName) projectName ext
-    let getBinProjectFiles netVersion projectName =  [(getOutputFile netVersion projectName "dll")]
-//                                                      (getOutputFile netVersion projectName "xml")]
+   
+
+    let getBinProjectFiles netVersion projectName =  [(getOutputFile netVersion projectName "dll")
+                                                      (getOutputFile netVersion projectName "exe")
+                                                      (getOutputFile netVersion projectName "xml")]
+
+    
+    
+    let getToolBinProjectFilesExt netVersion projectName ext = 
+        (filesInDirMatching ext (directoryInfo (getProjectOutputBinDirs netVersion projectName))) 
+            |> Seq.map (fun fi -> fi.FullName) 
+            |> List.ofSeq
+
+    let getToolBinProjectFiles netVersion projectName = 
+        ["*.dll"; "*.exe"; "*.config"] |> List.collect(fun d -> getToolBinProjectFilesExt netVersion projectName d)
+
+    
     let binProjectFiles netVersion = projectsToPackageAssemblyNames
                                        |> List.collect(fun d -> getBinProjectFiles netVersion d)
                                        |> List.filter(fun d -> File.Exists(d))
 
+    let toolBinProjectFiles netVersion = projectsToToolPackageAssemblyNames
+                                       |> List.collect(fun d -> getToolBinProjectFiles netVersion d)
+                                       |> List.filter(fun d -> File.Exists(d) )
+
+
     let nugetDependencies = projectsToPackageDependencies
                               |> List.map (fun d -> d, GetPackageVersion nugetRepositoryDir d)
     
-    ////let getNupkgFile = sprintf "%s\%s.%s.nupkg" dllDeploymentDir binProjectName version
     let getNuspecFile = sprintf "%s\%s.nuspec" nuspecTemplatesDir binProjectName
 
-    let preparePackage filesToPackage = 
+    let preparePackage filesToPackage toolFilesToPackage = 
+        // Packages:
         CreateDir (packagesDir @@ "work")
         dllDeploymentDirs.Values |> Seq.iter (fun d -> CreateDir d)
         dllDeploymentDirs |> Seq.iter (fun d -> CopyFiles d.Value (filesToPackage d.Key))
-        ////CreateDir dllDeploymentDir
-        ////CopyFiles dllDeploymentDir filesToPackage
+
+        // Tools:
+        // Copy UI project output to tools folder
+        toolDeploymentDirs.Values |> Seq.iter (fun d -> CreateDir d)
+        toolDeploymentDirs |> Seq.iter (fun d -> CopyFiles d.Value (toolFilesToPackage d.Key))
+        // Copy template/tools to tools folder (like install.ps1)
+        toolDeploymentDirs |> Seq.iter (fun d -> CopyDir d.Value toolTemplatesDir allFiles)
+        
+        // Content:
+        contentDeploymentDirs |> Seq.iter (fun d -> CopyDir d.Value contentTemplatesDir allFiles)
+        
 
     let cleanPackage name = 
-        ////MoveFile packagesDir getNupkgFile
         DeleteDir (packagesDir @@ "work")
 
 
@@ -173,19 +206,12 @@ Target "NuGet" (fun _ ->
                 AccessKey = nugetAccessPublishKey })
                 getNuspecFile
     
-    let doAll files depenencies =
-        preparePackage files
+    let doAll files toolFiles depenencies =
+        preparePackage files toolFiles
         doPackage depenencies
-        //cleanPackage ""
+        cleanPackage ""
 
-    Console.WriteLine("PF: {0}", binProjectFiles)
-    Console.WriteLine("Dep: {0}", nugetDependencies)
-
-    Console.WriteLine("***")
-    binProjectFiles "" |> Seq.iter (fun d -> Console.WriteLine(d))
-    Console.WriteLine("***")
-
-    doAll binProjectFiles nugetDependencies
+    doAll binProjectFiles toolBinProjectFiles nugetDependencies
 )
 
 // --------------------------------------------------------------------------------------
@@ -198,7 +224,8 @@ Target "Build" DoNothing
 "UpdateAssemblyVersion" ==> "BuildOtherProjects" ==> "Build"
 
 Target "Tests" DoNothing
-////"BuildTests" ==> "RunTests" ==> "Tests"
+"BuildTests" ==> "RunTests" ==> "Tests"
+
 
 Target "All" DoNothing
 "Clean" ==> "All"
@@ -207,11 +234,16 @@ Target "All" DoNothing
 
 Target "Release" DoNothing
 "All" ==> "Release"
+"BuildOtherProjects" ==> "Release"
 "NuGet" ==> "Release"
- 
+
 //RunTargetOrDefault "Clean"
 //RunTargetOrDefault "UpdateAssemblyVersion"
-RunTargetOrDefault "RestorePackagesManually"
+//RunTargetOrDefault "RestorePackagesManually"
 //RunTargetOrDefault "BuildOtherProjects"
 //RunTargetOrDefault "BuildTests"
 //RunTargetOrDefault "NuGet"
+RunTargetOrDefault "Release"
+
+
+

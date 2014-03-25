@@ -47,6 +47,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 		..\deployment\templates\NUnitBenchmarker.Benchmark.nuspec = ..\deployment\templates\NUnitBenchmarker.Benchmark.nuspec
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{51176196-B4DD-4B7F-BCD7-902627FC79B0}"
+	ProjectSection(SolutionItems) = preProject
+		..\deployment\templates\tools\install.ps1 = ..\deployment\templates\tools\install.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Content", "Content", "{E4B9D0D7-1893-4B71-A706-D7BECE0A03CD}"
+	ProjectSection(SolutionItems) = preProject
+		..\deployment\templates\content\App.config.transform = ..\deployment\templates\content\App.config.transform
+		..\deployment\templates\content\NUnitBenchmarker.log4net.config = ..\deployment\templates\content\NUnitBenchmarker.log4net.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NUnitBenchmarker", "NUnitBenchmarker", "{9CE4E5AA-8CE3-4CE3-BE2A-7E79898BC8E3}"
+	ProjectSection(SolutionItems) = preProject
+		..\deployment\templates\content\NUnitBenchmarker\NUnitBenchmarkerDemoTest.cs = ..\deployment\templates\content\NUnitBenchmarker\NUnitBenchmarkerDemoTest.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,5 +124,8 @@ Global
 		{7DBADEB5-3985-4324-AB9C-504CD8E8D810} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
 		{F6B46EDB-1E5D-40CA-B58B-4F21EC37B0C6} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
 		{5436FBC9-4E68-3380-A2E7-1374315E5B8C} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
+		{51176196-B4DD-4B7F-BCD7-902627FC79B0} = {CF56CBE8-F12F-4445-9B0C-FFC21E2B74E7}
+		{E4B9D0D7-1893-4B71-A706-D7BECE0A03CD} = {CF56CBE8-F12F-4445-9B0C-FFC21E2B74E7}
+		{9CE4E5AA-8CE3-4CE3-BE2A-7E79898BC8E3} = {E4B9D0D7-1893-4B71-A706-D7BECE0A03CD}
 	EndGlobalSection
 EndGlobal
