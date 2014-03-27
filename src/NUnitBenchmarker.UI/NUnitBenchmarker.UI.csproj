@@ -99,8 +99,6 @@
     <Compile Include="ViewModels\DataTabViewModel.cs" />
     <Compile Include="ViewModels\PlotTabViewModel.cs" />
     <Compile Include="ViewModels\TabViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\Behaviors\ListBoxBehavior.cs" />
     <Compile Include="Views\DataTabView.xaml.cs">
       <DependentUpon>DataTabView.xaml</DependentUpon>
