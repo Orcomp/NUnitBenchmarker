@@ -35,6 +35,22 @@ To get an instant picture how can you utilize NUnitBenchmarker please read the [
 - Nuget package
 - Visual Studio integrated GUI
 
+## Troubleshooting
+
+The actual test runner and the UI communicates via http. 
+To listen on a port requires special permission. Admins automatically have this permission, however other users may or may not have. Admins can grant this permission for any other user. 
+
+If you have not this permission the http listening WCF service can not start, and you got
+"There was no endpoint listening at http://localhost:8091/NUnitBenchmarker/UIService that could accept the message. This is often caused by an incorrect address or SOAP action. See InnerException, if present, for more details."
+
+
+Further infomation says: "WCF service cannot start because of lack of access rights:
+HTTP could not register URL http://+:8091/NUnitBenchmarker/UIService/. Your process does not have access rights to this namespace (see http://go.microsoft.com/fwlink/?LinkId=70353 for details)."
+
+Unfortunately the link in the exception text, http://go.microsoft.com/fwlink/?LinkId=70353, is broken. The correct link should be http://msdn.microsoft.com/en-us/library/ms733768.aspx which explains how to set the permissions:
+
+**netsh http add urlacl url=http://+:8091/NUnitBenchmarker/UIService/ user=user**
+
 ## Support
 
 You can ask for support on our mailing list: https://groups.google.com/forum/to_be_created
