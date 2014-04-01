@@ -156,14 +156,15 @@ namespace NUnitBenchmarker.UIClient
 
 		private static string GetUiProcessName(string start)
 		{
-			string startFolder = start + "packages";
+			string startFolder = start;
 			if (!Directory.Exists(startFolder))
 			{
 				return null;
 			}
 
 			var di = new DirectoryInfo(startFolder);
-			var files = di.GetFiles(uiExeName, SearchOption.AllDirectories);
+			var files = di.GetFiles(uiExeName, SearchOption.AllDirectories).Where(fi=> fi.FullName.ToLower().Contains("packages")).ToArray();
+
 			if (files.Length != 0)
 			{
 				return files[0].FullName;

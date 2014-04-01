@@ -10,14 +10,12 @@ namespace NUnitBenchmarker.UI
 	/// <summary>
 	///     Interaction logic for App.xaml
 	/// </summary>
-	public partial class App : Application
+	public partial class App 
 	{
 		#region Methods
 
 		/// <summary>
 		///     Raises the <see cref="E:System.Windows.Application.Exit" /> event.
-		///     Deactivates GlobalClickListener click hook (via Dispose())
-		///     Stops the highlighter thread (via Dispose())
 		/// </summary>
 		/// <param name="e">
 		///     An <see cref="T:System.Windows.ExitEventArgs" /> that contains the event data.
@@ -40,8 +38,6 @@ namespace NUnitBenchmarker.UI
 
 		/// <summary>
 		///     Raises the <see cref="E:System.Windows.Application.Startup" /> event.
-		///     Activates GlobalClickListener click hook
-		///     Starts the highlighter thread
 		/// </summary>
 		/// <param name="e">
 		///     A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.

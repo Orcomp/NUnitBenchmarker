@@ -85,7 +85,7 @@ namespace NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net
 		}
 
 		/// <summary>
-		/// This is the most generic logginh method that is intended to be used by wrappers or remotely
+		/// This is the most generic logging method that is intended to be used by wrappers or remotely
 		/// </summary>
 		/// <param name="loggingEvent">The event being logged.</param>
 		public void Log(LoggingEvent loggingEvent)
