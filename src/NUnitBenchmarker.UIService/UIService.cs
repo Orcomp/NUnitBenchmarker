@@ -99,7 +99,7 @@ namespace NUnitBenchmarker.UIService
 		private void LogCall( object parameters, string memberName = "" )
 #endif
 		{
-			Dependency.Resolve<ILogger>().Info("UIService command '{0}' was received with the following parameters: {1}.", memberName, AnonymousToString(parameters));
+			// Dependency.Resolve<ILogger>().Info("UIService command '{0}' was received with the following parameters: {1}.", memberName, AnonymousToString(parameters));
 		}
 
 
