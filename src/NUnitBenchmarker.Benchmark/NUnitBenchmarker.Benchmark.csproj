@@ -45,28 +45,28 @@
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.DocumentObjectModel">
-      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.267.1\lib\NET40\MigraDoc.DocumentObjectModel.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.229.1\lib\NET40\MigraDoc.DocumentObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.Rendering">
-      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.267.1\lib\NET40\MigraDoc.Rendering.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.229.1\lib\NET40\MigraDoc.Rendering.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.RtfRendering">
-      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.267.1\lib\NET40\MigraDoc.RtfRendering.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.229.1\lib\NET40\MigraDoc.RtfRendering.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
       <HintPath>..\..\packages\Ninject.3.2.0.0\lib\net40\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot">
-      <HintPath>..\..\packages\OxyPlot.Core.2014.1.267.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Core.2014.1.229.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Pdf">
-      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.267.1\lib\NET40\OxyPlot.Pdf.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.229.1\lib\NET40\OxyPlot.Pdf.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp">
-      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.267.1\lib\NET40\PdfSharp.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.229.1\lib\NET40\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting">
-      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.267.1\lib\NET40\PdfSharp.Charting.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Pdf.2014.1.229.1\lib\NET40\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="SimpleSpeedTester">
       <HintPath>..\..\packages\SimpleSpeedTester.1.1.0\lib\net40\SimpleSpeedTester.dll</HintPath>

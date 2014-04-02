@@ -2,12 +2,13 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:oxy="http://oxyplot.codeplex.com">
-<Grid>
+    
+<Grid >
     <oxy:Plot Title="{Binding PlotTitle}" Model="{Binding PlotModel}" Margin="10">
-        <oxy:Plot.ContextMenu>
-            <ContextMenu>
-                <MenuItem Header="_Switch between logarithmic and linear Time axis" Command="{Binding SwitchTimeAxisCommand}"/>
-            </ContextMenu>
+            <oxy:Plot.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="_Switch between logarithmic and linear Time axis" Command="{Binding SwitchTimeAxisCommand}"/>
+                </ContextMenu>
         </oxy:Plot.ContextMenu>
     </oxy:Plot>
 </Grid>

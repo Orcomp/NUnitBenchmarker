@@ -239,11 +239,11 @@ Target "Release" DoNothing
 
 //RunTargetOrDefault "Clean"
 //RunTargetOrDefault "UpdateAssemblyVersion"
-//RunTargetOrDefault "RestorePackagesManually"
+RunTargetOrDefault "RestorePackagesManually"
 //RunTargetOrDefault "BuildOtherProjects"
 //RunTargetOrDefault "BuildTests"
 //RunTargetOrDefault "NuGet"
-RunTargetOrDefault "Release"
+//RunTargetOrDefault "Release"
 
 
 

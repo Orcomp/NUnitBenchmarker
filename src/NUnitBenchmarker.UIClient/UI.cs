@@ -188,7 +188,6 @@ namespace NUnitBenchmarker.UIClient
 			var starting = false;
 			var timeout = 500; // Normal check timout
 
-			// TODO: Implement using full path. Currently the UI executable must be copied to the test directory
 			if (process == null)
 			{
 				if (!forceStart)
