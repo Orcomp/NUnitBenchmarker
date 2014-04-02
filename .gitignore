@@ -3,6 +3,8 @@
 [Oo]bj/
 
 .nuget/
+tools/
+build-log.xml
 
 # mstest test results
 [Tt]est[Rr]esult*
