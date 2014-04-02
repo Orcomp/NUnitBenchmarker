@@ -1,5 +1,5 @@
 NUnitBenchmarker
-==
+================
 
 A simple to use framework for setting up benchmarks and visualizing results in real time.
 
@@ -27,12 +27,13 @@ Things NUnitBenchmarker can do for you *by writing simple unit test like code sn
 
 ## [Getting Started](docs/GettingStarted.md)
 
-To get an instant picture how can you utilize NUnitBenchmarker please read the [Getting Started](docs/GettingStarted.md) section 
+To get an instant picture how can you utilize NUnitBenchmarker please read the [Getting Started](docs/GettingStarted.md) section.
+
+NUnitBenchmaker is now available on Nuget.
 
 ## Roadmap
 
 - Bindings and sample usage for other popular unit test frameworks
-- Nuget package
 - Visual Studio integrated GUI
 
 ## Troubleshooting
@@ -53,7 +54,7 @@ Unfortunately the link in the exception text, http://go.microsoft.com/fwlink/?Li
 
 ## Support
 
-You can ask for support on our mailing list: https://groups.google.com/forum/to_be_created
+You can ask for support by creating an issue on github.
 
 ## Contribute
 
