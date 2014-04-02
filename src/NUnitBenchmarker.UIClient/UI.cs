@@ -172,8 +172,6 @@ namespace NUnitBenchmarker.UIClient
 			return null;
 		}
 
-
-
 		public static bool Start(bool forceStart = true)
 		{
 			if (!DisplayUI)
