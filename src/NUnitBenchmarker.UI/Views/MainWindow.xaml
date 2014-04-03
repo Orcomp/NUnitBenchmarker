@@ -179,7 +179,7 @@
                 <GridSplitter HorizontalAlignment="Right"
                               VerticalAlignment="Stretch"
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
-                              Width="5" Background="#FFBCBCBC" />
+                              Width="2" Background="#FFBCBCBC" />
                 <!--<Label Content="Right" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
                 <ContentControl
                     Grid.Column="2"
@@ -191,7 +191,7 @@
             <GridSplitter Grid.Row="1" VerticalAlignment="Bottom"
                           HorizontalAlignment="Stretch"
                           ResizeBehavior="PreviousAndNext"
-                          Height="5" Background="#FFBCBCBC" />
+                          Height="2" Background="#FFBCBCBC" />
             <ListBox 
                 Grid.Row="2" 
                 ItemsSource="{Binding LogItems}"
