@@ -109,6 +109,17 @@ public class ListPerformanceTestFactory<T>
 * You are done. Without configuration all the assemblies will reflected in the current folder, and all IList implementations will be loaded for test. The GUI also will show up.
 * For more details see NUnitBenchmarker.Benchmark.Tests project ProofOfConcept.ListPerformanceTest sample
 
+#### Exporting a performance test result to .pdf and .csv
+
+If you want to export the plotted graph to .pdf and the numerical results to .csv you can call the Benchmarker.ExportAllResults() method when all tests finished:
+
+```csharp
+[TestFixtureTearDown]
+public void TestFixtureTearDown()
+{
+	Benchmarker.ExportAllResults();
+}
+```
 
 #### Configuring a performance test
 

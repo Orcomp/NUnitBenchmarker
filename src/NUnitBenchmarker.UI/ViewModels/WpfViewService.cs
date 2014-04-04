@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Threading;
-using Microsoft.Win32;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace NUnitBenchmarker.UI.ViewModels
 {
@@ -32,6 +35,32 @@ namespace NUnitBenchmarker.UI.ViewModels
 		public Dispatcher GetDispatcher()
 		{
 			return dispatcher;
+		}
+
+		/// <summary>
+		///     Shows the Folder dialog
+		/// </summary>
+		/// <param name="folderName">The picked folder name (user input)</param>
+		public bool? ShowFolderBrowser(out string folderName)
+		{
+			var result = DialogResult.Cancel;
+			FolderBrowserDialog dialog = null;
+			dispatcher.Invoke(new Action(() =>
+			{
+				// NOTE: There is no FolderBrowserDialog in WPF :-(. We can use the WinForms one or WinAPI helpers
+				// This is the WinForms :-(
+				dialog = new FolderBrowserDialog
+				{
+					ShowNewFolderButton = true
+				};
+
+				// Display OpenFileDialog by calling ShowDialog method
+				result = dialog.ShowDialog();
+				
+			}));
+
+			folderName = dialog.SelectedPath;
+			return result == DialogResult.OK;			
 		}
 
 		/// <summary>

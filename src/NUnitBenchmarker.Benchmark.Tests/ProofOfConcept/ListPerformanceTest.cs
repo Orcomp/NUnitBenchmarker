@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using NUnitBenchmarker.Benchmark.Helper;
 using NUnitBenchmarker.UIClient;
@@ -20,11 +21,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 	[TestFixture]
 	public class ListPerformanceTest
 	{
-		static ListPerformanceTest()
-		{
-			
-		}
-		
 		/// <summary>
 		/// Setups this instance.
 		/// </summary>
@@ -46,12 +42,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			// A: the lazy discovered (once) (and cached) implementations by configuration or by convention
 			// B: the actual response from UI
 			// Note: Both A and B can be empty.
-		}
-
-		[SetUp]
-		public void TSetup()
-		{
-			
 		}
 
 		[Test]
@@ -79,17 +69,14 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		{
 			UI.Logger.Info("Test log message");
 		}
-
-
 		 
 		/// <summary>
-		/// Plots the results.
+		/// Exports the results to .pdf and .csv
 		/// </summary>
 		[TestFixtureTearDown]
-		public void PlotResults()
+		public void TestFixtureTearDown()
 		{
-			// NOTE: I am plotting the results at the end, but there is nothing stopping us from updating the plots after each call to the  Benchmark() method.
-			Benchmarker.PlotCategoryResults();
+			Benchmarker.ExportAllResults();
 		}
 
 		/// <summary> 
@@ -97,7 +84,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 		/// </summary>
 		/// <param name="conf">The conf.</param>
 		[Test, TestCaseSource(typeof(ListPerformanceTestFactory<int>), "TestCases")]
-		[MaxTime(10000)]
+		//[MaxTime(10000)]
 		public void AddTest(ListPerformanceTestCaseConfiguration<int> conf)
 		{
 			var itemsToAdd = ListPerformanceTestHelper<int>.GenerateItemsToAdd(conf).ToArray();
@@ -110,7 +97,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 					target.Add(item);
 				}
 			});
-
 			action.Benchmark(conf, "Add", conf.ToString());
 		}
 

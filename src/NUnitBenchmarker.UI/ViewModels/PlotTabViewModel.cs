@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using Fasterflect;
 using GalaSoft.MvvmLight.Command;
 using NUnitBenchmarker.Benchmark;
 using NUnitBenchmarker.UIService.Data;
@@ -16,12 +17,12 @@ namespace NUnitBenchmarker.UI.ViewModels
 	{
 		private string plotTitle; // Backing field for property PlotTitle
 
-		public PlotTabViewModel(string key, string plotTitle) : base(key)
+		public PlotTabViewModel(string key, string plotTitle, MainViewModel mainViewModel)
+			: base(key, mainViewModel)
 		{
 			this.plotTitle = plotTitle;
 			Title = string.Format("{0} graph", plotTitle); 
 			PlotModel = new PlotModel(plotTitle);
-			isLinear = true;
 		}
 
 		/// <summary>
@@ -70,39 +71,47 @@ namespace NUnitBenchmarker.UI.ViewModels
 			}
 		}
 
-		private ICommand switchTimeAxisCommand;
 		private BenchmarkResult result;
-		private bool isLinear;
 
-		/// <summary>
-		///     Gets the SwitchTimeAxis command for MVVM binding.
-		/// </summary>
-		/// <value>The SwitchTimeAxis command.</value>
-		public ICommand SwitchTimeAxisCommand
+
+		private bool isLogarithmicTimeAxisChecked;
+
+		private void UpdateResults(BenchmarkResult result)
 		{
-			get { return switchTimeAxisCommand ?? (switchTimeAxisCommand = new RelayCommand<object>(SwitchTimeAxisAction)); }
+			int dummy;
+			PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
+				? Benchmarker.CreatePlotModel(result, !isLogarithmicTimeAxisChecked)
+				: Benchmarker.CreateCategoryPlotModel(result, !isLogarithmicTimeAxisChecked);
 		}
 
-		/// <summary>
-		///     SwitchTimeAxis event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void SwitchTimeAxisAction(object dummy)
+		
+		
+		public bool IsLogarithmicTimeAxisChecked
 		{
-			isLinear = !isLinear;
-			if (result != null)
+			get { return isLogarithmicTimeAxisChecked; }
+			set
 			{
-				UpdateResults(result);
+				if (value != isLogarithmicTimeAxisChecked)
+				{
+					isLogarithmicTimeAxisChecked = value;
+					if (Result != null)
+					{
+						UpdateResults(Result);
+					}
+				}
+				RaisePropertyChanged(()=>IsLogarithmicTimeAxisChecked);
+				mainViewModel.RaiseIsLogarithmicTimeAxisCheckedChanged();
 			}
 		}
 
-		public void UpdateResults(BenchmarkResult result)
+		public BenchmarkResult Result
 		{
-			this.result = result;
-			int dummy;
-			PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
-				? Benchmarker.CreatePlotModel(result, isLinear)
-				: Benchmarker.CreateCategoryPlotModel(result, isLinear);
+			get { return result; }
+			set
+			{
+				result = value;
+				UpdateResults(result);
+			}
 		}
 	}
 }

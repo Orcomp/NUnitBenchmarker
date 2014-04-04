@@ -127,4 +127,7 @@ Path: {0}</value>
   <data name="AlwaysOnTopCheckBoxContent" xml:space="preserve">
     <value>Always on Top</value>
   </data>
+  <data name="MainViewModel_SaveAllResultsAction_Error_saving_results_" xml:space="preserve">
+    <value>Error saving results.</value>
+  </data>
 </root>

@@ -4,10 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
-    xmlns:resources="clr-namespace:NUnitBenchmarker.UI.Resources"
     xmlns:behaviors="clr-namespace:NUnitBenchmarker.UI.Views.Behaviors"
-    xmlns:valueConverters="clr-namespace:NUnitBenchmarker.UI.Views.ValueConverters"
-    xmlns:views="clr-namespace:NUnitBenchmarker.UI.Views"
     xmlns:tree="clr-namespace:NUnitBenchmarker.UI.ViewModels.AssemblyTree"
     FontSize="14"
     Title="{Binding Title}"
@@ -16,7 +13,7 @@
     Width="{Binding Path=MainWindowWidth, Mode=TwoWay}"
     Height="{Binding Path=MainWindowHeight, Mode=TwoWay}"
     WindowState="{Binding Path=MainWindowState, Mode=TwoWay}"
-    Topmost="{Binding Path=AlwaysOnTop}"
+    Topmost="{Binding Path=IsAlwaysOnTopChecked}"
     DataContext="{Binding Path=Main, Source={StaticResource Locator}}"
     Icon="/NUnitBenchmarker.UI;component/NunitBenchmarker.ico">
 
@@ -45,6 +42,8 @@
                     </i:Interaction.Triggers>
                 </MenuItem>
                 <Separator />
+                    <MenuItem Header="_Save All Results..." Command="{Binding SaveAllResultsCommand}"/>
+                <Separator />
                 <MenuItem Header="_Exit">
                     <i:Interaction.Triggers>
                         <i:EventTrigger
@@ -57,14 +56,21 @@
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Command="ApplicationCommands.Copy" />
-                <MenuItem Command="ApplicationCommands.Cut" />
-                <MenuItem Command="ApplicationCommands.Paste" />
+                <!--<MenuItem Command="ApplicationCommands.Cut" />
+                <MenuItem Command="ApplicationCommands.Paste" />-->
             </MenuItem>
+            <MenuItem Header="_Option">
+                <MenuItem Header="_Always on Top" IsCheckable="True" IsChecked="{Binding IsAlwaysOnTopChecked}" Command="{Binding AlwaysOnTopCommand}" />
+                <MenuItem Header="_Logarithmic Time axis" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding IsLogarithmicTimeAxisChecked}" 
+                          Command="{Binding LogarithmicTimeAxisCommand}"/>
+            </MenuItem>            
             <MenuItem Header="_Tools">
-                <MenuItem Header="_Hints" />
+                <MenuItem Header="_Clear log" Command="{Binding ClearLogCommand}"/>
             </MenuItem>
         </Menu>
-        <ToolBar Name="ToolBar" DockPanel.Dock="Top">
+        <!--<ToolBar Name="ToolBar" DockPanel.Dock="Top">
             <CheckBox
                 IsChecked="{Binding Path=AlwaysOnTop}"
                 HorizontalAlignment="Center"
@@ -75,7 +81,7 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Padding="0" />
-        </ToolBar>
+        </ToolBar>-->
         <StatusBar
             DockPanel.Dock="Bottom"
             VerticalAlignment="Bottom"

@@ -12,6 +12,13 @@ namespace NUnitBenchmarker.UI.ViewModels
 		bool? ShowOpenFile(out string fileName);
 
 		/// <summary>
+		///     Shows the Folder dialog
+		/// </summary>
+		/// <param name="folderName">The picked folder name (user input)</param>
+		bool? ShowFolderBrowser(out string folderName);
+
+
+		/// <summary>
 		///     Shows a message.
 		/// </summary>
 		/// <param name="message">The message.</param>

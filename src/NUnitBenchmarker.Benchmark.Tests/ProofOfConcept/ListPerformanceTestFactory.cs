@@ -28,8 +28,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 			// Issue in NUnit: even this method is called _earlier_ than TestFixtureSetup....
 			// so we can not call GetImplementations here, because FindImplementatins was not called yet :-(
 
-			var lastImplementation = Implementations.LastOrDefault();
-
 			foreach (var implementation in Implementations)
 			{
 				var identifier = string.Format("{0}", implementation.GetFriendlyName());
@@ -38,7 +36,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 				{
 					Identifier = identifier,
 					TargetImplementationType = implementation,
-					IsLast = false,
 					Size = 100,
 					DummyForTesting = 0
 				};
@@ -47,7 +44,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 				{
 					Identifier = identifier,
 					TargetImplementationType = implementation,
-					IsLast = false,
 					Size = 1000,
 					DummyForTesting = 0
 				};
@@ -57,7 +53,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 				{
 					Identifier = identifier,
 					TargetImplementationType = implementation,
-					IsLast = false,
 					Size = 10000,
 					DummyForTesting = 0
 				};
@@ -66,7 +61,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 				{
 					Identifier = identifier,
 					TargetImplementationType = implementation,
-					IsLast = implementation == lastImplementation,
 					Size = 100000,
 					DummyForTesting = 0
 				};

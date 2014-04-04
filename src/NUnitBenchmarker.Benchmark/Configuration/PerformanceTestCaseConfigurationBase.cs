@@ -6,6 +6,5 @@ namespace NUnitBenchmarker.Benchmark.Configuration
 	{
 		public string Identifier { get; set; }
 		public Type TargetImplementationType { get; set; }
-		public bool IsLast { get; set; }
 	}
 }

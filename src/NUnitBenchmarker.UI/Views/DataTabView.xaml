@@ -7,7 +7,7 @@
     d:DataContext="{Binding Path=DataTab, Source={StaticResource Locator}}">
     <Grid>
         <TextBlock Text="{Binding DataTitle}" />
-        <DataGrid ItemsSource ="{Binding DataTable}" >
+        <DataGrid ItemsSource ="{Binding DataTable}" IsReadOnly="True">
         </DataGrid>
     </Grid>
 </UserControl>

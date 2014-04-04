@@ -15,11 +15,8 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private string dataTitle; // Backing field for property dataTitle
 		private BenchmarkResult result;
 
-		public DataTabViewModel() : this("Dummy", "Dummy")
-		{
-		}
 
-		public DataTabViewModel(string key, string dataTitle) : base(key)
+		public DataTabViewModel(string key, string dataTitle, MainViewModel mainViewModel) : base(key, mainViewModel)
 		{
 			this.dataTitle = dataTitle;
 			Title = string.Format("{0} data", dataTitle); 

@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Fasterflect;
 using NUnitBenchmarker.Benchmark.Configuration;
+using NUnitBenchmarker.Core;
 using NUnitBenchmarker.UIClient;
 using NUnitBenchmarker.UIService.Data;
 using OxyPlot;
@@ -35,6 +36,7 @@ namespace NUnitBenchmarker.Benchmark
 		private static DateTime _timestamp;
 		private static Type _interfaceType;
 		private static IEnumerable<ImplementationInfo> _implementationInfos;
+		private const int SignificantDigitCount = 3;
 
 		static Benchmarker()
 		{
@@ -184,7 +186,6 @@ namespace NUnitBenchmarker.Benchmark
 			string testCase)
 		{
 			var testGroup = conf.Identifier;
-
 			if (FilterTestCaseOut(testCase, Configuration.TestCaseFilters.Cast<ExcludeIncludeElement>()))
 			{
 				return;
@@ -195,17 +196,18 @@ namespace NUnitBenchmarker.Benchmark
 			var test = new TestGroup(testGroup);
 
 			var result = test.PlanAndExecute(testName, action, NumberOfIterations, new ExcludeMinAndMaxTestOutcomeFilter());
-			UI.Logger.Info("[{0}] {1} - {2}: {3} ms", testGroup, testName, testCase, result.AverageExecutionTime);
+			var averageExecutionTime = result.AverageExecutionTime.RoundToSignificantDigits(SignificantDigitCount);
+			UI.Logger.Info("[{0}] {1} - {2}: {3} (ms)", testGroup, testName, NumericUtils.TryToFormatAsNumber(testCase), averageExecutionTime);
 
-			Save(testGroup, testName, testCase, result.AverageExecutionTime);
+			Save(testGroup, testName, testCase, averageExecutionTime);
 			UI.UpdateResult(new BenchmarkResult
 			{
 				Key = testName,
 				Values = Results[testName],
 				TestCases = TestCases.ToArray(),
-				IsLast = conf.IsLast
 			});
 		}
+
 
 		private static bool FilterTestCaseOut(string testCase, IEnumerable<ExcludeIncludeElement> filters)
 		{
@@ -240,8 +242,10 @@ namespace NUnitBenchmarker.Benchmark
 			Benchmark(action, conf, testName, testCase.ToString(CultureInfo.InvariantCulture));
 		}
 
-		private static void Save(string testGroup, string testName, string testCase, double ellapsedTime)
+		private static void Save(string testGroup, string testName, string testCase, double elapsedTime)
 		{
+			//elapsedTime = RoundToSignificantDigits(elapsedTime, 3);
+
 			if (!Results.ContainsKey(testName))
 			{
 				Results.Add(testName, new Dictionary<string, List<KeyValuePair<string, double>>>());
@@ -252,22 +256,7 @@ namespace NUnitBenchmarker.Benchmark
 				Results[testName].Add(testGroup, new List<KeyValuePair<string, double>>());
 			}
 
-			Results[testName][testGroup].Add(new KeyValuePair<string, double>(testCase, ellapsedTime));
-		}
-
-		/// <summary>
-		///     For now we are plotting the results to a pdf file but it would be nice to plot to WPF application so people can
-		///     zoom in
-		///     and out etc...
-		/// </summary>
-		public static void PlotResults()
-		{
-			foreach (var result in Results)
-			{
-				var plotModel =
-					CreatePlotModel(new BenchmarkResult {Key = result.Key, Values = result.Value, TestCases = TestCases.ToArray()});
-				ExportResults(plotModel, result.Key);
-			}
+			Results[testName][testGroup].Add(new KeyValuePair<string, double>(testCase, elapsedTime));
 		}
 
 		public static PlotModel CreatePlotModel(BenchmarkResult result, bool isLinear = true)
@@ -328,39 +317,56 @@ namespace NUnitBenchmarker.Benchmark
 			return plotModel;
 		}
 
-		private static void ExportResults(PlotModel plotModel, string testName)
+		public static void ExportResultsToPdf(PlotModel plotModel, BenchmarkResult result, string folderPath = null)
 		{
+			string testName = result.Key;
 			var pdfExporter = new PdfExporter
 			{
 				Height = 400,
 				Width = 600
 			};
 
-			var folderPath = @"./Plots/Plots-" + _timestamp.ToString("yy-MM-dd-HH-mm-ss") + "/";
-			Directory.CreateDirectory(folderPath);
-			pdfExporter.Export(plotModel, File.Create(folderPath + testName + ".pdf"));
-
-			PrintResults(folderPath + "results.csv");
+			folderPath = GetFolderPath(folderPath);
+			var fileName = Path.Combine(folderPath, testName) + ".pdf";
+			pdfExporter.Export(plotModel, File.Create(fileName));
+			UI.Logger.Info("PDF export for test {0} was successful to file '{1}'", testName, fileName);
 		}
 
-		/// <summary>
-		///     Use this function to plot Categories if the TestCases are strings (instead of int)
-		///     This will plot a column chart.
-		/// </summary>
-		public static void PlotCategoryResults()
+		private static string GetFolderPath(string folderPath)
+		{
+			if (folderPath == null)
+			{
+				folderPath = @"./Plots/Plots-" + _timestamp.ToString("yy-MM-dd-HH-mm-ss") + "/";
+			}
+			if (!Directory.Exists(folderPath))
+			{
+				Directory.CreateDirectory(folderPath);
+			}
+			return folderPath;
+		}
+
+		public static void ExportAllResults()
 		{
 			foreach (var result in Results)
 			{
-				var plotModel =
-					CreateCategoryPlotModel(new BenchmarkResult
-					{
-						Key = result.Key,
-						Values = result.Value,
-						TestCases = TestCases.ToArray()
-					});
-				ExportResults(plotModel, result.Key);
+				var benchmarkResult = new BenchmarkResult
+				{
+					Key = result.Key, 
+					Values = result.Value, 
+					TestCases = TestCases.ToArray()
+				};
+
+				int dummy;
+				var plotModel = int.TryParse(benchmarkResult.TestCases.FirstOrDefault(), out dummy)
+					? CreatePlotModel(benchmarkResult)
+					: CreateCategoryPlotModel(benchmarkResult);
+	
+
+				ExportResultsToPdf(plotModel, benchmarkResult);
+				ExportResultsToCsv(benchmarkResult);
 			}
 		}
+
 
 		public static PlotModel CreateCategoryPlotModel(BenchmarkResult result, bool isLinear = false)
 		{
@@ -420,42 +426,38 @@ namespace NUnitBenchmarker.Benchmark
 			return plotModel;
 		}
 
-		public static void PrintResults(string filePath)
+		public static void ExportResultsToCsv(BenchmarkResult result, string folderPath = null)
 		{
+			folderPath = GetFolderPath(folderPath);			
 			var sb = new StringBuilder();
 
-			foreach (var result in Results)
+			var testCases = new List<string>();
+			var testResults = new Dictionary<string, List<string>>();
+
+			foreach (var series in result.Values)
 			{
-				var testName = result.Key;
+				testCases.Clear();
+				testResults.Add(series.Key, new List<string>());
 
-				var testCases = new List<string>();
-				var testResults = new Dictionary<string, List<string>>();
-
-				foreach (var series in result.Value)
+				foreach (var dataPoint in series.Value)
 				{
-					testCases.Clear();
-					testResults.Add(series.Key, new List<string>());
-
-					foreach (var dataPoint in series.Value)
-					{
-						testCases.Add(dataPoint.Key);
-						testResults[series.Key].Add(dataPoint.Value.ToString("F"));
-					}
+					testCases.Add(dataPoint.Key);
+					testResults[series.Key].Add(dataPoint.Value.ToString(CultureInfo.CurrentCulture));
 				}
-
-				sb.AppendLine(testName);
-				sb.AppendLine();
-				sb.AppendLine("," + string.Join(",", testCases));
-
-				foreach (var series in testResults)
-				{
-					sb.AppendLine(series.Key + "," + string.Join(",", series.Value.ToString()));
-				}
-
-				sb.AppendLine();
 			}
+			sb.AppendLine("Description, " + string.Join(", ", testCases.Select(n => string.Format("{0} (ms)", NumericUtils.TryToFormatAsNumber(n)))));
 
-			File.WriteAllText(filePath, sb.ToString());
+			foreach (var series in testResults)
+			{
+				sb.AppendLine(series.Key + "," + string.Join(",", series.Value.Select(v=> v.ToString())));
+			}
+				
+
+			sb.AppendLine();
+
+			var fileName = Path.Combine(folderPath, result.Key) + ".csv";
+			File.WriteAllText(fileName, sb.ToString(),Encoding.UTF8);
+			UI.Logger.Info("CSV export for test {0} was successful to file '{1}'", result.Key, fileName);
 		}
 
 		public static IEnumerable<Type> GetImplementations(Type interfaceType, bool displayUI = false)

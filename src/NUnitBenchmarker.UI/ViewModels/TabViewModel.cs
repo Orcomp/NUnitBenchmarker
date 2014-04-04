@@ -14,11 +14,13 @@ namespace NUnitBenchmarker.UI.ViewModels
 	public abstract class TabViewModel : ViewModelBase
 	{
 		private string key; // Backing field for property Key
+		protected MainViewModel mainViewModel;
 		ICommand closeCommand;
 
-		protected TabViewModel(string key)
+		protected TabViewModel(string key, MainViewModel mainViewModel)
 		{
 			this.key = key;
+			this.mainViewModel = mainViewModel;
 		}
 
 		/// <summary>
@@ -94,5 +96,32 @@ namespace NUnitBenchmarker.UI.ViewModels
 				RaisePropertyChanged(() => Title);
 			}
 		}
+
+		/// <summary>
+		/// Observable property for MVVM. Gets or sets state TabsSelectedIndex. 
+		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
+		/// </summary>
+		/// <value>The property value. If the new value is the same as the current property value
+		/// then no PropertyChange event is raised.
+		/// </value>
+		public int TabControlSelectedIndex
+		{
+			get
+			{
+				return mainViewModel.TabsSelectedIndex;
+			}
+
+			set
+			{
+
+				//if (mainViewModel.TabsSelectedIndex == value)
+				//{
+				//	return;
+				//}
+				mainViewModel.TabsSelectedIndex = value;
+				//RaisePropertyChanged(() => TabControlSelectedIndex);
+			}
+		}
+
 	}
 }

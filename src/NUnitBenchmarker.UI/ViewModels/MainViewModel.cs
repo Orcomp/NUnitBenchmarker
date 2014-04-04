@@ -33,7 +33,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private readonly PublisherAppender appender;
 		private readonly ILogger logger;
 		private readonly IViewService viewService;
-		private bool alwaysOnTop;
+		private bool _isAlwaysOnTopChecked;
 		private ICommand exitMenuItemClickCommand;
 		private string lastPingMessage;
 		private ObservableCollection<LogItemViewModel> logItems; // Backing field for property LogItems
@@ -81,6 +81,13 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 			LogItems = new ObservableCollection<LogItemViewModel>();
 			RestoreMainWindow();
+
+			//var found = new PlotTabViewModel("Add", "Add", this);
+			//Tabs.Add(found);
+			//found = new PlotTabViewModel("Remove", "Remove", this);
+			//Tabs.Add(found);
+
+
 			//var dataTabViewModel = new DataTabViewModel("test1", "test2");
 			//dataTabViewModel.DataTable = CreateDemoTable();
 			//Tabs.Add(dataTabViewModel);
@@ -215,13 +222,13 @@ namespace NUnitBenchmarker.UI.ViewModels
 		///     NUnitBenchmarker main window is always on top or not.
 		/// </summary>
 		/// <value><c>true</c> if [always on top]; otherwise, <c>false</c>.</value>
-		public bool AlwaysOnTop
+		public bool IsAlwaysOnTopChecked
 		{
-			get { return alwaysOnTop; }
+			get { return _isAlwaysOnTopChecked; }
 			set
 			{
-				alwaysOnTop = value;
-				RaisePropertyChanged(() => AlwaysOnTop);
+				_isAlwaysOnTopChecked = value;
+				RaisePropertyChanged(() => IsAlwaysOnTopChecked);
 			}
 		}
 
@@ -281,6 +288,8 @@ namespace NUnitBenchmarker.UI.ViewModels
 				RaisePropertyChanged(() => SplitWidthRight);
 			}
 		}
+
+
 
 		
 		/// <summary>
@@ -392,7 +401,6 @@ namespace NUnitBenchmarker.UI.ViewModels
 		private string OnPing(string message)
 		{
 			LastPingMessage = message;
-			StatusBarText = string.Format("Incoming Ping message: {0}", message);
 			return string.Format("Welcome to the machine: {0}", message);
 		}
 
@@ -418,7 +426,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			{
 				try
 				{
-					if (Roots.Any(item => ((AssemblyEntry)item.Data).Path == fileName))
+					if (Roots.Any(item => (item.Data).Path == fileName))
 					{
 						viewService.ShowMessage(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
 						return;
@@ -481,7 +489,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			SplitHeightBottom = Settings.Default.SplitHeightBottom;
 			SplitWidthLeft = Settings.Default.SplitWidthLeft;
 			SplitWidthRight = Settings.Default.SplitWidthRight;
-			AlwaysOnTop = Settings.Default.AlwaysOnTop;
+			IsAlwaysOnTopChecked = Settings.Default.IsAlwaysOnTop;
 		}
 
 		/// <summary>
@@ -512,12 +520,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 			Settings.Default.SplitHeightBottom = SplitHeightBottom;
 			Settings.Default.SplitWidthLeft = SplitWidthLeft;
 			Settings.Default.SplitWidthRight = SplitWidthRight;
-			Settings.Default.AlwaysOnTop = AlwaysOnTop;
-
-			var loadedAssemblies = new StringCollection();
-			//loadedAssemblies.AddRange(GetImplementations().ToArray());
-			Settings.Default.LoadedAssemblies = loadedAssemblies;
-
+			Settings.Default.IsAlwaysOnTop = IsAlwaysOnTopChecked;
 			Settings.Default.Save();
 		}
 
@@ -556,15 +559,10 @@ namespace NUnitBenchmarker.UI.ViewModels
 		{
 			var model = GetPlotTabViewModel(result.Key, true);
 			ActivateTab<PlotTabViewModel>(model.Key);
-			model.UpdateResults(result);
+			model.Result = result;
 
-			if (!result.IsLast)
-			{
-				return;
-			}
 			var dataTabViewModel = GetDataTabViewModel(result.Key, true);
 			dataTabViewModel.UpdateResults(result);
-			ActivateTab<DataTabViewModel>(dataTabViewModel.Key);
 		}
 
 		private void ActivateTab<T>(string key)
@@ -592,7 +590,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 			if (found == null && create)
 			{
-				found = new PlotTabViewModel(key, key);
+				found = new PlotTabViewModel(key, key, this);
 				Tabs.Add(found);
 			}
 			return found;
@@ -605,7 +603,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 
 			if (found == null && create)
 			{
-				found = new DataTabViewModel(key, key);
+				found = new DataTabViewModel(key, key, this);
 				Tabs.Add(found);
 			}
 			return found;
@@ -693,23 +691,188 @@ namespace NUnitBenchmarker.UI.ViewModels
 			return table;
 		}
 
+		private ICommand alwaysOnTopCommand;
+
+		/// <summary>
+		///     Gets the IsAlwaysOnTopChecked command for MVVM binding.
+		/// </summary>
+		/// <value>The IsAlwaysOnTopChecked command.</value>
+		public ICommand AlwaysOnTopCommand
+		{
+			get { return alwaysOnTopCommand ?? (alwaysOnTopCommand = new RelayCommand<object>(AlwaysOnTopAction)); }
+		}
+
+		/// <summary>
+		///     IsAlwaysOnTopChecked event handler.
+		/// </summary>
+		/// <param name="dummy">not used here</param>
+		private void AlwaysOnTopAction(object dummy)
+		{
+			//IsAlwaysOnTopChecked = !IsAlwaysOnTopChecked;
+		}
+
+		private ICommand logarithmicTimeAxisCommandCommand;
+
+		/// <summary>
+		///     Gets the LogarithmicTimeAxisCommand command for MVVM binding.
+		/// </summary>
+		/// <value>The LogarithmicTimeAxisCommand command.</value>
+		public ICommand LogarithmicTimeAxisCommand
+		{
+			get
+			{
+				return logarithmicTimeAxisCommandCommand ?? (logarithmicTimeAxisCommandCommand
+					= new RelayCommand<object>(LogarithmicTimeAxisCommandAction, CanExecuteLogarithmicTimeAxisCommand));
+			}
+		}
 
 
+		private bool CanExecuteLogarithmicTimeAxisCommand(object notUsed)
+		{
+			if (Tabs.Count == 0)
+			{
+				IsLogarithmicTimeAxisChecked = false;
+				return false;
+			}
+			if (TabsSelectedIndex >= Tabs.Count)
+			{
+				IsLogarithmicTimeAxisChecked = false;
+				return false;
+			}
+			return Tabs[TabsSelectedIndex] is PlotTabViewModel;
+		}
+
+		private PlotTabViewModel GetSelectedPlotTabViewModel()
+		{
+			if (Tabs.Count == 0)
+			{
+				return null;
+			}
+			if (TabsSelectedIndex >= Tabs.Count)
+			{
+				return null;
+			}
+			return Tabs[TabsSelectedIndex] as PlotTabViewModel;
+		}
+
+		/// <summary>
+		///     LogarithmicTimeAxisCommand event handler.
+		/// </summary>
+		/// <param name="dummy">not used here</param>
+		private void LogarithmicTimeAxisCommandAction(object dummy)
+		{
+			// Do nothing. This is a checkable command, which means the action is  taken
+			// in the IsLogarithmicTimeAxisChecked setter (see there)
+		}
+
+		/// <summary>
+		/// Observable property for MVVM. Gets or sets state IsLogarithmicTimeAxisChecked. 
+		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
+		/// </summary>
+		/// <value>The property value. If the new value is the same as the current property value
+		/// then no PropertyChange event is raised.
+		/// </value>
+		public bool IsLogarithmicTimeAxisChecked
+		{
+			get
+			{
+				var plotTabViewModel = GetSelectedPlotTabViewModel();
+				if (plotTabViewModel == null)
+				{
+					return false;
+				}
+				return plotTabViewModel.IsLogarithmicTimeAxisChecked;
+			}
+
+			set
+			{
+				var plotTabViewModel = GetSelectedPlotTabViewModel();
+				if (plotTabViewModel == null)
+				{
+					return;
+				}
+
+				plotTabViewModel.IsLogarithmicTimeAxisChecked = value;
+				RaisePropertyChanged(() => IsLogarithmicTimeAxisChecked);
+			}
+		}
+
+		public void RaiseIsLogarithmicTimeAxisCheckedChanged()
+		{
+			RaisePropertyChanged(() => IsLogarithmicTimeAxisChecked);
+		}
 
 
+		private int tabsSelectedIndex;
 
+		public int TabsSelectedIndex
+		{
+			get { return tabsSelectedIndex; }
+			set
+			{
+				tabsSelectedIndex = value;
+				RaisePropertyChanged(() => IsLogarithmicTimeAxisChecked);
+			}
+		}
 
+		private ICommand saveAllResultsCommand;
 
+		/// <summary>
+		///     Gets the SaveAllResults command for MVVM binding.
+		/// </summary>
+		/// <value>The SaveAllResults command.</value>
+		public ICommand SaveAllResultsCommand
+		{
+			get { return saveAllResultsCommand ?? (saveAllResultsCommand = new RelayCommand<object>(SaveAllResultsAction)); }
+		}
 
+		/// <summary>
+		///     SaveAllResults event handler.
+		/// </summary>
+		/// <param name="dummy">not used here</param>
+		private void SaveAllResultsAction(object dummy)
+		{
+			// TODO: Remember last picked folder (in user settings), and start from there
+			string folderName;
+			bool? result = viewService.ShowFolderBrowser(out folderName);
+			if (result != null && result.Value)
+			{
+				try
+				{
+					foreach (var plotTabViewModel in Tabs.Where(t=> t is PlotTabViewModel).Cast<PlotTabViewModel>())
+					{
+						Benchmark.Benchmarker.ExportResultsToPdf(plotTabViewModel.PlotModel, plotTabViewModel.Result, folderName);
+						Benchmark.Benchmarker.ExportResultsToCsv(plotTabViewModel.Result, folderName);
+					}
 
+				}
+				catch (Exception e)
+				{
+					viewService.ShowMessage(string.Format(UIStrings.MainViewModel_SaveAllResultsAction_Error_saving_results_));
+					logger.Error(e);
+				}
+			}
 
+		}
 
+		private ICommand clearLogCommand;
 
-		
+		/// <summary>
+		///     Gets the ClearLog command for MVVM binding.
+		/// </summary>
+		/// <value>The ClearLog command.</value>
+		public ICommand ClearLogCommand
+		{
+			get { return clearLogCommand ?? (clearLogCommand = new RelayCommand<object>(ClearLogAction)); }
+		}
 
-
-
-
-
+		/// <summary>
+		///     ClearLog event handler.
+		/// </summary>
+		/// <param name="dummy">not used here</param>
+		private void ClearLogAction(object dummy)
+		{
+			LogItems.Clear();
+		}
 	}
 }

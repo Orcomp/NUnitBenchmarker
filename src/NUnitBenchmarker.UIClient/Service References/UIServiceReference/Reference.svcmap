@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a33e8be6-9390-47d7-aaec-d6082e84f78e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="0133bc1f-8fd1-4a89-acc4-f2cb841dab82" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
-    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
     <EnableDataBinding>true</EnableDataBinding>
     <ExcludedTypes />
     <ImportXmlTypes>false</ImportXmlTypes>
@@ -22,13 +21,13 @@
     <MetadataSource Address="http://localhost:8091/NUnitBenchmarker/UIService" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="UIService.wsdl" MetadataType="Wsdl" ID="19b7fed0-0e55-4a8b-8982-c2ea55ef4225" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?wsdl" />
-    <MetadataFile FileName="UIService.disco" MetadataType="Disco" ID="0c16ac66-91ce-4924-880d-9db53cd39aa6" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?disco" />
-    <MetadataFile FileName="UIService.xsd" MetadataType="Schema" ID="c89744e4-caeb-4078-987e-9e0dfff83b74" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd0" />
-    <MetadataFile FileName="UIService1.xsd" MetadataType="Schema" ID="4a6ad4bb-c345-434d-851a-48358d2cbf44" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd1" />
-    <MetadataFile FileName="UIService2.xsd" MetadataType="Schema" ID="9994fe20-762e-4ead-a01b-d97f4d6950d1" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd2" />
-    <MetadataFile FileName="UIService3.xsd" MetadataType="Schema" ID="0402e25e-a19f-47ac-91f3-e5e8393927bc" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd3" />
-    <MetadataFile FileName="UIService31.xsd" MetadataType="Schema" ID="724db9a3-4910-4862-a8ca-ce7c6b9752ee" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd4" />
+    <MetadataFile FileName="UIService.wsdl" MetadataType="Wsdl" ID="70eada80-97e3-4a44-a0dc-bfb26f411cb1" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?wsdl" />
+    <MetadataFile FileName="UIService.disco" MetadataType="Disco" ID="e400f285-ca33-4311-ba26-af0dbe844f6f" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?disco" />
+    <MetadataFile FileName="UIService.xsd" MetadataType="Schema" ID="02d08afc-b29e-49a9-8b3d-ae019b550c8e" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd0" />
+    <MetadataFile FileName="UIService1.xsd" MetadataType="Schema" ID="9964b181-c59a-406d-ac24-9e953610a05a" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd1" />
+    <MetadataFile FileName="UIService2.xsd" MetadataType="Schema" ID="6fd8c586-30d8-4e2e-9270-0a538a591983" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd2" />
+    <MetadataFile FileName="UIService3.xsd" MetadataType="Schema" ID="58e48e9e-0693-4087-a54d-b72acd8de534" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd3" />
+    <MetadataFile FileName="UIService4.xsd" MetadataType="Schema" ID="4e6a6832-2933-4c43-8266-19d5b578ad0c" SourceId="1" SourceUrl="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd4" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

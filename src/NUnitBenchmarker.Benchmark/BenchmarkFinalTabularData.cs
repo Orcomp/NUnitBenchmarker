@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using NUnitBenchmarker.Core;
 using NUnitBenchmarker.UIService.Data;
 
 namespace NUnitBenchmarker.Benchmark
@@ -16,7 +18,8 @@ namespace NUnitBenchmarker.Benchmark
 			table.Columns.Add(DescriptionColumnName, typeof (string));
 			foreach (var dataPoint in result.Values.FirstOrDefault().Value)
 			{
-				table.Columns.Add(dataPoint.Key, typeof (double));
+				var columnName = GetColumnName(dataPoint.Key);
+				table.Columns.Add(columnName, typeof (double));
 			}
 
 			foreach (var series in result.Values)
@@ -27,10 +30,15 @@ namespace NUnitBenchmarker.Benchmark
 
 				foreach (var dataPoint in series.Value)
 				{
-					row[dataPoint.Key] = dataPoint.Value;
-					//row[dataPoint.Key] = dataPoint.Value.ToString("F");
+					var columnName = GetColumnName(dataPoint.Key);
+					row[columnName] = dataPoint.Value;
 				}
 			}
+		}
+
+		private static string GetColumnName(string text)
+		{
+			return string.Format("{0} (ms)", NumericUtils.TryToFormatAsNumber(text));
 		}
 
 		public string Title { get; set; }

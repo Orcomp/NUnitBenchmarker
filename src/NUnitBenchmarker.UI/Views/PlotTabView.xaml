@@ -7,7 +7,10 @@
     <oxy:Plot Title="{Binding PlotTitle}" Model="{Binding PlotModel}" Margin="10">
             <oxy:Plot.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="_Switch between logarithmic and linear Time axis" Command="{Binding SwitchTimeAxisCommand}"/>
+                    <!--<MenuItem Header="_Switch between logarithmic and linear Time axis" Command="{Binding SwitchTimeAxisCommand}"/>-->
+                    <MenuItem Header="_Logarithmic Time axis" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding IsLogarithmicTimeAxisChecked}"/>
                 </ContextMenu>
         </oxy:Plot.ContextMenu>
     </oxy:Plot>
