@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitBenchmarker.Core", "NUnitBenchmarker.Core\NUnitBenchmarker.Core.csproj", "{CB56F3BD-DB09-4E75-9590-957DDC895269}"
 EndProject
@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitBenchmarker.Benchmark"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitBenchmarker.Benchmark.Tests", "NUnitBenchmarker.Benchmark.Tests\NUnitBenchmarker.Benchmark.Tests.csproj", "{5436FBC9-4E68-3380-A2E7-1374315E5B8C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F8BA4446-8614-4E48-ADB9-46711404150D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F8BA4446-8614-4E48-ADB9-46711404150D}"
 	ProjectSection(SolutionItems) = preProject
 		..\build.bat = ..\build.bat
 		..\build.fsx = ..\build.fsx
@@ -35,14 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F8BA4446
 		..\version.txt = ..\version.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1E4A1570-3FEB-4445-95F9-B38F46ADCFEF}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{CF56CBE8-F12F-4445-9B0C-FFC21E2B74E7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "deployment", "{CF56CBE8-F12F-4445-9B0C-FFC21E2B74E7}"
 	ProjectSection(SolutionItems) = preProject
 		..\deployment\templates\NUnitBenchmarker.Benchmark.nuspec = ..\deployment\templates\NUnitBenchmarker.Benchmark.nuspec
 	EndProjectSection
@@ -61,6 +54,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NUnitBenchmarker", "NUnitBenchmarker", "{9CE4E5AA-8CE3-4CE3-BE2A-7E79898BC8E3}"
 	ProjectSection(SolutionItems) = preProject
 		..\deployment\templates\content\NUnitBenchmarker\NUnitBenchmarkerDemoTest.cs = ..\deployment\templates\content\NUnitBenchmarker\NUnitBenchmarkerDemoTest.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{8D274148-BA59-4D53-8B2E-77C1B02CBA55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{607CDD9D-92F6-4C89-BBD1-D795AD09B35A}"
+	ProjectSection(SolutionItems) = preProject
+		..\tools\NuGet\NuGet.exe = ..\tools\NuGet\NuGet.exe
 	EndProjectSection
 EndProject
 Global
@@ -118,14 +120,21 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B9FAB394-AB01-4F81-82C3-100B991377EF} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
+		{CB56F3BD-DB09-4E75-9590-957DDC895269} = {F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}
 		{5436FBC9-3380-4E68-A2E7-1374315E5B8C} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
+		{B9FAB394-AB01-4F81-82C3-100B991377EF} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
+		{71AFAAB1-8568-4141-B075-E7CC8AFF26CD} = {F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}
+		{F65803B8-681C-4318-978F-32A7ADCA3CA0} = {F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}
 		{C4447036-C80E-46D4-A71D-05D64EA1E313} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
+		{E5D0D050-596E-44FE-A068-2268266DA6FB} = {F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}
+		{1AFE6F25-1F3F-4061-87A6-DD99C5239C1C} = {F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}
 		{7DBADEB5-3985-4324-AB9C-504CD8E8D810} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
 		{F6B46EDB-1E5D-40CA-B58B-4F21EC37B0C6} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
+		{957DDC89-4E75-DB09-9590-CB56F3BD5269} = {F0CEC2B3-2E7C-492C-A211-A2033FABC3E5}
 		{5436FBC9-4E68-3380-A2E7-1374315E5B8C} = {71AFAAB1-8568-4141-B075-E7CC8AFF26CD}
 		{51176196-B4DD-4B7F-BCD7-902627FC79B0} = {CF56CBE8-F12F-4445-9B0C-FFC21E2B74E7}
 		{E4B9D0D7-1893-4B71-A706-D7BECE0A03CD} = {CF56CBE8-F12F-4445-9B0C-FFC21E2B74E7}
 		{9CE4E5AA-8CE3-4CE3-BE2A-7E79898BC8E3} = {E4B9D0D7-1893-4B71-A706-D7BECE0A03CD}
+		{607CDD9D-92F6-4C89-BBD1-D795AD09B35A} = {8D274148-BA59-4D53-8B2E-77C1B02CBA55}
 	EndGlobalSection
 EndGlobal

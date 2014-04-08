@@ -1,240 +1,214 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.ServiceModel;
-using System.Text;
-using System.Xml.Serialization;
-using log4net.Core;
-using NUnitBenchmarker.Core.Infrastructure.Logging;
-using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
 using NUnitBenchmarker.UIClient.Properties;
 using NUnitBenchmarker.UIClient.UIServiceReference;
 using NUnitBenchmarker.UIService.Data;
-using ILogger = NUnitBenchmarker.Core.Infrastructure.Logging.ILogger;
 
 namespace NUnitBenchmarker.UIClient
 {
+    using Catel.Logging;
+    using NUnitBenchmarker.UIClient.Logging;
+
     // TODO: Refactor this static helper to an instance which implements IUIService
-	public static class UI
+    public static class UI
     {
-	    private static readonly UIServiceClient Client;
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-	    static UI()
-	    {
-			string resourceStreamName = string.Format("NUnitBenchmarker.UIClient.{0}", "UIServiceClient.config");
-			string configXml = string.Empty;
-			
-			using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceStreamName))
-			{
-				if (stream != null)
-				{
-					using (var reader = new StreamReader(stream))
-					{
-						configXml = reader.ReadToEnd();
-					}
-				}
-			}
-			const string endpointName = "BasicHttpBinding_IUIService";
+        private static readonly UIServiceClient Client;
 
-			var serviceEndpoint = new XmlServiceEndpoint(typeof(IUIService), configXml, endpointName);
-			var channelFactory = new ChannelFactory<IUIServiceChannel>(serviceEndpoint);
-		    Client = new UIServiceClient(channelFactory.Endpoint.Binding, channelFactory.Endpoint.Address);
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-			Logger = new Log4NetLogger();
-		    var publisherAppender = PublisherAppender.GetCurrent(null);
-		    publisherAppender.LoggingEventAppended += LoggingEventAppended;
+        private const string uiExeName = "NUnitBenchmarker.UI.exe";
+        private static string _uiProcessName = "..\\NUnitBenchmarker.UI\\" + uiExeName;
 
-	    }
+        static UI()
+        {
+            string resourceStreamName = string.Format("NUnitBenchmarker.UIClient.{0}", "UIServiceClient.config");
+            string configXml = string.Empty;
 
-		private static void LoggingEventAppended(LoggingEvent loggingEvent, string renderedMessage)
-		{
-			if (!DisplayUI)
-			{
-				return;
-			}
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceStreamName))
+            {
+                if (stream != null)
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        configXml = reader.ReadToEnd();
+                    }
+                }
+            }
 
-			string loggingEventString;
-			using (var memoryStream = new MemoryStream())
-			{
-				var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter();
-				formatter.Serialize(memoryStream, new SerializableLoggingEventData(loggingEvent.GetLoggingEventData()));
-				loggingEventString = Encoding.UTF8.GetString(memoryStream.ToArray());
-			}
+            const string endpointName = "BasicHttpBinding_IUIService";
 
-			if (Start(false))
-			{
-				Client.Log(loggingEventString);
-				return;
-			}
-			// Note: We can not log here. We are in an appender....
-		}
+            var serviceEndpoint = new XmlServiceEndpoint(typeof(IUIService), configXml, endpointName);
+            var channelFactory = new ChannelFactory<IUIServiceChannel>(serviceEndpoint);
+            Client = new UIServiceClient(channelFactory.Endpoint.Binding, channelFactory.Endpoint.Address);
+        }
 
-		public static ILogger Logger { get; private set; }
-		public static bool DisplayUI { get; set; }
+        public static bool DisplayUI { get; set; }
 
-		public static string Ping(string message)
-	    {
-			return SendMessageFunc(() => Client.Ping(message), string.Format(Resources.UI_Communication_welcome_to_the_loopback, message));
-	    }
+        public static string Ping(string message)
+        {
+            return SendMessageFunc(() => Client.Ping(message), string.Format(Resources.UI_Communication_welcome_to_the_loopback, message));
+        }
 
-		public static IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
-		{
-			return SendMessageFunc<IEnumerable<TypeSpecification>>(() => Client.GetImplementations(interfaceType), new List<TypeSpecification>());
-		}
+        public static IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
+        {
+            return SendMessageFunc<IEnumerable<TypeSpecification>>(() => Client.GetImplementations(interfaceType), new List<TypeSpecification>());
+        }
 
-		public static void UpdateResult(BenchmarkResult result)
-		{
-			SendMessageAction(()=>Client.UpdateResult(result));
-		}
+        public static void UpdateResult(BenchmarkResult result)
+        {
+            SendMessageAction(() => Client.UpdateResult(result));
+        }
 
 #if NET45		
 		private static void SendMessageAction(Action action, [CallerMemberName] string memberName = "")
 #else
-		private static void SendMessageAction(Action action, string memberName = "")
+        private static void SendMessageAction(Action action, string memberName = "")
 #endif
-		{
-			if (!DisplayUI)
-			{
-				return;
-			}
+        {
+            if (!DisplayUI)
+            {
+                return;
+            }
 
-			if (Start())
-			{
-				action();
-				return;
-			}
-			
-			Logger.Warn(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
-		}
+            if (Start())
+            {
+                action();
+                return;
+            }
 
-		private static T SendMessageFunc<T>(Func<T> func, T defaultResult, string memberName = "")
-		{
-			if (!DisplayUI)
-			{
-				return defaultResult;
-			}
+            Log.Warning(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
+        }
 
-			if (Start())
-			{
-				return func();
-			}
-			Logger.Warn(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
-			return defaultResult;
-		}
+        private static T SendMessageFunc<T>(Func<T> func, T defaultResult, string memberName = "")
+        {
+            if (!DisplayUI)
+            {
+                return defaultResult;
+            }
 
-		
-		private static string uiExeName = "NUnitBenchmarker.UI.exe";
-		private static string uiProcessName = "..\\NUnitBenchmarker.UI\\" + uiExeName;
-		private static string uiProcessToolFolder = "..\\NUnitBenchmarker.UI\\" + uiExeName;
-		
-		// TODO: Make this thread safe (possibly involves refactor UI class from static to instance)
+            if (Start())
+            {
+                return func();
+            }
 
-		public static string GetUiProcessName()
-		{
-			if (File.Exists(uiProcessName))
-			{
-				return uiProcessName;
-			}
+            Log.Warning(Resources.UI_Message_can_not_start_or_contact_ui_process_when_trying_to_send_message, memberName);
 
-			string result;
-			string start = "";
-			for (int i = 0; i < 10; i++, start += @"..\")
-			{
-				if (null != (result = GetUiProcessName(start)))
-				{
-					return result;
-				}
-			}
-			return null;
-		}
+            return defaultResult;
+        }
 
-		private static string GetUiProcessName(string start)
-		{
-			string startFolder = start;
-			if (!Directory.Exists(startFolder))
-			{
-				return null;
-			}
+        // TODO: Make this thread safe (possibly involves refactor UI class from static to instance)
 
-			var di = new DirectoryInfo(startFolder);
-			var files = di.GetFiles(uiExeName, SearchOption.AllDirectories).Where(fi=> fi.FullName.ToLower().Contains("packages")).ToArray();
+        public static string GetUiProcessName()
+        {
+            if (File.Exists(_uiProcessName))
+            {
+                return _uiProcessName;
+            }
 
-			if (files.Length != 0)
-			{
-				return files[0].FullName;
-			}
-			return null;
-		}
+            string result;
+            string start = string.Empty;
+            for (int i = 0; i < 10; i++, start += @"..\")
+            {
+                if (null != (result = GetUiProcessName(start)))
+                {
+                    return result;
+                }
+            }
+            return null;
+        }
 
-		public static bool Start(bool forceStart = true)
-		{
-			if (!DisplayUI)
-			{
-				return true;
-			}
+        private static string GetUiProcessName(string start)
+        {
+            string startFolder = start;
+            if (!Directory.Exists(startFolder))
+            {
+                return null;
+            }
 
-			uiProcessName = GetUiProcessName();
+            var di = new DirectoryInfo(startFolder);
+            var files = di.GetFiles(uiExeName, SearchOption.AllDirectories).Where(fi => fi.FullName.ToLower().Contains("packages")).ToArray();
 
+            if (files.Length != 0)
+            {
+                return files[0].FullName;
+            }
+            return null;
+        }
 
-			var process = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(uiProcessName)).FirstOrDefault();
-			var starting = false;
-			var timeout = 500; // Normal check timout
+        public static bool Start(bool forceStart = true)
+        {
+            if (!DisplayUI)
+            {
+                return true;
+            }
 
-			if (process == null)
-			{
-				if (!forceStart)
-				{
-					return false;
-				}
-				starting = true;
-				timeout = 5000; // Start timeout
-				try
-				{
-					process = Process.Start(uiProcessName);
-				}
-				catch (Exception e)
-				{
-					Logger.Error(e, Resources.UI_Message_can_not_start_ui_process);
-					return false;
-				}
-				Logger.Info(Resources.UI_Message_starting_ui_process);
-			}
-			if (process == null)
-			{
-				Logger.Info(Resources.UI_Message_starting_ui_process);
-				return false;
-			}
+            LogManager.AddListener(new ClientLogListener(Client));
 
-			// Wait to start (or check if responding):
-			bool success = process.WaitForInputIdle(timeout);
+            _uiProcessName = GetUiProcessName();
 
+            var process = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(_uiProcessName)).FirstOrDefault();
+            var starting = false;
+            var timeout = 500; // Normal check timout
 
-			// Log only if process just was started:
-			if (starting)
-			{
-				if (success)
-				{
-					Logger.Info(Resources.UI_Message_start_ui_process_successfully_started);
-				}
-				else
-				{
-					Logger.Error(Resources.UI_Message_can_not_start_ui_process);
-				}
-			}
-			else
-			{
-				SetForegroundWindow(process.MainWindowHandle);
-			}
-			return success;
+            if (process == null)
+            {
+                if (!forceStart)
+                {
+                    return false;
+                }
 
-		}
-		[DllImport("user32.dll")]
-		private static extern bool SetForegroundWindow(IntPtr hWnd);
+                starting = true;
+                timeout = 5000; // Start timeout
+
+                try
+                {
+                    process = Process.Start(_uiProcessName);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, Resources.UI_Message_can_not_start_ui_process);
+                    return false;
+                }
+
+                Log.Info(Resources.UI_Message_starting_ui_process);
+            }
+
+            if (process == null)
+            {
+                Log.Info(Resources.UI_Message_starting_ui_process);
+                return false;
+            }
+
+            // Wait to start (or check if responding):
+            bool success = process.WaitForInputIdle(timeout);
+
+            // Log only if process just was started:
+            if (starting)
+            {
+                if (success)
+                {
+                    Log.Info(Resources.UI_Message_start_ui_process_successfully_started);
+                }
+                else
+                {
+                    Log.Error(Resources.UI_Message_can_not_start_ui_process);
+                }
+            }
+            else
+            {
+                SetForegroundWindow(process.MainWindowHandle);
+            }
+
+            return success;
+        }
     }
 }

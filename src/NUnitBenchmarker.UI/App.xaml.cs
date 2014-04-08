@@ -1,67 +1,94 @@
-﻿using System;
-using System.Threading;
-using System.Windows;
-using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
-using NUnitBenchmarker.Core.Infrastructure.Logging;
-using NUnitBenchmarker.UI.ViewModels;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 
 namespace NUnitBenchmarker.UI
 {
-	/// <summary>
-	///     Interaction logic for App.xaml
-	/// </summary>
-	public partial class App 
-	{
-		#region Methods
+    using System;
+    using System.Threading;
+    using System.Windows;
+    using Catel.IoC;
+    using Catel.Logging;
+    using Catel.MVVM;
+    using Catel.Services;
+    using NUnitBenchmarker.UI.Services;
+    using NUnitBenchmarker.UIService;
 
-		/// <summary>
-		///     Raises the <see cref="E:System.Windows.Application.Exit" /> event.
-		/// </summary>
-		/// <param name="e">
-		///     An <see cref="T:System.Windows.ExitEventArgs" /> that contains the event data.
-		/// </param>
-		protected override void OnExit(ExitEventArgs e)
-		{
-			base.OnExit(e);
-			try
-			{
-				Dependency.Resolve<MainViewModel>().Dispose();
+    /// <summary>
+    ///     Interaction logic for App.xaml
+    /// </summary>
+    public partial class App
+    {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-				// Informational log message
-				Dependency.Resolve<ILogger>().Info("Application terminated normally.");
-			}
-			catch (Exception exception)
-			{
-				Dependency.Resolve<ILogger>().Error(exception);
-			}
-		}
+        #region Methods
+        /// <summary>
+        ///     Raises the <see cref="E:System.Windows.Application.Startup" /> event.
+        /// </summary>
+        /// <param name="e">
+        ///     A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.
+        /// </param>
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            try
+            {
+                var serviceLocator = ServiceLocator.Default;
 
-		/// <summary>
-		///     Raises the <see cref="E:System.Windows.Application.Startup" /> event.
-		/// </summary>
-		/// <param name="e">
-		///     A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.
-		/// </param>
-		protected override void OnStartup(StartupEventArgs e)
-		{
-			base.OnStartup(e);
-			try
-			{
-				// Creates DI kernel
-				BootStrapper.CreateKernel();
+                RegisterServices(serviceLocator);
+                RegisterCommands(serviceLocator.ResolveType<ICommandManager>());
 
-				// This is only for verbose logging info and debug info
-				Thread.CurrentThread.Name = "UI";
+                // This is only for verbose logging info and debug info
+                Thread.CurrentThread.Name = "UI";
 
-				// Informational log message
-				Dependency.Resolve<ILogger>().Info("Application started.");
-			}
-			catch (Exception exception)
-			{
-				Dependency.Resolve<ILogger>().Error(exception);
-			}
-		}
+                // Informational log message
+                Log.Info("Application started.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///     Raises the <see cref="E:System.Windows.Application.Exit" /> event.
+        /// </summary>
+        /// <param name="e">
+        ///     An <see cref="T:System.Windows.ExitEventArgs" /> that contains the event data.
+        /// </param>
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            try
+            {
+                // Informational log message
+                Log.Info("Application terminated normally.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private void RegisterServices(IServiceLocator serviceLocator)
+        {
+            serviceLocator.RegisterType<IViewService, WpfViewService>();
+            serviceLocator.RegisterType<IUIServiceHost, UIServiceHost>();
+        }
+
+        private void RegisterCommands(ICommandManager commandManager)
+        {
+            commandManager.CreateCommand("File.Open");
+            commandManager.CreateCommand("File.Exit");
+
+            commandManager.CreateCommand("Log.Clear");
+
+            commandManager.RegisterAction("File.Exit", Shutdown);
+        }
+        #endregion
+    }
 }

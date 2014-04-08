@@ -1,124 +1,98 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Xml.Serialization;
-using log4net.Core;
-using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
-using NUnitBenchmarker.Core.Infrastructure.Logging;
-using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
-using NUnitBenchmarker.UIService.Data;
-using ILogger = NUnitBenchmarker.Core.Infrastructure.Logging.ILogger;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UIService.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 
 namespace NUnitBenchmarker.UIService
 {
-	/// <summary>
-	///     Class UIService
-	///     Service definition class for exchanging data with Runner client
-	/// </summary>
-	public class UIService : IUIService
-	{
-		private ILogger logger;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Catel.IoC;
+    using Catel.Logging;
+    using NUnitBenchmarker.UIService.Data;
 
-		public UIService()
-		{
-			// Note: Not DI in constructor possible here because this instance is created by 
-			// indirectly by .NET like this: host = new ServiceHost(typeof(UIService)) 
-			// and _not_ by our configured DI container.
-			// We are using DR instead of DI:
-			logger = Dependency.Resolve<ILogger>();
-		}
+    /// <summary>
+    ///     Class UIService
+    ///     Service definition class for exchanging data with Runner client
+    /// </summary>
+    public class UIService : IUIService
+    {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-		/// <summary>
-		///     Sent by the client to get diagnostic ping.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		public string Ping(string message)
-		{
-			LogCall(new {message});
-			
-			var host = Dependency.Resolve<IUIServiceHost>();
-			return host.OnPing(message);			
-		}
+        private readonly IDependencyResolver _dependencyResolver;
 
+        public UIService()
+        {
+            // Note: Not DI in constructor possible here because this instance is created by 
+            // indirectly by .NET like this: host = new ServiceHost(typeof(UIService)) 
+            // and _not_ by our configured DI container.
+            // We are using DR instead of DI:
 
-		/// <summary>
-		/// Gets the implementations to test
-		/// </summary>
-		/// <param name="interfaceType">Type of the interface.</param>
-		/// <returns>IEnumerable{TypeSpecification}.</returns>
-		public IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
-		{
-			LogCall(null);
-			var host = Dependency.Resolve<IUIServiceHost>();
-			return host.OnGetImplementations(interfaceType);	
-		}
+            _dependencyResolver = this.GetDependencyResolver();
+        }
 
-		/// <summary>
-		/// Logs a standard log4net logging event
-		/// </summary>
-		public void Log(string loggingEventString)
-		{
-			if (!(logger is Log4NetLogger))
-			{
-				logger.Info(loggingEventString);
-				return;
-			}
-			// Note: This message is already depends on log4net via the LoggingEvent type. 
-			// No additional depency is caused by accepting Log4NetLogger (specific implementation of
-			// ILogger here:
-			
-			LoggingEventData loggingEventData;
-			using(var ms = new MemoryStream(Encoding.UTF8.GetBytes(loggingEventString))) 
-			{
-			    var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter();
-				loggingEventData = ((SerializableLoggingEventData)formatter.Deserialize(ms)).ToLoggingEventData();
-				
-			}
-			var loggingEvent = new LoggingEvent(loggingEventData);
-			
-			((Log4NetLogger)logger).Log(loggingEvent);	
-			
-		}
+        /// <summary>
+        ///     Sent by the client to get diagnostic ping.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public string Ping(string message)
+        {
+            var host = _dependencyResolver.Resolve<IUIServiceHost>();
+            return host.OnPing(message);
+        }
 
-		public void UpdateResult(BenchmarkResult result)
-		{
-			LogCall(new { result.Key });
-			var host = Dependency.Resolve<IUIServiceHost>();
-			host.OnUpdateResult(result);
-		}
+        /// <summary>
+        /// Gets the implementations to test
+        /// </summary>
+        /// <param name="interfaceType">Type of the interface.</param>
+        /// <returns>IEnumerable{TypeSpecification}.</returns>
+        public IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
+        {
+            var host = _dependencyResolver.Resolve<IUIServiceHost>();
+            return host.OnGetImplementations(interfaceType);
+        }
 
-#if NET45
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void LogCall( object parameters, [CallerMemberName] string memberName = "" )
-#else
-		private void LogCall( object parameters, string memberName = "" )
-#endif
-		{
-			// Dependency.Resolve<ILogger>().Info("UIService command '{0}' was received with the following parameters: {1}.", memberName, AnonymousToString(parameters));
-		}
+        /// <summary>
+        /// Logs a standard log4net logging event
+        /// </summary>
+        public void LogEvent(string loggingEventString)
+        {
+            // Note: This message is already depends on log4net via the LoggingEvent type. 
+            // No additional depency is caused by accepting Log4NetLogger (specific implementation of
+            // ILogger here:
 
+            // TODO: Write log
 
+            //LoggingEventData loggingEventData;
+            //using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(loggingEventString)))
+            //{
+            //    var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter();
+            //    loggingEventData = ((SerializableLoggingEventData) formatter.Deserialize(ms)).ToLoggingEventData();
+            //}
 
-		private string AnonymousToString(object @object)
-		{
-			if (@object == null)
-			{
-				return string.Empty;
-			}
-			string result = @object.GetType().GetProperties().Aggregate(
-				string.Empty, 
-				(current, propertyInfo) 
-					=> 
-				current + string.Format("'{0}': >{1}<, ", propertyInfo.Name, propertyInfo.GetValue(@object, null)));
+            //var loggingEvent = new LoggingEvent(loggingEventData);
+            //((Log4NetLogger) logger).Log(loggingEvent);
+        }
 
-			return result.Trim().Trim(',');
-		}
+        public void UpdateResult(BenchmarkResult result)
+        {
+            var host = _dependencyResolver.Resolve<IUIServiceHost>();
+            host.OnUpdateResult(result);
+        }
 
-		
-	}
+        private string AnonymousToString(object @object)
+        {
+            if (@object == null)
+            {
+                return string.Empty;
+            }
+
+            string result = @object.GetType().GetProperties().Aggregate(string.Empty, 
+                (current, propertyInfo) => current + string.Format("'{0}': >{1}<, ", propertyInfo.Name, propertyInfo.GetValue(@object, null)));
+
+            return result.Trim().Trim(',');
+        }
+    }
 }

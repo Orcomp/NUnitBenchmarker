@@ -30,6 +30,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>71f8ed2d</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,32 +55,36 @@
     <ApplicationIcon>NunitBenchmarker.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Catel.Core, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Catel\output\debug\NET40\Catel.Extensions.Controls\Catel.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Catel.Extensions.Controls, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Catel\output\debug\NET40\Catel.Extensions.Controls\Catel.Extensions.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Catel.Fody.Attributes">
+      <HintPath>..\..\lib\Catel.Fody.1.9.0\lib\portable-net4+sl4+wp7+win8+wpa81+MonoAndroid14+MonoTouch40\Catel.Fody.Attributes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Catel.MVVM, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Catel\output\debug\NET40\Catel.Extensions.Controls\Catel.MVVM.dll</HintPath>
+    </Reference>
     <Reference Include="Fasterflect">
-      <HintPath>..\..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+      <HintPath>..\..\lib\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
     </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Extras.WPF4">
-      <HintPath>..\..\packages\MvvmLightLibs.4.2.30.0\lib\net40\GalaSoft.MvvmLight.Extras.WPF4.dll</HintPath>
+    <Reference Include="OxyPlot, Version=2014.1.270.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\OxyPlot.Core.2014.1.270.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="GalaSoft.MvvmLight.WPF4">
-      <HintPath>..\..\packages\MvvmLightLibs.4.2.30.0\lib\net40\GalaSoft.MvvmLight.WPF4.dll</HintPath>
+    <Reference Include="OxyPlot.Wpf, Version=2014.1.270.1, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\OxyPlot.Wpf.2014.1.270.1\lib\NET40\OxyPlot.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\..\packages\Ninject.3.2.0.0\lib\net40\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot">
-      <HintPath>..\..\packages\OxyPlot.Core.2014.1.229.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Wpf">
-      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.229.1\lib\NET40\OxyPlot.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Xps">
-      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.229.1\lib\NET40\OxyPlot.Xps.dll</HintPath>
+    <Reference Include="OxyPlot.Xps, Version=2014.1.270.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\OxyPlot.Wpf.2014.1.270.1\lib\NET40\OxyPlot.Xps.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -87,7 +92,7 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MvvmLightLibs.4.2.30.0\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\..\lib\Catel.MVVM.3.9.0.1404081024-beta\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -107,33 +112,31 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\AssemblyEntry.cs" />
+    <Compile Include="Model\LogEntry.cs" />
     <Compile Include="Model\NameSpaceEntry.cs" />
     <Compile Include="Model\ReflectionEntry.cs" />
     <Compile Include="Model\TypeEntry.cs" />
     <Compile Include="ViewModels\AssemblyTree\TreeViewItemViewModel.cs" />
     <Compile Include="ViewModels\AssemblyTree\ReflectionNodeViewModel.cs" />
-    <Compile Include="ViewModels\LogItemViewModel.cs" />
+    <Compile Include="ViewModels\LogEntriesViewModel.cs" />
     <Compile Include="ViewModels\DataTabViewModel.cs" />
     <Compile Include="ViewModels\PlotTabViewModel.cs" />
-    <Compile Include="ViewModels\TabViewModel.cs" />
-    <Compile Include="Views\Behaviors\ListBoxBehavior.cs" />
-    <Compile Include="Views\DataTabView.xaml.cs">
-      <DependentUpon>DataTabView.xaml</DependentUpon>
+    <Compile Include="Behaviors\ListBoxBehavior.cs" />
+    <Compile Include="ViewModels\ResultsDataViewModel.cs" />
+    <Compile Include="ViewModels\ResultsPlotViewModel.cs" />
+    <Compile Include="ViewModels\ResultsViewModel.cs" />
+    <Compile Include="Views\LogEntriesView.xaml.cs">
+      <DependentUpon>LogEntriesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlotTabView.xaml.cs">
-      <DependentUpon>PlotTabView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Behaviors\Piper.cs" />
-    <Compile Include="Bootstapper.cs" />
+    <Compile Include="Behaviors\Piper.cs" />
     <Compile Include="Resources\UIStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UIStrings.resx</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\IViewService.cs" />
+    <Compile Include="Services\Interfaces\IViewService.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\ViewModelLocator.cs" />
-    <Compile Include="ViewModels\WpfViewService.cs" />
+    <Compile Include="Services\WpfViewService.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -141,30 +144,47 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\ValueConverters\GridLengthValueConverter.cs" />
+    <Compile Include="Converters\GridLengthValueConverter.cs" />
+    <Compile Include="Views\ResultsDataView.xaml.cs">
+      <DependentUpon>ResultsDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResultsPlotView.xaml.cs">
+      <DependentUpon>ResultsPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResultsView.xaml.cs">
+      <DependentUpon>ResultsView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\LogEntriesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindowResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DataTabView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PlotTabView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ResultsDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultsPlotView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\SolutionInfo.cs">
-      <Link>Properties\SolutionInfo.cs</Link>
+    <Compile Include="..\SolutionAssemblyInfo.cs">
+      <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -228,12 +248,23 @@
       <LastGenOutput>UIStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <PropertyGroup>
     <PostBuildEvent>rem This is not working because other referenced assemblies + config file etc also should be copied there... so overcomplicated
 rem copy "$(TargetPath)" "..\..\$(ConfigurationName)\NUnitBenchmarker.Benchmark.Tests"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\lib\Fody.1.22.1\build\Fody.targets" Condition="Exists('..\..\lib\Fody.1.22.1\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\lib\Fody.1.22.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\lib\Fody.1.22.1\build\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

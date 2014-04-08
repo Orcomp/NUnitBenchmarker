@@ -1,878 +1,300 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using log4net.Core;
-using NUnitBenchmarker.Core.Infrastructure.DependencyInjection;
-using NUnitBenchmarker.Core.Infrastructure.Logging.Log4Net;
-using NUnitBenchmarker.UI.Model;
-using NUnitBenchmarker.UI.Properties;
-using NUnitBenchmarker.UI.Resources;
-using NUnitBenchmarker.UI.ViewModels.AssemblyTree;
-using NUnitBenchmarker.UIService;
-using NUnitBenchmarker.UIService.Data;
-using ILogger = NUnitBenchmarker.Core.Infrastructure.Logging.ILogger;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainViewModel.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 
 namespace NUnitBenchmarker.UI.ViewModels
 {
-	/// <summary>
-	///     Class MainViewModel: MVVM ViewModel for MainWindow
-	/// </summary>
-	public class MainViewModel : ViewModelBase, IDisposable
-	{
-		private readonly PublisherAppender appender;
-		private readonly ILogger logger;
-		private readonly IViewService viewService;
-		private bool _isAlwaysOnTopChecked;
-		private ICommand exitMenuItemClickCommand;
-		private string lastPingMessage;
-		private ObservableCollection<LogItemViewModel> logItems; // Backing field for property LogItems
-		private int mainWindowHeight;
-		private int mainWindowLeft;
-		private WindowState mainWindowState;
-		private int mainWindowTop;
-		private int mainWindowWidth;
-		private ICommand openMenuItemClickCommand;
-		private Rect restoreBounds;
-		private string splitHeightBottom;
-		private string splitHeightTop;
-		private string splitWidthLeft;
-		private string splitWidthRight;
-		private string statusBarText;
-		private ObservableCollection<TabViewModel> tabs;
-		private readonly ObservableCollection<ReflectionNodeViewModel> roots;
-
-
-		/// <summary>
-		///     Initializes a new instance of the <see cref="MainViewModel" /> class.
-		/// </summary>
-		public MainViewModel(ILogger logger, IViewService viewService, PublisherAppender appender)
-		{
-			this.logger = logger;
-			this.viewService = viewService;
-			this.appender = appender;
-			roots = new ObservableCollection<ReflectionNodeViewModel>();
-
-			var serviceHost = Dependency.Resolve<IUIServiceHost>();
-			try
-			{
-				serviceHost.Start();
-			}
-			catch (Exception e)
-			{
-				logger.Error(e);
-			}
-
-			serviceHost.Ping += OnPing;
-			serviceHost.GetImplementations += GetImplementations;
-			serviceHost.UpdateResult += UpdateResults;
-
-			appender.LoggingEventAppended += LoggingEventAppended;
-
-			LogItems = new ObservableCollection<LogItemViewModel>();
-			RestoreMainWindow();
-
-			//var found = new PlotTabViewModel("Add", "Add", this);
-			//Tabs.Add(found);
-			//found = new PlotTabViewModel("Remove", "Remove", this);
-			//Tabs.Add(found);
-
-
-			//var dataTabViewModel = new DataTabViewModel("test1", "test2");
-			//dataTabViewModel.DataTable = CreateDemoTable();
-			//Tabs.Add(dataTabViewModel);
-			//roots.Add(new ReflectionNodeViewModel(new AssemblyEntry {Name="Assembly Name", UseIcons = false}, null));
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the last ping message.
-		/// </summary>
-		/// <value>The last ping message.</value>
-		public string LastPingMessage
-		{
-			get { return lastPingMessage; }
-			set
-			{
-				if (lastPingMessage == value)
-				{
-					return;
-				}
-
-				lastPingMessage = value;
-				RaisePropertyChanged(() => LastPingMessage);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the status bar text to display.
-		/// </summary>
-		/// <value>The status bar text to display.</value>
-		public string StatusBarText
-		{
-			get { return statusBarText; }
-			set
-			{
-				statusBarText = value ?? string.Empty;
-				RaisePropertyChanged(() => StatusBarText);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets the window title.
-		/// </summary>
-		/// <value>The title.</value>
-		public string Title
-		{
-			get { return string.Format("NUnit Benchmarker v{0}", Assembly.GetExecutingAssembly().GetName().Version); }
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the main window top.
-		/// </summary>
-		/// <value>The main window top.</value>
-		public int MainWindowTop
-		{
-			get { return mainWindowTop; }
-			set
-			{
-				mainWindowTop = value;
-				RaisePropertyChanged(() => MainWindowTop);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the main window left.
-		/// </summary>
-		/// <value>The main window left.</value>
-		public int MainWindowLeft
-		{
-			get { return mainWindowLeft; }
-			set
-			{
-				mainWindowLeft = value;
-				RaisePropertyChanged(() => MainWindowLeft);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the width of the main window.
-		/// </summary>
-		/// <value>The width of the main window.</value>
-		public int MainWindowWidth
-		{
-			get { return mainWindowWidth; }
-			set
-			{
-				mainWindowWidth = value;
-				RaisePropertyChanged(() => MainWindowWidth);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the height of the main window.
-		/// </summary>
-		/// <value>The height of the main window.</value>
-		public int MainWindowHeight
-		{
-			get { return mainWindowHeight; }
-			set
-			{
-				mainWindowHeight = value;
-				RaisePropertyChanged(() => MainWindowHeight);
-			}
-		}
-
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the state of the main window.
-		/// </summary>
-		/// <value>The state of the main window.</value>
-		public WindowState MainWindowState
-		{
-			get { return mainWindowState; }
-			set
-			{
-				mainWindowState = value;
-				RaisePropertyChanged(() => MainWindowState);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets the restore bounds.
-		/// </summary>
-		/// <value>The restore bounds.</value>
-		public Rect RestoreBounds
-		{
-			get { return restoreBounds; }
-			set { restoreBounds = value; }
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets a value indicating whether the
-		///     NUnitBenchmarker main window is always on top or not.
-		/// </summary>
-		/// <value><c>true</c> if [always on top]; otherwise, <c>false</c>.</value>
-		public bool IsAlwaysOnTopChecked
-		{
-			get { return _isAlwaysOnTopChecked; }
-			set
-			{
-				_isAlwaysOnTopChecked = value;
-				RaisePropertyChanged(() => IsAlwaysOnTopChecked);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets a value of the vertical splitter position
-		/// </summary>
-		/// <value><c>true</c> if [always on top]; otherwise, <c>false</c>.</value>
-		public string SplitHeightTop
-		{
-			get { return splitHeightTop; }
-			set
-			{
-				splitHeightTop = value;
-				RaisePropertyChanged(() => SplitHeightTop);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets a value of the vertical splitter position
-		/// </summary>
-		/// <value><c>true</c> if [always on top]; otherwise, <c>false</c>.</value>
-		public string SplitHeightBottom
-		{
-			get { return splitHeightBottom; }
-			set
-			{
-				splitHeightBottom = value;
-				RaisePropertyChanged(() => SplitHeightBottom);
-			}
-		}
-
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets a value of the horizontal splitter position
-		/// </summary>
-		/// <value><c>true</c> if [always on top]; otherwise, <c>false</c>.</value>
-		public string SplitWidthLeft
-		{
-			get { return splitWidthLeft; }
-			set
-			{
-				splitWidthLeft = value;
-				RaisePropertyChanged(() => SplitWidthLeft);
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM binding. Gets or sets a value of the horizontal splitter position
-		/// </summary>
-		/// <value><c>true</c> if [always on top]; otherwise, <c>false</c>.</value>
-		public string SplitWidthRight
-		{
-			get { return splitWidthRight; }
-			set
-			{
-				splitWidthRight = value;
-				RaisePropertyChanged(() => SplitWidthRight);
-			}
-		}
-
-
-
-		
-		/// <summary>
-		///     Gets the exit menu item click command for MVVM binding.
-		/// </summary>
-		/// <value>The exit menu item click command.</value>
-		public ICommand ExitMenuItemClickCommand
-		{
-			get { return exitMenuItemClickCommand ?? (exitMenuItemClickCommand = new RelayCommand<object>(ExitAction)); }
-		}
-
-		/// <summary>
-		///     Gets the open menu item click command for MVVM binding.
-		/// </summary>
-		/// <value>The open menu item click command.</value>
-		public ICommand OpenMenuItemClickCommand
-		{
-			get { return openMenuItemClickCommand ?? (openMenuItemClickCommand = new RelayCommand<object>(OpenAction)); }
-		}
-
-
-		/// <summary>
-		///     Returns the collection of available tabs to display.
-		///     A 'tab' is a ViewModel that can request to be closed.
-		/// </summary>
-		public ObservableCollection<TabViewModel> Tabs
-		{
-			get
-			{
-				if (tabs == null)
-				{
-					tabs = new ObservableCollection<TabViewModel>();
-					tabs.CollectionChanged += OnTabsChanged;
-				}
-				return tabs;
-			}
-		}
-
-		/// <summary>
-		///     Observable property for MVVM. Gets or sets state LogItems.
-		///     Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface
-		/// </summary>
-		/// <value>
-		///     The property value. If the new value is the same as the current property value
-		///     then no PropertyChange event is raised.
-		/// </value>
-		public ObservableCollection<LogItemViewModel> LogItems
-		{
-			get { return logItems; }
-
-			set
-			{
-				if (logItems == value)
-				{
-					return;
-				}
-				logItems = value;
-				RaisePropertyChanged(() => LogItems);
-			}
-		}
-
-		public ICommand SwitchTimeAxis
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-
-		/// <summary>
-		///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose()
-		{
-			SaveMainWindow();
-			var serviceHost = Dependency.Resolve<IUIServiceHost>();
-			serviceHost.Stop();
-			serviceHost.Ping -= OnPing;
-			serviceHost.GetImplementations -= GetImplementations;
-			appender.LoggingEventAppended -= LoggingEventAppended;
-		}
-
-		private void LoggingEventAppended(LoggingEvent @event, string renderedMessage)
-		{
-			// log4net's @event.RenderedMessage does not seem to use the renderers despite its name
-			LogItems.Add(new LogItemViewModel(@event.TimeStamp.ToString(), @event.Level.ToString(), @event.RenderedMessage));
-			LogItemsSelectedIndex = LogItems.Count - 1;
-		}
-
-		private IEnumerable<TypeSpecification> GetImplementations(TypeSpecification typeSpecification)
-		{
-			var result = new List<TypeSpecification>();
-			foreach (var node in Roots)
-			{
-				result.AddRange(node.GetChildrenData()
-					.Where(e => e.LeafEntry)
-					.Select( e => new TypeSpecification
-					{	
-						AssemblyPath = e.Path,
-						FullName = ((TypeEntry) e).TypeFullName
-					}));	
-			}
-			return result;
-		}
-
-		/// <summary>
-		///     Called when Ping event raises (by the UIService)
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <returns>System.String.</returns>
-		private string OnPing(string message)
-		{
-			LastPingMessage = message;
-			return string.Format("Welcome to the machine: {0}", message);
-		}
-
-		/// <summary>
-		///     Exit Action event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void ExitAction(object dummy)
-		{
-			Application.Current.Shutdown(0);
-		}
-
-
-		/// <summary>
-		///     Open Action event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void OpenAction(object dummy)
-		{
-			string fileName;
-			bool? result = viewService.ShowOpenFile(out fileName);
-			if (result != null && result.Value)
-			{
-				try
-				{
-					if (Roots.Any(item => (item.Data).Path == fileName))
-					{
-						viewService.ShowMessage(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
-						return;
-					}
-
-					Assembly assembly = Assembly.LoadFile(fileName);
-					string fullName = assembly.FullName.Replace(", ", "\n");
-
-					var nodeViewModel = new ReflectionNodeViewModel(new AssemblyEntry
-					{
-						Path = fileName,
-						Name = Path.GetFileName(fileName),
-						Description = string.Format("{0}\nLoaded from: {1}", fullName, fileName)
-					}, null);
-					nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
-					Roots.Add(nodeViewModel);
-					var x = nodeViewModel.GetChildrenData();
-
-				}
-				catch (Exception e)
-				{
-					viewService.ShowMessage(string.Format(UIStrings.Message_error_loading_assembly, fileName));
-					logger.Error(e);
-				}
-			}
-		}
-
-		private void OnNodeViewModelOnRequestRemove(object sender, EventArgs eventArgs)
-		{
-			var node = sender as ReflectionNodeViewModel;
-			if (node == null)
-			{
-				return;
-			}
-			
-			node.RequestRemove -= OnNodeViewModelOnRequestRemove;
-			roots.Remove(node);
-		}
-
-
-		/// <summary>
-		///     Restores the main window position an size
-		/// </summary>
-		private void RestoreMainWindow()
-		{
-			MainWindowTop = Settings.Default.MainWindowTop;
-			MainWindowLeft = Settings.Default.MainWindowLeft;
-			MainWindowHeight = Settings.Default.MainWindowHeight;
-			MainWindowWidth = Settings.Default.MainWindowWidth;
-			if (Settings.Default.MainWindowMaximized)
-			{
-				MainWindowState = WindowState.Maximized;
-			}
-			else
-			{
-				MainWindowState = WindowState.Normal;
-			}
-
-			SplitHeightTop = Settings.Default.SplitHeightTop;
-			SplitHeightBottom = Settings.Default.SplitHeightBottom;
-			SplitWidthLeft = Settings.Default.SplitWidthLeft;
-			SplitWidthRight = Settings.Default.SplitWidthRight;
-			IsAlwaysOnTopChecked = Settings.Default.IsAlwaysOnTop;
-		}
-
-		/// <summary>
-		///     Saves the main window position and size.
-		/// </summary>
-		private void SaveMainWindow()
-		{
-			if (MainWindowState == WindowState.Maximized)
-			{
-				// Using RestoreBounds as the current values will be 0, 0 and the size of the screen.
-				// As RestoreBounds is a read only property getting (binding) RestoreBounds done via data piping.
-				Settings.Default.MainWindowTop = (int) RestoreBounds.Top;
-				Settings.Default.MainWindowLeft = (int) RestoreBounds.Left;
-				Settings.Default.MainWindowHeight = (int) RestoreBounds.Height;
-				Settings.Default.MainWindowWidth = (int) RestoreBounds.Width;
-				Settings.Default.MainWindowMaximized = true;
-			}
-			else
-			{
-				Settings.Default.MainWindowTop = MainWindowTop;
-				Settings.Default.MainWindowLeft = MainWindowLeft;
-				Settings.Default.MainWindowHeight = MainWindowHeight;
-				Settings.Default.MainWindowWidth = MainWindowWidth;
-				Settings.Default.MainWindowMaximized = false;
-			}
-
-			Settings.Default.SplitHeightTop = SplitHeightTop;
-			Settings.Default.SplitHeightBottom = SplitHeightBottom;
-			Settings.Default.SplitWidthLeft = SplitWidthLeft;
-			Settings.Default.SplitWidthRight = SplitWidthRight;
-			Settings.Default.IsAlwaysOnTop = IsAlwaysOnTopChecked;
-			Settings.Default.Save();
-		}
-
-
-		private void OnTabsChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			if (e.NewItems != null && e.NewItems.Count != 0)
-			{
-				foreach (TabViewModel tabViewModel in e.NewItems)
-				{
-					tabViewModel.RequestClose += OnTabRequestClose;
-				}
-			}
-
-			if (e.OldItems != null && e.OldItems.Count != 0)
-			{
-				foreach (TabViewModel tabViewModel in e.OldItems)
-				{
-					tabViewModel.RequestClose -= OnTabRequestClose;
-				}
-			}
-		}
-
-		private void OnTabRequestClose(object sender, EventArgs e)
-		{
-			Tabs.Remove((TabViewModel) sender);
-		}
-
-		/// <summary>
-		///     Event handler for client's UpdateResult message.
-		///		Routes the message to the addressed PlotTabViewModel instance,
-		///		and creates it if does not exist yet
-		/// </summary>
-		/// <param name="result">Benchmark results coming from the client</param>
-		private void UpdateResults(BenchmarkResult result)
-		{
-			var model = GetPlotTabViewModel(result.Key, true);
-			ActivateTab<PlotTabViewModel>(model.Key);
-			model.Result = result;
-
-			var dataTabViewModel = GetDataTabViewModel(result.Key, true);
-			dataTabViewModel.UpdateResults(result);
-		}
-
-		private void ActivateTab<T>(string key)
-		{
-			TabViewModel found = Tabs.FirstOrDefault(pt => pt is T && pt.Key == key);
-			if (found != null)
-			{
-				SetActiveTab(found);
-			}
-		}
-
-		private void SetActiveTab(TabViewModel tabViewModel)
-		{
-			ICollectionView collectionView = CollectionViewSource.GetDefaultView(Tabs);
-			if (collectionView != null)
-			{
-				collectionView.MoveCurrentTo(tabViewModel);
-			}
-		}
-
-		private PlotTabViewModel GetPlotTabViewModel(string key, bool create)
-		{
-			var found =
-				(PlotTabViewModel) Tabs.Where(t => t is PlotTabViewModel).FirstOrDefault(pt => ((PlotTabViewModel) pt).Key == key);
-
-			if (found == null && create)
-			{
-				found = new PlotTabViewModel(key, key, this);
-				Tabs.Add(found);
-			}
-			return found;
-		}
-
-		private DataTabViewModel GetDataTabViewModel(string key, bool create)
-		{
-			var found =
-				(DataTabViewModel)Tabs.Where(t => t is DataTabViewModel).FirstOrDefault(pt => pt.Key == key);
-
-			if (found == null && create)
-			{
-				found = new DataTabViewModel(key, key, this);
-				Tabs.Add(found);
-			}
-			return found;
-		}
-
-
-		private ICommand switchTimeAxisCommand;
-		/// <summary>
-		///     Gets the SwitchTimeAxis command for MVVM binding.
-		/// </summary>
-		/// <value>The SwitchTimeAxis command.</value>
-		public ICommand SwitchTimeAxisCommand
-		{
-			get { return switchTimeAxisCommand ?? (switchTimeAxisCommand = new RelayCommand<object>(SwitchTimeAxisAction)); }
-		}
-
-		/// <summary>
-		///     Gets the roots collection to the tree display.
-		/// </summary>
-		/// <value>The root nodes (multiple)</value>
-// ReSharper disable once ReturnTypeCanBeEnumerable.Global
-		public ObservableCollection<ReflectionNodeViewModel> Roots
-		{
-			get
-			{
-				return roots;
-			}
-		}
-
-		private int logItemsSelectedIndex; // Backing field for property LogItemsSelectedIndex
-
-		/// <summary>
-		/// Observable property for MVVM. Gets or sets state LogItemsSelectedIndex. 
-		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
-		/// </summary>
-		/// <value>The property value. If the new value is the same as the current property value
-		/// then no PropertyChange event is raised.
-		/// </value>
-		public int LogItemsSelectedIndex
-		{
-			get { return logItemsSelectedIndex; }
-
-			set
-			{
-				if (logItemsSelectedIndex == value)
-				{
-					return;
-				}
-				logItemsSelectedIndex = value;
-				RaisePropertyChanged(() => LogItemsSelectedIndex);
-			}
-		}
-
-
-		/// <summary>
-		///     SwitchTimeAxis event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void SwitchTimeAxisAction(object dummy)
-		{
-			// TODO: Implement
-		}
-
-
-		private static DataTable CreateDemoTable()
-		{
-			var table = new DataTable("Demo");
-
-			int colummnCount = 5;
-			int rowCount = 5;
-			for(int i = 1; i<= colummnCount; i++)
-			{
-				table.Columns.Add(string.Format("Column{0}", i), typeof(double));
-			}
-
-			for (int r = 1; r <= rowCount; r++)
-			{
-				var row = table.NewRow();
-				table.Rows.Add(row);
-				for (int i = 1; i <= colummnCount; i++)
-				{
-					row[string.Format("Column{0}", i)] = i * r;
-				}
-			}
-			return table;
-		}
-
-		private ICommand alwaysOnTopCommand;
-
-		/// <summary>
-		///     Gets the IsAlwaysOnTopChecked command for MVVM binding.
-		/// </summary>
-		/// <value>The IsAlwaysOnTopChecked command.</value>
-		public ICommand AlwaysOnTopCommand
-		{
-			get { return alwaysOnTopCommand ?? (alwaysOnTopCommand = new RelayCommand<object>(AlwaysOnTopAction)); }
-		}
-
-		/// <summary>
-		///     IsAlwaysOnTopChecked event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void AlwaysOnTopAction(object dummy)
-		{
-			//IsAlwaysOnTopChecked = !IsAlwaysOnTopChecked;
-		}
-
-		private ICommand logarithmicTimeAxisCommandCommand;
-
-		/// <summary>
-		///     Gets the LogarithmicTimeAxisCommand command for MVVM binding.
-		/// </summary>
-		/// <value>The LogarithmicTimeAxisCommand command.</value>
-		public ICommand LogarithmicTimeAxisCommand
-		{
-			get
-			{
-				return logarithmicTimeAxisCommandCommand ?? (logarithmicTimeAxisCommandCommand
-					= new RelayCommand<object>(LogarithmicTimeAxisCommandAction, CanExecuteLogarithmicTimeAxisCommand));
-			}
-		}
-
-
-		private bool CanExecuteLogarithmicTimeAxisCommand(object notUsed)
-		{
-			if (Tabs.Count == 0)
-			{
-				IsLogarithmicTimeAxisChecked = false;
-				return false;
-			}
-			if (TabsSelectedIndex >= Tabs.Count)
-			{
-				IsLogarithmicTimeAxisChecked = false;
-				return false;
-			}
-			return Tabs[TabsSelectedIndex] is PlotTabViewModel;
-		}
-
-		private PlotTabViewModel GetSelectedPlotTabViewModel()
-		{
-			if (Tabs.Count == 0)
-			{
-				return null;
-			}
-			if (TabsSelectedIndex >= Tabs.Count)
-			{
-				return null;
-			}
-			return Tabs[TabsSelectedIndex] as PlotTabViewModel;
-		}
-
-		/// <summary>
-		///     LogarithmicTimeAxisCommand event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void LogarithmicTimeAxisCommandAction(object dummy)
-		{
-			// Do nothing. This is a checkable command, which means the action is  taken
-			// in the IsLogarithmicTimeAxisChecked setter (see there)
-		}
-
-		/// <summary>
-		/// Observable property for MVVM. Gets or sets state IsLogarithmicTimeAxisChecked. 
-		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
-		/// </summary>
-		/// <value>The property value. If the new value is the same as the current property value
-		/// then no PropertyChange event is raised.
-		/// </value>
-		public bool IsLogarithmicTimeAxisChecked
-		{
-			get
-			{
-				var plotTabViewModel = GetSelectedPlotTabViewModel();
-				if (plotTabViewModel == null)
-				{
-					return false;
-				}
-				return plotTabViewModel.IsLogarithmicTimeAxisChecked;
-			}
-
-			set
-			{
-				var plotTabViewModel = GetSelectedPlotTabViewModel();
-				if (plotTabViewModel == null)
-				{
-					return;
-				}
-
-				plotTabViewModel.IsLogarithmicTimeAxisChecked = value;
-				RaisePropertyChanged(() => IsLogarithmicTimeAxisChecked);
-			}
-		}
-
-		public void RaiseIsLogarithmicTimeAxisCheckedChanged()
-		{
-			RaisePropertyChanged(() => IsLogarithmicTimeAxisChecked);
-		}
-
-
-		private int tabsSelectedIndex;
-
-		public int TabsSelectedIndex
-		{
-			get { return tabsSelectedIndex; }
-			set
-			{
-				tabsSelectedIndex = value;
-				RaisePropertyChanged(() => IsLogarithmicTimeAxisChecked);
-			}
-		}
-
-		private ICommand saveAllResultsCommand;
-
-		/// <summary>
-		///     Gets the SaveAllResults command for MVVM binding.
-		/// </summary>
-		/// <value>The SaveAllResults command.</value>
-		public ICommand SaveAllResultsCommand
-		{
-			get { return saveAllResultsCommand ?? (saveAllResultsCommand = new RelayCommand<object>(SaveAllResultsAction)); }
-		}
-
-		/// <summary>
-		///     SaveAllResults event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void SaveAllResultsAction(object dummy)
-		{
-			// TODO: Remember last picked folder (in user settings), and start from there
-			string folderName;
-			bool? result = viewService.ShowFolderBrowser(out folderName);
-			if (result != null && result.Value)
-			{
-				try
-				{
-					foreach (var plotTabViewModel in Tabs.Where(t=> t is PlotTabViewModel).Cast<PlotTabViewModel>())
-					{
-						Benchmark.Benchmarker.ExportResultsToPdf(plotTabViewModel.PlotModel, plotTabViewModel.Result, folderName);
-						Benchmark.Benchmarker.ExportResultsToCsv(plotTabViewModel.Result, folderName);
-					}
-
-				}
-				catch (Exception e)
-				{
-					viewService.ShowMessage(string.Format(UIStrings.MainViewModel_SaveAllResultsAction_Error_saving_results_));
-					logger.Error(e);
-				}
-			}
-
-		}
-
-		private ICommand clearLogCommand;
-
-		/// <summary>
-		///     Gets the ClearLog command for MVVM binding.
-		/// </summary>
-		/// <value>The ClearLog command.</value>
-		public ICommand ClearLogCommand
-		{
-			get { return clearLogCommand ?? (clearLogCommand = new RelayCommand<object>(ClearLogAction)); }
-		}
-
-		/// <summary>
-		///     ClearLog event handler.
-		/// </summary>
-		/// <param name="dummy">not used here</param>
-		private void ClearLogAction(object dummy)
-		{
-			LogItems.Clear();
-		}
-	}
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Catel;
+    using Catel.Logging;
+    using Catel.MVVM;
+    using Catel.Services;
+    using NUnitBenchmarker.UI.Model;
+    using NUnitBenchmarker.UI.Resources;
+    using NUnitBenchmarker.UI.Services;
+    using NUnitBenchmarker.UI.ViewModels.AssemblyTree;
+    using NUnitBenchmarker.UIService;
+    using NUnitBenchmarker.UIService.Data;
+
+    /// <summary>
+    /// Class MainViewModel: MVVM ViewModel for MainWindow
+    /// </summary>
+    public class MainViewModel : ViewModelBase
+    {
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+
+        #region Fields
+        private readonly IViewService _viewService;
+        private readonly IUIServiceHost _uiServiceHost;
+        private readonly IMessageService _messageService;
+        private readonly ISelectDirectoryService _selectDirectoryService;
+        private readonly IOpenFileService _openFileService;
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainViewModel" /> class.
+        /// </summary>
+        public MainViewModel(IViewService viewService, IUIServiceHost uiServiceHost, IMessageService messageService,
+            ISelectDirectoryService selectDirectoryService, IOpenFileService openFileService, ICommandManager commandManager)
+        {
+            Argument.IsNotNull(() => viewService);
+            Argument.IsNotNull(() => uiServiceHost);
+            Argument.IsNotNull(() => messageService);
+            Argument.IsNotNull(() => selectDirectoryService);
+            Argument.IsNotNull(() => openFileService);
+            Argument.IsNotNull(() => commandManager);
+
+            _viewService = viewService;
+            _uiServiceHost = uiServiceHost;
+            _messageService = messageService;
+            _selectDirectoryService = selectDirectoryService;
+            _openFileService = openFileService;
+
+            Roots = new ObservableCollection<ReflectionNodeViewModel>();
+            BenchmarkResults = new ObservableCollection<BenchmarkResult>();
+
+            FileOpen = new Command(OnFileOpenExecute);
+            SwitchTimeAxis = new Command(OnSwitchTimeAxisExecute);
+            SaveAllResults = new Command(OnSaveAllResultsExecute);
+
+            commandManager.RegisterCommand("File.Open", FileOpen, this);
+        }
+        #endregion
+
+        #region Properties
+        public override string Title
+        {
+            get { return string.Format("NUnit Benchmarker v{0}", Assembly.GetExecutingAssembly().GetName().Version); }
+        }
+
+        public string LastPingMessage { get; set; }
+
+        public bool IsLogarithmicTimeAxisChecked { get; set; }
+
+        public ObservableCollection<ReflectionNodeViewModel> Roots { get; private set; }
+
+        public ObservableCollection<BenchmarkResult> BenchmarkResults { get; private set; }
+        #endregion
+
+        #region Commands
+        /// <summary>
+        /// Gets the FileOpen command.
+        /// </summary>
+        public Command FileOpen { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the FileOpen command is executed.
+        /// </summary>
+        private void OnFileOpenExecute()
+        {
+            _openFileService.IsMultiSelect = false;
+            _openFileService.Filter = "Assembly Files (.dll, .exe)|*.dll;*.exe";
+            if (_openFileService.DetermineFile())
+            {
+                string fileName = _openFileService.FileName;
+
+                try
+                {
+                    if (Roots.Any(item => (item.Data).Path == fileName))
+                    {
+                        _viewService.ShowMessage(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
+                        return;
+                    }
+
+                    var assembly = Assembly.LoadFile(fileName);
+                    string fullName = assembly.FullName.Replace(", ", "\n");
+
+                    // TODO: Don't create 
+                    var nodeViewModel = new ReflectionNodeViewModel(new AssemblyEntry
+                    {
+                        Path = fileName,
+                        Name = Path.GetFileName(fileName),
+                        Description = string.Format("{0}\nLoaded from: {1}", fullName, fileName)
+                    }, null);
+                    nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
+                    Roots.Add(nodeViewModel);
+                    var x = nodeViewModel.GetChildrenData();
+                }
+                catch (Exception ex)
+                {
+                    _messageService.ShowError(string.Format(UIStrings.Message_error_loading_assembly, fileName));
+
+                    Log.Error(ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the SwitchTimeAxis command.
+        /// </summary>
+        public Command SwitchTimeAxis { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the SwitchTimeAxis command is executed.
+        /// </summary>
+        private void OnSwitchTimeAxisExecute()
+        {
+            // TODO: Handle command logic here
+        }
+
+        /// <summary>
+        /// Gets the SaveAllResults command.
+        /// </summary>
+        public Command SaveAllResults { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the SaveAllResults command is executed.
+        /// </summary>
+        private void OnSaveAllResultsExecute()
+        {
+            // TODO: Remember last picked folder (in user settings), and start from there
+            if (_selectDirectoryService.DetermineDirectory())
+            {
+                var folderName = _selectDirectoryService.DirectoryName;
+
+                try
+                {
+                    //foreach (var plotTabViewModel in Tabs.Where(t => t is PlotTabViewModel).Cast<PlotTabViewModel>())
+                    //{
+                    //    Benchmark.Benchmarker.ExportResultsToPdf(plotTabViewModel.PlotModel, plotTabViewModel.Result, folderName);
+                    //    Benchmark.Benchmarker.ExportResultsToCsv(plotTabViewModel.Result, folderName);
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    _viewService.ShowMessage(string.Format(UIStrings.MainViewModel_SaveAllResultsAction_Error_saving_results_));
+
+                    Log.Error(ex);
+                }
+            }
+        }
+        #endregion
+
+        #region Methods
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            try
+            {
+                _uiServiceHost.Start();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+
+            _uiServiceHost.Ping += OnPing;
+            _uiServiceHost.GetImplementations += GetImplementations;
+            _uiServiceHost.UpdateResult += UpdateResults;
+        }
+
+        protected override void Close()
+        {
+            _uiServiceHost.Stop();
+            _uiServiceHost.Ping -= OnPing;
+            _uiServiceHost.GetImplementations -= GetImplementations;
+            _uiServiceHost.UpdateResult -= UpdateResults;
+
+            base.Close();
+        }
+
+        private IEnumerable<TypeSpecification> GetImplementations(TypeSpecification typeSpecification)
+        {
+            var result = new List<TypeSpecification>();
+            foreach (var node in Roots)
+            {
+                result.AddRange(node.GetChildrenData()
+                    .Where(e => e.LeafEntry)
+                    .Select(e => new TypeSpecification
+                    {
+                        AssemblyPath = e.Path,
+                        FullName = ((TypeEntry)e).TypeFullName
+                    }));
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Called when Ping event raises (by the UIService)
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>System.String.</returns>
+        private string OnPing(string message)
+        {
+            LastPingMessage = message;
+            return string.Format("Welcome to the machine: {0}", message);
+        }
+
+        private void OnNodeViewModelOnRequestRemove(object sender, EventArgs eventArgs)
+        {
+            var node = sender as ReflectionNodeViewModel;
+            if (node == null)
+            {
+                return;
+            }
+
+            node.RequestRemove -= OnNodeViewModelOnRequestRemove;
+            Roots.Remove(node);
+        }
+
+        /// <summary>
+        /// Event handler for client's UpdateResult message.
+        /// Routes the message to the addressed PlotTabViewModel instance,
+        /// and creates it if does not exist yet
+        /// </summary>
+        /// <param name="result">Benchmark results coming from the client</param>
+        private void UpdateResults(BenchmarkResult result)
+        {
+            //var model = GetPlotTabViewModel(result.Key, true);
+            //ActivateTab<PlotTabViewModel>(model.Key);
+            //model.Result = result;
+
+            //var dataTabViewModel = GetDataTabViewModel(result.Key, true);
+            //dataTabViewModel.UpdateResults(result);
+        }
+
+        //private bool CanExecuteLogarithmicTimeAxisCommand(object notUsed)
+        //{
+        //    if (Tabs.Count == 0)
+        //    {
+        //        IsLogarithmicTimeAxisChecked = false;
+        //        return false;
+        //    }
+
+        //    if (TabsSelectedIndex >= Tabs.Count)
+        //    {
+        //        IsLogarithmicTimeAxisChecked = false;
+        //        return false;
+        //    }
+
+        //    return Tabs[TabsSelectedIndex] is PlotTabViewModel;
+        //}
+
+        //private PlotTabViewModel GetSelectedPlotTabViewModel()
+        //{
+        //    if (Tabs.Count == 0)
+        //    {
+        //        return null;
+        //    }
+
+        //    if (TabsSelectedIndex >= Tabs.Count)
+        //    {
+        //        return null;
+        //    }
+
+        //    return Tabs[TabsSelectedIndex] as PlotTabViewModel;
+        //}
+        #endregion
+    }
 }

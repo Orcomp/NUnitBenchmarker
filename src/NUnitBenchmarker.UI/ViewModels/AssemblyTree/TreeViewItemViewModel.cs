@@ -1,349 +1,328 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TreeViewItemViewModel.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 
 namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
 {
-	/// <summary>
-	///     Foundation class for all ViewModel classes displayed by TreeViewItems.
-	///     Uses mediator / adapter design pattern between domain model and TreeViewItem.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class TreeViewItemViewModel<T> : ViewModelBase
-	{
-		#region Constants and Fields
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using Catel.MVVM;
 
-		/// <summary>
-		///     The data
-		/// </summary>
-		protected T data;
-		/// <summary>
-		///     The dummy child
-		/// </summary>
-		private static readonly TreeViewItemViewModel<T> DummyChild = new TreeViewItemViewModel<T>();
+    /// <summary>
+    ///     Foundation class for all ViewModel classes displayed by TreeViewItems.
+    ///     Uses mediator / adapter design pattern between domain model and TreeViewItem.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class TreeViewItemViewModel<T> : ViewModelBase
+    {
+        #region Constants
+        /// <summary>
+        ///     The dummy child
+        /// </summary>
+        private static readonly TreeViewItemViewModel<T> DummyChild = new TreeViewItemViewModel<T>();
+        #endregion
 
-		/// <summary>
-		///     The parent of the node
-		/// </summary>
-		private readonly TreeViewItemViewModel<T> parent;
-		/// <summary>
-		///     The children of the node
-		/// </summary>
-		private ObservableCollection<TreeViewItemViewModel<T>> children;
+        #region Fields
+        /// <summary>
+        ///     The parent of the node
+        /// </summary>
+        private readonly TreeViewItemViewModel<T> parent;
 
-		/// <summary>
-		///     Is the node expanded?
-		/// </summary>
-		private bool isExpanded;
-		/// <summary>
-		///     The is selected
-		/// </summary>
-		private bool isSelected;
+        /// <summary>
+        ///     The children of the node
+        /// </summary>
+        private ObservableCollection<TreeViewItemViewModel<T>> children;
 
-		#endregion
+        /// <summary>
+        ///     The data
+        /// </summary>
+        protected T data;
 
-		#region Constructors and Destructors
+        private bool isChecked; // Backing field for property IsChecked
 
-		/// <summary>
-		///     Initializes a new instance of the <see cref="TreeViewItemViewModel{T}" /> class.
-		/// </summary>
-		/// <param name="data">The data of the node.</param>
-		/// <param name="parent">The parent of the node.</param>
-		/// <param name="lazyLoadChildren">
-		///     if set to <c>true</c> [lazy load children].
-		/// </param>
-		protected TreeViewItemViewModel(T data, TreeViewItemViewModel<T> parent, bool lazyLoadChildren)
-		{
-			this.data = data;
-			this.parent = parent;
-			
-			children = new ObservableCollection<TreeViewItemViewModel<T>>();
+        /// <summary>
+        ///     Is the node expanded?
+        /// </summary>
+        private bool isExpanded;
 
-			if (lazyLoadChildren)
-			{
-				children.Add(DummyChild);
-			}
-		}
+        /// <summary>
+        ///     The is selected
+        /// </summary>
+        private bool isSelected;
+        #endregion
 
-		// This is used to create the DummyChild instance.
-		/// <summary>
-		///     Prevents a default instance of the <see cref="TreeViewItemViewModel{T}" /> class from being created.
-		/// </summary>
-		private TreeViewItemViewModel()
-		{
-		}
+        #region Constructors
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="TreeViewItemViewModel{T}" /> class.
+        /// </summary>
+        /// <param name="data">The data of the node.</param>
+        /// <param name="parent">The parent of the node.</param>
+        /// <param name="lazyLoadChildren">
+        ///     if set to <c>true</c> [lazy load children].
+        /// </param>
+        protected TreeViewItemViewModel(T data, TreeViewItemViewModel<T> parent, bool lazyLoadChildren)
+        {
+            this.data = data;
+            this.parent = parent;
 
-		#endregion
+            children = new ObservableCollection<TreeViewItemViewModel<T>>();
 
-		#region Public Events
+            if (lazyLoadChildren)
+            {
+                children.Add(DummyChild);
+            }
+        }
 
-		/// <summary>
-		///     Occurs when [selected item changed] in the tree.
-		/// </summary>
-		public static event Action<TreeViewItemViewModel<T>> SelectedItemChanged;
+        // This is used to create the DummyChild instance.
+        /// <summary>
+        ///     Prevents a default instance of the <see cref="TreeViewItemViewModel{T}" /> class from being created.
+        /// </summary>
+        private TreeViewItemViewModel()
+        {
+        }
+        #endregion
 
-		#endregion
+        #region Public Events
+        /// <summary>
+        ///     Occurs when [selected item changed] in the tree.
+        /// </summary>
+        public static event Action<TreeViewItemViewModel<T>> SelectedItemChanged;
+        #endregion
 
-		#region Public Properties
+        #region Properties
+        /// <summary>
+        ///     Returns the child items of this node.
+        /// </summary>
+        /// <value>The children.</value>
+        public ObservableCollection<TreeViewItemViewModel<T>> Children
+        {
+            get { return children; }
+            set
+            {
+                children = value;
+                RaisePropertyChanged(() => Children);
+            }
+        }
 
-		/// <summary>
-		///     Returns the child items of this node.
-		/// </summary>
-		/// <value>The children.</value>
-		public ObservableCollection<TreeViewItemViewModel<T>> Children
-		{
-			get
-			{
-				return children;
-			}
-			set
-			{
-				children = value;
-				RaisePropertyChanged(() => Children);
-			}
-		}
-		/// <summary>
-		///     Gets or sets the node data.
-		/// </summary>
-		/// <value>The data.</value>
-		virtual public T Data
-		{
-			get
-			{
-				return data;
-			}
-			set
-			{
-				data = value;
-				RaisePropertyChanged(() => Data);
-			}
-		}
+        /// <summary>
+        ///     Gets or sets the node data.
+        /// </summary>
+        /// <value>The data.</value>
+        public virtual T Data
+        {
+            get { return data; }
+            set
+            {
+                data = value;
+                RaisePropertyChanged(() => Data);
+            }
+        }
 
-		/// <summary>
-		///     Returns true if this object's Children have not yet been populated.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance has dummy child; otherwise, <c>false</c>.
-		/// </value>
-		public bool HasDummyChild
-		{
-			get
-			{
-				return Children.Count == 1 && Children[0] == DummyChild;
-			}
-		}
+        /// <summary>
+        ///     Returns true if this object's Children have not yet been populated.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance has dummy child; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasDummyChild
+        {
+            get { return Children.Count == 1 && Children[0] == DummyChild; }
+        }
 
-		/// <summary>
-		///     Gets/sets whether the TreeViewItem
-		///     associated with this object is expanded.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is expanded; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsExpanded
-		{
-			get
-			{
-				return isExpanded;
-			}
-			set
-			{
-				if (value != isExpanded)
-				{
-					isExpanded = value;
-					RaisePropertyChanged(() => IsExpanded);
-				}
-				if (!value)
-				{
-					return;
-				}
+        /// <summary>
+        ///     Gets/sets whether the TreeViewItem
+        ///     associated with this object is expanded.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is expanded; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsExpanded
+        {
+            get { return isExpanded; }
+            set
+            {
+                if (value != isExpanded)
+                {
+                    isExpanded = value;
+                    RaisePropertyChanged(() => IsExpanded);
+                }
+                if (!value)
+                {
+                    return;
+                }
 
-				// Expand all the way up to the root.
-				if (isExpanded && parent != null)
-				{
-					parent.IsExpanded = true;
-				}
+                // Expand all the way up to the root.
+                if (isExpanded && parent != null)
+                {
+                    parent.IsExpanded = true;
+                }
 
-				// Lazy load the child items, if necessary.
-				if (HasDummyChild)
-				{
-					Children.Remove(DummyChild);
-					LoadChildren();
-				}
+                // Lazy load the child items, if necessary.
+                if (HasDummyChild)
+                {
+                    Children.Remove(DummyChild);
+                    LoadChildren();
+                }
+            }
+        }
 
-			}
-		}
+        /// <summary>
+        ///     Gets/sets whether the TreeViewItem
+        ///     associated with this object is selected.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is selected; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                if (value != isSelected)
+                {
+                    isSelected = value;
+                    RaisePropertyChanged(() => IsSelected);
+                    if (IsSelected)
+                    {
+                        OnSelectedItemChanged();
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		///     Gets/sets whether the TreeViewItem
-		///     associated with this object is selected.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is selected; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsSelected
-		{
-			get
-			{
-				return isSelected;
-			}
-			set
-			{
-				if (value != isSelected)
-				{
-					isSelected = value;
-					RaisePropertyChanged(() => IsSelected);
-					if (IsSelected)
-					{
-						OnSelectedItemChanged();
-					}
-				}
-			}
-		}
-		private bool isChecked; // Backing field for property IsChecked
-		/// <summary>
-		/// Observable property for MVVM. Gets or sets state IsChecked. 
-		/// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
-		/// </summary>
-		/// <value>The property value. If the new value is the same as the current property value
-		/// then no PropertyChange event is raised.
-		/// </value>
-		public bool IsChecked
-		{
-			get { return isChecked; }
+        /// <summary>
+        /// Observable property for MVVM. Gets or sets state IsChecked. 
+        /// Set accessor raises PropertyChanged event on <see cref="INotifyPropertyChanged" /> interface 
+        /// </summary>
+        /// <value>The property value. If the new value is the same as the current property value
+        /// then no PropertyChange event is raised.
+        /// </value>
+        public bool IsChecked
+        {
+            get { return isChecked; }
 
-			set
-			{
-				if (isChecked == value)
-				{
-					return;
-				}
-				isChecked = value;
-				if (Children == null)
-				{
-					return;
-				}
-				foreach (var node in Children)
-				{
-					node.IsChecked = value;
-				}
-				RaisePropertyChanged(() => IsChecked);
-			}
-		}
+            set
+            {
+                if (isChecked == value)
+                {
+                    return;
+                }
+                isChecked = value;
+                if (Children == null)
+                {
+                    return;
+                }
+                foreach (var node in Children)
+                {
+                    node.IsChecked = value;
+                }
+                RaisePropertyChanged(() => IsChecked);
+            }
+        }
 
+        /// <summary>
+        ///     Gets the parent.
+        /// </summary>
+        /// <value>The parent.</value>
+        public TreeViewItemViewModel<T> Parent
+        {
+            get { return parent; }
+        }
 
-		/// <summary>
-		///     Gets the parent.
-		/// </summary>
-		/// <value>The parent.</value>
-		public TreeViewItemViewModel<T> Parent
-		{
-			get
-			{
-				return parent;
-			}
-		}
-		/// <summary>
-		///     Gets the root.
-		/// </summary>
-		/// <value>The root.</value>
-		public TreeViewItemViewModel<T> Root
-		{
-			get
-			{
-				TreeViewItemViewModel<T> result = this;
-				while (result.Parent != null)
-				{
-					result = result.Parent;
-				}
-				return result;
-			}
-		}
+        /// <summary>
+        ///     Gets the root.
+        /// </summary>
+        /// <value>The root.</value>
+        public TreeViewItemViewModel<T> Root
+        {
+            get
+            {
+                TreeViewItemViewModel<T> result = this;
+                while (result.Parent != null)
+                {
+                    result = result.Parent;
+                }
+                return result;
+            }
+        }
+        #endregion
 
-		#endregion
+        #region Methods
+        /// <summary>
+        ///     Clears the specified lazy load children.
+        /// </summary>
+        /// <param name="lazyLoadChildren">
+        ///     if set to <c>true</c> [lazy load children].
+        /// </param>
+        public virtual void Clear(bool lazyLoadChildren = true)
+        {
+            if (HasDummyChild)
+            {
+                return;
+            }
 
-		#region Public Methods and Operators
+            foreach (var treeViewItemViewModel in Children)
+            {
+                treeViewItemViewModel.Clear(lazyLoadChildren);
+            }
 
-		/// <summary>
-		///     Clears the specified lazy load children.
-		/// </summary>
-		/// <param name="lazyLoadChildren">
-		///     if set to <c>true</c> [lazy load children].
-		/// </param>
-		public virtual void Clear(bool lazyLoadChildren = true)
-		{
-			if (HasDummyChild)
-			{
-				return;
-			}
+            Children = new ObservableCollection<TreeViewItemViewModel<T>>();
 
-			foreach (var treeViewItemViewModel in Children)
-			{
-				treeViewItemViewModel.Clear(lazyLoadChildren);
-			}
+            if (lazyLoadChildren)
+            {
+                children.Add(DummyChild);
+            }
+            IsExpanded = false;
+        }
 
-			Children = new ObservableCollection<TreeViewItemViewModel<T>>();
+        public virtual IEnumerable<T> GetChildrenData(IList<T> result = null, bool onlyChecked = true)
+        {
+            if (result == null)
+            {
+                result = new List<T>();
+            }
 
-			if (lazyLoadChildren)
-			{
-				children.Add(DummyChild);
-			}
-			IsExpanded = false;
-		}
+            if (!onlyChecked || IsChecked)
+            {
+                result.Add(Data);
+            }
 
-		public virtual IEnumerable<T> GetChildrenData(IList<T> result = null, bool onlyChecked = true)
-		{
-			if (result == null)
-			{
-				result = new List<T>();
-			}
+            if (HasDummyChild)
+            {
+                Children.Remove(DummyChild);
+                LoadChildren();
+            }
 
-			if (!onlyChecked || IsChecked)
-			{
-				result.Add(Data);
-			}
+            foreach (var child in Children)
+            {
+                child.GetChildrenData(result, onlyChecked);
+            }
+            return result;
+        }
 
-			if (HasDummyChild)
-			{
-				Children.Remove(DummyChild);
-				LoadChildren();
-			}
+        /// <summary>
+        ///     Invoked when the child items need to be loaded on demand.
+        ///     Subclasses can override this to populate the Children collection.
+        /// </summary>
+        public virtual void LoadChildren(Action<object> completion = null)
+        {
+        }
 
-			foreach (var child in Children)
-			{
-				child.GetChildrenData(result, onlyChecked);
-			}
-			return result;
-		}
-
-
-		#endregion
-
-		#region Methods
-
-		/// <summary>
-		///     Invoked when the child items need to be loaded on demand.
-		///     Subclasses can override this to populate the Children collection.
-		/// </summary>
-		public virtual void LoadChildren(Action<object> completion = null)
-		{
-		}
-
-		/// <summary>
-		///     Called when [selected item changed].
-		/// </summary>
-		protected virtual void OnSelectedItemChanged()
-		{
-			Action<TreeViewItemViewModel<T>> handler = SelectedItemChanged;
-			if (handler != null)
-			{
-				handler(this);
-			}
-		}
-
-
-
-		#endregion
-	}
+        /// <summary>
+        ///     Called when [selected item changed].
+        /// </summary>
+        protected virtual void OnSelectedItemChanged()
+        {
+            Action<TreeViewItemViewModel<T>> handler = SelectedItemChanged;
+            if (handler != null)
+            {
+                handler(this);
+            }
+        }
+        #endregion
+    }
 }
