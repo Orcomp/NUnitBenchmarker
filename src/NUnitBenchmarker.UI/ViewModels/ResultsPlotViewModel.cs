@@ -7,20 +7,31 @@
 
 namespace NUnitBenchmarker.UI.ViewModels
 {
+    using System.Linq;
     using Catel;
     using Catel.MVVM;
+    using NUnitBenchmarker.Benchmark;
+    using NUnitBenchmarker.UI.Models;
+    using NUnitBenchmarker.UIService;
     using NUnitBenchmarker.UIService.Data;
     using OxyPlot;
 
     public class ResultsPlotViewModel : ViewModelBase
     {
-        public ResultsPlotViewModel(BenchmarkResult benchmarkResult)
+        private readonly IUIServiceHost _uiServiceHost;
+        private readonly ISettings _settings;
+
+        public ResultsPlotViewModel(BenchmarkResult benchmarkResult, IUIServiceHost uiServiceHost, ISettings settings)
         {
             Argument.IsNotNull(() => benchmarkResult);
+            Argument.IsNotNull(() => uiServiceHost);
+            Argument.IsNotNull(() => settings);
 
             BenchmarkResult = benchmarkResult;
+            _uiServiceHost = uiServiceHost;
+            _settings = settings;
 
-            UpdateModel();
+            UpdateResults(BenchmarkResult);
         }
 
         #region Properties
@@ -30,9 +41,26 @@ namespace NUnitBenchmarker.UI.ViewModels
         #endregion
 
         #region Methods
-        private void UpdateModel()
+        private void UpdateResults(BenchmarkResult result)
         {
-            
+            int dummy;
+            PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
+                ? Benchmarker.CreatePlotModel(result, !_settings.IsLogarithmicTimeAxisChecked)
+                : Benchmarker.CreateCategoryPlotModel(result, !_settings.IsLogarithmicTimeAxisChecked);
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _uiServiceHost.UpdateResult += UpdateResults;
+        }
+
+        protected override void Close()
+        {
+            _uiServiceHost.UpdateResult -= UpdateResults;
+
+            base.Close();
         }
         #endregion
     }

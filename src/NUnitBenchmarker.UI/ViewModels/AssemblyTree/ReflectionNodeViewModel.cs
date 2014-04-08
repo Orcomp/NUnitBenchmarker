@@ -26,8 +26,6 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
         private int imageHeight;
         private Thickness imageMargin;
         private int imageWidth;
-
-        private ICommand removeCommand;
         #endregion
 
         #region Constructors

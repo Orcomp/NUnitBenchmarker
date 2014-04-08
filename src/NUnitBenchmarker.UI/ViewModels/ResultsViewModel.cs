@@ -7,11 +7,9 @@
 
 namespace NUnitBenchmarker.UI.ViewModels
 {
-    using System.Data;
     using Catel;
     using Catel.MVVM;
     using NUnitBenchmarker.UIService.Data;
-    using OxyPlot;
 
     public class ResultsViewModel : ViewModelBase
     {

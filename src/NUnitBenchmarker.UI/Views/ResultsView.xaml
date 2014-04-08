@@ -11,8 +11,8 @@
             <RowDefinition Height="*" />
         </catel:StackGrid.RowDefinitions>
 
-        <views:ResultsPlotView />
-        <views:ResultsDataView />
+        <views:ResultsPlotView DataContext="{Binding BenchmarkResult}" />
+        <views:ResultsDataView DataContext="{Binding BenchmarkResult}" />
 
     </catel:StackGrid>
 </catel:UserControl>

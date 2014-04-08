@@ -38,10 +38,7 @@
 
             <MenuItem Header="_Option">
                 <MenuItem Header="_Always on Top" IsCheckable="True" IsChecked="{Binding IsAlwaysOnTopChecked}" Command="{Binding AlwaysOnTopCommand}" />
-                <MenuItem Header="_Logarithmic Time axis" 
-                          IsCheckable="True" 
-                          IsChecked="{Binding IsLogarithmicTimeAxisChecked}" 
-                          Command="{Binding LogarithmicTimeAxisCommand}"/>
+                <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding Settings.IsLogarithmicTimeAxisChecked}" />
             </MenuItem>
 
             <MenuItem Header="_Tools">
@@ -109,8 +106,14 @@
                               VerticalAlignment="Stretch"
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
                               Width="2" Background="#FFBCBCBC" />
-                
-                <catel:TabControl LoadTabItems="SingleUnloadOthers" ItemsSource="{Binding BenchmarkResults}" />
+
+                <catel:TabControl LoadTabItems="SingleUnloadOthers" ItemsSource="{Binding BenchmarkResults}">
+                    <catel:TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <views:ResultsView />
+                        </DataTemplate>
+                    </catel:TabControl.ItemTemplate>
+                </catel:TabControl>
 
                 <ContentControl Grid.Column="2" Content="{Binding Tabs}"
                                 ContentTemplate="{StaticResource TabsDataTemplate}" Style="{StaticResource TabsContentStyle}" />

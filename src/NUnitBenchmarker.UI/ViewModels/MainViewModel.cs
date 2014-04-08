@@ -18,6 +18,7 @@ namespace NUnitBenchmarker.UI.ViewModels
     using Catel.MVVM;
     using Catel.Services;
     using NUnitBenchmarker.UI.Model;
+    using NUnitBenchmarker.UI.Models;
     using NUnitBenchmarker.UI.Resources;
     using NUnitBenchmarker.UI.Services;
     using NUnitBenchmarker.UI.ViewModels.AssemblyTree;
@@ -44,7 +45,8 @@ namespace NUnitBenchmarker.UI.ViewModels
         /// Initializes a new instance of the <see cref="MainViewModel" /> class.
         /// </summary>
         public MainViewModel(IViewService viewService, IUIServiceHost uiServiceHost, IMessageService messageService,
-            ISelectDirectoryService selectDirectoryService, IOpenFileService openFileService, ICommandManager commandManager)
+            ISelectDirectoryService selectDirectoryService, IOpenFileService openFileService, ICommandManager commandManager,
+            ISettings settings)
         {
             Argument.IsNotNull(() => viewService);
             Argument.IsNotNull(() => uiServiceHost);
@@ -52,12 +54,14 @@ namespace NUnitBenchmarker.UI.ViewModels
             Argument.IsNotNull(() => selectDirectoryService);
             Argument.IsNotNull(() => openFileService);
             Argument.IsNotNull(() => commandManager);
+            Argument.IsNotNull(() => settings);
 
             _viewService = viewService;
             _uiServiceHost = uiServiceHost;
             _messageService = messageService;
             _selectDirectoryService = selectDirectoryService;
             _openFileService = openFileService;
+            Settings = settings;
 
             Roots = new ObservableCollection<ReflectionNodeViewModel>();
             BenchmarkResults = new ObservableCollection<BenchmarkResult>();
@@ -78,7 +82,7 @@ namespace NUnitBenchmarker.UI.ViewModels
 
         public string LastPingMessage { get; set; }
 
-        public bool IsLogarithmicTimeAxisChecked { get; set; }
+        public ISettings Settings { get; private set; }
 
         public ObservableCollection<ReflectionNodeViewModel> Roots { get; private set; }
 
@@ -195,15 +199,14 @@ namespace NUnitBenchmarker.UI.ViewModels
 
             _uiServiceHost.Ping += OnPing;
             _uiServiceHost.GetImplementations += GetImplementations;
-            _uiServiceHost.UpdateResult += UpdateResults;
         }
 
         protected override void Close()
         {
             _uiServiceHost.Stop();
+
             _uiServiceHost.Ping -= OnPing;
             _uiServiceHost.GetImplementations -= GetImplementations;
-            _uiServiceHost.UpdateResult -= UpdateResults;
 
             base.Close();
         }
@@ -233,6 +236,7 @@ namespace NUnitBenchmarker.UI.ViewModels
         private string OnPing(string message)
         {
             LastPingMessage = message;
+
             return string.Format("Welcome to the machine: {0}", message);
         }
 
@@ -246,22 +250,6 @@ namespace NUnitBenchmarker.UI.ViewModels
 
             node.RequestRemove -= OnNodeViewModelOnRequestRemove;
             Roots.Remove(node);
-        }
-
-        /// <summary>
-        /// Event handler for client's UpdateResult message.
-        /// Routes the message to the addressed PlotTabViewModel instance,
-        /// and creates it if does not exist yet
-        /// </summary>
-        /// <param name="result">Benchmark results coming from the client</param>
-        private void UpdateResults(BenchmarkResult result)
-        {
-            //var model = GetPlotTabViewModel(result.Key, true);
-            //ActivateTab<PlotTabViewModel>(model.Key);
-            //model.Result = result;
-
-            //var dataTabViewModel = GetDataTabViewModel(result.Key, true);
-            //dataTabViewModel.UpdateResults(result);
         }
 
         //private bool CanExecuteLogarithmicTimeAxisCommand(object notUsed)

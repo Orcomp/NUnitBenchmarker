@@ -14,6 +14,7 @@ namespace NUnitBenchmarker.UI
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
+    using NUnitBenchmarker.UI.Models;
     using NUnitBenchmarker.UI.Services;
     using NUnitBenchmarker.UIService;
 
@@ -78,6 +79,7 @@ namespace NUnitBenchmarker.UI
         {
             serviceLocator.RegisterType<IViewService, WpfViewService>();
             serviceLocator.RegisterType<IUIServiceHost, UIServiceHost>();
+            serviceLocator.RegisterType<ISettings, Settings>();
         }
 
         private void RegisterCommands(ICommandManager commandManager)

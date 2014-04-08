@@ -10,17 +10,23 @@ namespace NUnitBenchmarker.UI.ViewModels
     using System.Data;
     using Catel;
     using Catel.MVVM;
+    using NUnitBenchmarker.Benchmark;
+    using NUnitBenchmarker.UIService;
     using NUnitBenchmarker.UIService.Data;
 
     public class ResultsDataViewModel : ViewModelBase
     {
-        public ResultsDataViewModel(BenchmarkResult benchmarkResult)
+        private readonly IUIServiceHost _uiServiceHost;
+
+        public ResultsDataViewModel(BenchmarkResult benchmarkResult, IUIServiceHost uiServiceHost)
         {
             Argument.IsNotNull(() => benchmarkResult);
+            Argument.IsNotNull(() => uiServiceHost);
 
             BenchmarkResult = benchmarkResult;
+            _uiServiceHost = uiServiceHost;
 
-            UpdateData();
+            UpdateResults(BenchmarkResult);
         }
 
         #region Properties
@@ -30,9 +36,23 @@ namespace NUnitBenchmarker.UI.ViewModels
         #endregion
 
         #region Methods
-        private void UpdateData()
+        private void UpdateResults(BenchmarkResult result)
         {
+            DataTable = new BenchmarkFinalTabularData(result).DataTable;
+        }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            _uiServiceHost.UpdateResult += UpdateResults;
+        }
+
+        protected override void Close()
+        {
+            _uiServiceHost.UpdateResult -= UpdateResults;
+
+            base.Close();
         }
         #endregion
     }
