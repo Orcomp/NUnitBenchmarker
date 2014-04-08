@@ -16,8 +16,11 @@ namespace NUnitBenchmarker.Core.Infrastructure.Logging
     /// unfortunatelly not marked as serializable.
     /// </summary>
     [Serializable]
-    public class SerializableLoggingEventData : ModelBase
+    [Catel.Fody.NoWeaving]
+    public class SerializableLoggingEventData
     {
+        public DateTime Timestamp { get; set; }
+
         public string Message { get; set; }
 
         public LogEvent LogEvent { get; set; }

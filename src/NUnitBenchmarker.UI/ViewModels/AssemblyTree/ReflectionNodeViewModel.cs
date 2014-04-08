@@ -9,7 +9,6 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
 {
     using System;
     using System.Windows;
-    using System.Windows.Input;
     using System.Windows.Media;
     using Catel;
     using Catel.MVVM;
@@ -22,10 +21,7 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
     public class ReflectionNodeViewModel : TreeViewItemViewModel<ReflectionEntry>
     {
         #region Fields
-        private ImageSource image;
-        private int imageHeight;
-        private Thickness imageMargin;
-        private int imageWidth;
+        private ImageSource _image;
         #endregion
 
         #region Constructors
@@ -55,31 +51,31 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
         {
             get
             {
-                if (image != null)
+                if (_image != null)
                 {
-                    return image;
+                    return _image;
                 }
 
-                if (data.UseIcons)
+                if (Data.UseIcons)
                 {
                     // image = new 
                 }
 
-                int oldImageWidth = imageWidth;
-                if (image == null)
+                int oldImageWidth = ImageWidth;
+                if (_image == null)
                 {
-                    imageWidth = 0;
-                    imageHeight = 0;
-                    imageMargin = new Thickness(0, 0, 0, 0);
+                    ImageWidth = 0;
+                    ImageHeight = 0;
+                    ImageMargin = new Thickness(0, 0, 0, 0);
                 }
                 else
                 {
-                    imageWidth = 16;
-                    imageHeight = 16;
-                    imageMargin = new Thickness(2, 0, 0, 0);
+                    ImageWidth = 16;
+                    ImageHeight = 16;
+                    ImageMargin = new Thickness(2, 0, 0, 0);
                 }
 
-                bool imageChanged = oldImageWidth != imageWidth;
+                bool imageChanged = oldImageWidth != ImageWidth;
                 if (imageChanged)
                 {
                     RaisePropertyChanged(() => ImageWidth);
@@ -87,7 +83,7 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
                     RaisePropertyChanged(() => ImageMargin);
                 }
 
-                return image;
+                return _image;
             }
         }
 
@@ -95,28 +91,19 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
         ///     Gets the height of the image if any.
         /// </summary>
         /// <value>The height of the image.</value>
-        public int ImageHeight
-        {
-            get { return imageHeight; }
-        }
+        public int ImageHeight { get; private set; }
 
         /// <summary>
         ///     Gets the image margin if any.
         /// </summary>
         /// <value>The image margin.</value>
-        public Thickness ImageMargin
-        {
-            get { return imageMargin; }
-        }
+        public Thickness ImageMargin { get; private set; }
 
         /// <summary>
         ///     Gets the width of the image if any.
         /// </summary>
         /// <value>The width of the image.</value>
-        public int ImageWidth
-        {
-            get { return imageWidth; }
-        }
+        public int ImageWidth { get; private set; }
 
         /// <summary>
         ///     Gets the name of the node.
@@ -124,23 +111,12 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
         /// <value>The name.</value>
         public string Name
         {
-            get { return data.Name; }
-        }
-
-        public override ReflectionEntry Data
-        {
-            get { return base.Data; }
-            set
-            {
-                base.Data = value;
-                RaisePropertyChanged(() => Name);
-                RaisePropertyChanged(() => Children);
-            }
+            get { return Data.Name; }
         }
 
         public string ToolTip
         {
-            get { return data.Description; }
+            get { return Data.Description; }
         }
         #endregion
 
@@ -156,7 +132,7 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
         /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
         private bool OnRemoveCanExecute()
         {
-            return data is AssemblyEntry;
+            return Data is AssemblyEntry;
         }
 
         /// <summary>
@@ -174,12 +150,6 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
             RequestRemove.SafeInvoke(this);
         }
 
-        /// <summary>
-        ///     Clears the specified lazy load children of the node.
-        /// </summary>
-        /// <param name="lazyLoadChildren">
-        ///     if set to <c>true</c> [lazy load children].
-        /// </param>
         public override void Clear(bool lazyLoadChildren = true)
         {
             base.Clear(lazyLoadChildren);
@@ -187,12 +157,9 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
             RaisePropertyChanged(() => Name);
         }
 
-        /// <summary>
-        ///     Loads the children of the node.
-        /// </summary>
         public override void LoadChildren(Action<object> completion = null)
         {
-            var children = data.GetChildren();
+            var children = Data.GetChildren();
             foreach (var reflectionEntry in children)
             {
                 var child = new ReflectionNodeViewModel(reflectionEntry, this, !reflectionEntry.LeafEntry)
@@ -210,9 +177,7 @@ namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
         }
         #endregion
 
-        /// <summary>
-        /// Raised when this tab should be removed from the UI.
-        /// </summary>
+
         public event EventHandler RequestRemove;
     }
 }

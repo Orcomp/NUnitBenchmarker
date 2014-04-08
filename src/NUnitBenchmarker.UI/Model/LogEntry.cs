@@ -13,6 +13,11 @@ namespace NUnitBenchmarker.UI.Model
 
     public class LogEntry : ModelBase
     {
+        public LogEntry()
+        {
+            SuspendValidation = true;
+        }
+
         #region Properties
         public DateTime Timestamp { get; set; }
 
