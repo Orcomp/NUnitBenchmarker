@@ -159,13 +159,13 @@ namespace NUnitBenchmarker.UIServiceReference {
         string Ping(string message);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/GetImplementations", ReplyAction="http://tempuri.org/IUIService/GetImplementationsResponse")]
-        NUnitBenchmarker.UIServiceReference.TypeSpecification[] GetImplementations(NUnitBenchmarker.UIServiceReference.TypeSpecification interfaceType);
+        NUnitBenchmarker.Data.TypeSpecification[] GetImplementations(NUnitBenchmarker.Data.TypeSpecification interfaceType);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/LogEvent", ReplyAction="http://tempuri.org/IUIService/LogEventResponse")]
         void LogEvent(string loggingEventString);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUIService/UpdateResult", ReplyAction="http://tempuri.org/IUIService/UpdateResultResponse")]
-        void UpdateResult(NUnitBenchmarker.UIServiceReference.BenchmarkResult result);
+        void UpdateResult(NUnitBenchmarker.Data.BenchmarkResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -198,16 +198,18 @@ namespace NUnitBenchmarker.UIServiceReference {
         public string Ping(string message) {
             return base.Channel.Ping(message);
         }
-        
-        public NUnitBenchmarker.UIServiceReference.TypeSpecification[] GetImplementations(NUnitBenchmarker.UIServiceReference.TypeSpecification interfaceType) {
+
+        public NUnitBenchmarker.Data.TypeSpecification[] GetImplementations(NUnitBenchmarker.Data.TypeSpecification interfaceType)
+        {
             return base.Channel.GetImplementations(interfaceType);
         }
         
         public void LogEvent(string loggingEventString) {
             base.Channel.LogEvent(loggingEventString);
         }
-        
-        public void UpdateResult(NUnitBenchmarker.UIServiceReference.BenchmarkResult result) {
+
+        public void UpdateResult(NUnitBenchmarker.Data.BenchmarkResult result)
+        {
             base.Channel.UpdateResult(result);
         }
     }

@@ -20,8 +20,8 @@ namespace NUnitBenchmarker
     using NUnitBenchmarker.Properties;
     using NUnitBenchmarker.UIServiceReference;
     using IUIService = NUnitBenchmarker.Services.IUIService;
-    using BenchmarkResult = NUnitBenchmarker.UIServiceReference.BenchmarkResult;
-    using TypeSpecification = NUnitBenchmarker.UIServiceReference.TypeSpecification;
+    using BenchmarkResult = NUnitBenchmarker.Data.BenchmarkResult;
+    using TypeSpecification = NUnitBenchmarker.Data.TypeSpecification;
 
     // TODO: Refactor this static helper to an instance which implements IUIService
     public static class UI

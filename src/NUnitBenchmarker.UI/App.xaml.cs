@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI
+namespace NUnitBenchmarker
 {
     using System;
     using System.Threading;
@@ -13,10 +13,8 @@ namespace NUnitBenchmarker.UI
     using Catel.IoC;
     using Catel.Logging;
     using Catel.MVVM;
-    using Catel.Services;
-    using NUnitBenchmarker.UI.Models;
-    using NUnitBenchmarker.UI.Services;
-    using NUnitBenchmarker.UIService;
+    using NUnitBenchmarker.Models;
+    using NUnitBenchmarker.Services;
 
     /// <summary>
     ///     Interaction logic for App.xaml

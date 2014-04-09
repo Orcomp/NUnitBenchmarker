@@ -1,43 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fasterflect;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ListPerformanceTestHelper.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 
 namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 {
-	internal class ListPerformanceTestHelper<T>
-	{
-		private static Random random;
+    using System;
+    using System.Collections.Generic;
+    using Fasterflect;
 
-		public static IEnumerable<T> GenerateItemsToAdd(ListPerformanceTestCaseConfiguration<T> conf)
-		{
-			random = new Random(0);
-			for (int i = 0; i < conf.Size; i++)
-			{
-				yield return CreateNewItem();
-			}
-		}
+    internal class ListPerformanceTestHelper<T>
+    {
+        #region Constants
+        private static readonly Random Random = new Random();
+        #endregion
 
-		/// <summary>
-		/// Creates the new item to use in performance tests.
-		/// </summary>
-		/// <returns>Created item</returns>
-		public static T CreateNewItem()
-		{
-			if (typeof(T) == typeof(int))
-			{
-				return (T)(object)random.Next(int.MinValue, int.MaxValue);
-			}
+        #region Methods
+        public static IEnumerable<T> GenerateItemsToAdd(ListPerformanceTestCaseConfiguration<T> conf)
+        {
+            for (int i = 0; i < conf.Size; i++)
+            {
+                yield return CreateNewItem();
+            }
+        }
 
-			return Activator.CreateInstance<T>();
-		}
+        /// <summary>
+        /// Creates the new item to use in performance tests.
+        /// </summary>
+        /// <returns>Created item</returns>
+        public static T CreateNewItem()
+        {
+            if (typeof (T) == typeof (int))
+            {
+                return (T) (object) Random.Next(int.MinValue, int.MaxValue);
+            }
 
+            return Activator.CreateInstance<T>();
+        }
 
-		public static IList<T> CreateListInstance<T>(ListPerformanceTestCaseConfiguration<T> conf)
-		{
-			return conf.TargetImplementationType.MakeGenericType(typeof(T)).CreateInstance() as IList<T>;
-		}
-	}
+        public static IList<T> CreateListInstance<T>(ListPerformanceTestCaseConfiguration<T> conf)
+        {
+            return conf.TargetImplementationType.MakeGenericType(typeof (T)).CreateInstance() as IList<T>;
+        }
+        #endregion
+    }
 }

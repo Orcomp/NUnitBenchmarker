@@ -17,7 +17,10 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
+    using NUnitBenchmarker.Data;
+    using NUnitBenchmarker.Model;
     using NUnitBenchmarker.Models;
+    using NUnitBenchmarker.Resources;
     using NUnitBenchmarker.Services;
 
     /// <summary>
@@ -119,6 +122,7 @@ namespace NUnitBenchmarker.ViewModels
                         Name = Path.GetFileName(fileName),
                         Description = string.Format("{0}\nLoaded from: {1}", fullName, fileName)
                     }, null);
+
                     nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
                     Roots.Add(nodeViewModel);
                     var x = nodeViewModel.GetChildrenData();

@@ -12,6 +12,7 @@ namespace NUnitBenchmarker.ViewModels
     using System.Windows.Media;
     using Catel;
     using Catel.MVVM;
+    using NUnitBenchmarker.Model;
 
     /// <summary>
     ///     Foundation class for all ViewModel classes displayed by TreeViewItems.
