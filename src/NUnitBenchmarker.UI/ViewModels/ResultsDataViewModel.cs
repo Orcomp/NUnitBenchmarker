@@ -39,6 +39,11 @@ namespace NUnitBenchmarker.ViewModels
         #region Methods
         private void UpdateResults(BenchmarkResult result)
         {
+            if (!string.Equals(result.Key, BenchmarkResult.Key))
+            {
+                return;
+            }
+
             DataTable = new BenchmarkFinalTabularData(result).DataTable;
         }
 

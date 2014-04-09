@@ -69,6 +69,7 @@ namespace NUnitBenchmarker.ViewModels
             BenchmarkResults = new ObservableCollection<BenchmarkResult>();
 
             FileOpen = new Command(OnFileOpenExecute);
+            CloseBenchmarkResult = new Command<BenchmarkResult>(OnCloseBenchmarkResultExecute);
             SwitchTimeAxis = new Command(OnSwitchTimeAxisExecute);
             SaveAllResults = new Command(OnSaveAllResultsExecute);
 
@@ -135,6 +136,19 @@ namespace NUnitBenchmarker.ViewModels
                     Log.Error(ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the CloseBenchmarkResult command.
+        /// </summary>
+        public Command<BenchmarkResult> CloseBenchmarkResult { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the CloseBenchmarkResult command is executed.
+        /// </summary>
+        private void OnCloseBenchmarkResultExecute(BenchmarkResult result)
+        {
+            BenchmarkResults.Remove(result);
         }
 
         /// <summary>
@@ -244,7 +258,7 @@ namespace NUnitBenchmarker.ViewModels
                                select x).FirstOrDefault();
             if (currentItem != null)
             {
-                currentItem.UpdateResults(result);
+                //currentItem.UpdateResults(result);
                 return;
             }
 

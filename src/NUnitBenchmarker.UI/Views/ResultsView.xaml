@@ -8,11 +8,15 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <views:ResultsPlotView Grid.Row="0" DataContext="{Binding BenchmarkResult}" />
-        <views:ResultsDataView Grid.Row="1" DataContext="{Binding BenchmarkResult}" />
+
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" ShowsPreview="True" Height="5" VerticalAlignment="Center" />
+
+        <views:ResultsDataView Grid.Row="2" DataContext="{Binding BenchmarkResult}" />
 
     </Grid>
 </catel:UserControl>

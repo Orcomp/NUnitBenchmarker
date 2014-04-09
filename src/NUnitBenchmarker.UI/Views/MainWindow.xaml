@@ -1,7 +1,6 @@
 ﻿<catel:DataWindow x:Class="NUnitBenchmarker.Views.MainWindow"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:behaviors="clr-namespace:NUnitBenchmarker.Behaviors"
                   xmlns:viewmodels="clr-namespace:NUnitBenchmarker.ViewModels"
                   xmlns:catel="http://catel.codeplex.com"
                   xmlns:views="clr-namespace:NUnitBenchmarker.Views"
@@ -107,11 +106,18 @@
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
                               Width="2" Background="#FFBCBCBC" />
 
-                <catel:TabControl Grid.Column="2" LoadTabItems="AllOnFirstUse"
+                <catel:TabControl x:Name="tabControl" Grid.Column="2" LoadTabItems="AllOnFirstUse"
                                   ItemsSource="{Binding BenchmarkResults}" SelectedItem="{Binding SelectedBenchmarkResult}">
+
                     <TabControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Key}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Key}"/>
+                                <Button Command="{Binding ElementName=tabControl, Path=DataContext.CloseBenchmarkResult}" 
+                                        CommandParameter="{Binding }" Margin="5,0,0,0" Background="Transparent">
+                                    <Image Source="/Resources/Images/cross.png"  Width="12" Height="12"/>
+                                </Button>
+                            </StackPanel>
                         </DataTemplate>
                     </TabControl.ItemTemplate>
 

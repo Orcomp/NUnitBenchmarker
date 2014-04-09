@@ -4,14 +4,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-
 namespace NUnitBenchmarker.Data
 {
     using System;
-    using Catel.Data;
 
-    //[DataContract]
-    public class TypeSpecification : ModelBase
+    using System.Runtime.Serialization;
+
+    [DataContract]
+    public class TypeSpecification
     {
         #region Constructors
         public TypeSpecification()
@@ -26,10 +26,10 @@ namespace NUnitBenchmarker.Data
         #endregion
 
         #region Properties
-        //[DataMember]
+        [DataMember]
         public string AssemblyPath { get; set; }
 
-        //[DataMember]
+        [DataMember]
         public string FullName { get; set; }
         #endregion
     }

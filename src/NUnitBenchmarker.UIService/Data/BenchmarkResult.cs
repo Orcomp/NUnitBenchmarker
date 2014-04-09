@@ -4,14 +4,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+#define DATACONTRACTS
 
 namespace NUnitBenchmarker.Data
 {
     using System.Collections.Generic;
-    using Catel.Data;
+    using System.Runtime.Serialization;
 
-    //[DataContract]
-    public class BenchmarkResult : ModelBase
+    [DataContract]
+    public class BenchmarkResult
     {
         public BenchmarkResult()
         {
@@ -19,13 +20,13 @@ namespace NUnitBenchmarker.Data
         }
 
         #region Properties
-        //[DataMember]
+        [DataMember]
         public string Key { get; set; }
 
-        //[DataMember]
+        [DataMember]
         public Dictionary<string, List<KeyValuePair<string, double>>> Values { get; set; }
 
-        //[DataMember]
+        [DataMember]
         public string[] TestCases { get; set; }
         #endregion
     }
