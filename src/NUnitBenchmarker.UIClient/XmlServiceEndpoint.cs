@@ -1,31 +1,35 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Configuration;
-using System.ServiceModel.Description;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="XmlServiceEndpoint.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
 
 namespace NUnitBenchmarker
 {
+    using System;
+    using System.Configuration;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.ServiceModel;
+    using System.ServiceModel.Channels;
+    using System.ServiceModel.Configuration;
+    using System.ServiceModel.Description;
+
     /// <summary>
     ///     Class XmlServiceEndpoint for configuring WCF manually
     /// </summary>
     public class XmlServiceEndpoint : ServiceEndpoint
     {
-        #region Constants and Fields
-
+        #region Fields
         /// <summary>
         ///     The configuration instance
         /// </summary>
-        private readonly Configuration configuration;
-
+        private readonly Configuration _configuration;
         #endregion
 
-        #region Constructors and Destructors
-
+        #region Constructors
         /// <summary>
         ///     Initializes a new instance of the <see cref="XmlServiceEndpoint" /> class.
         /// </summary>
@@ -60,10 +64,12 @@ namespace NUnitBenchmarker
                 configurationFile = new FileInfo(configFilePath);
 
                 using (FileStream stream = configurationFile.Create())
-                using (var writer = new StreamWriter(stream))
                 {
-                    writer.Write(configXml);
-                    configurationFile.IsReadOnly = true;
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        writer.Write(configXml);
+                        configurationFile.IsReadOnly = true;
+                    }
                 }
 
                 var map = new ExeConfigurationFileMap
@@ -71,7 +77,7 @@ namespace NUnitBenchmarker
                     ExeConfigFilename = configFilePath
                 };
 
-                configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+                _configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
 
                 if (ServiceModel == null)
                 {
@@ -115,19 +121,9 @@ namespace NUnitBenchmarker
                 DeleteConfigFile();
             }
         }
-
-        /// <summary>
-        ///     Finalizes an instance of the <see cref="XmlServiceEndpoint" /> class.
-        /// </summary>
-        ~XmlServiceEndpoint()
-        {
-            DeleteConfigFile();
-        }
-
         #endregion
 
         #region Properties
-
         /// <summary>
         ///     Gets the service model.
         /// </summary>
@@ -138,7 +134,7 @@ namespace NUnitBenchmarker
             {
                 try
                 {
-                    return ServiceModelSectionGroup.GetSectionGroup(configuration);
+                    return ServiceModelSectionGroup.GetSectionGroup(_configuration);
                 }
                 catch
                 {
@@ -146,11 +142,9 @@ namespace NUnitBenchmarker
                 }
             }
         }
-
         #endregion
 
         #region Methods
-
         /// <summary>
         ///     Deletes the configuration file.
         /// </summary>
@@ -158,9 +152,9 @@ namespace NUnitBenchmarker
         {
             try
             {
-                if (configuration != null && !string.IsNullOrWhiteSpace(configuration.FilePath))
+                if (_configuration != null && !string.IsNullOrWhiteSpace(_configuration.FilePath))
                 {
-                    File.Delete(configuration.FilePath);
+                    File.Delete(_configuration.FilePath);
                 }
             }
             catch
@@ -181,17 +175,17 @@ namespace NUnitBenchmarker
             try
             {
                 foreach (IEndpointBehavior b in from EndpointBehaviorElement behavior in ServiceModel.Behaviors.EndpointBehaviors
-                                                where behavior != null
-                                                from behaviorExtension in behavior.Where(b => b != null)
-                                                let createBehavior = behaviorExtension.GetType()
-                                                    .GetMethod(
-                                                        "CreateBehavior",
-                                                        BindingFlags.NonPublic
-                                                        | BindingFlags.Instance)
-                                                select (IEndpointBehavior)createBehavior.Invoke(behaviorExtension, new object[0])
-                                                    into b
-                                                    where b != null
-                                                    select b)
+                    where behavior != null
+                    from behaviorExtension in behavior.Where(b => b != null)
+                    let createBehavior = behaviorExtension.GetType()
+                        .GetMethod(
+                            "CreateBehavior",
+                            BindingFlags.NonPublic
+                            | BindingFlags.Instance)
+                    select (IEndpointBehavior) createBehavior.Invoke(behaviorExtension, new object[0])
+                    into b
+                    where b != null
+                    select b)
                 {
                     Behaviors.Add(b);
                 }
@@ -237,7 +231,7 @@ namespace NUnitBenchmarker
                 {
                     try
                     {
-                        Binding = (Binding)bce.BindingType.GetConstructor(new Type[0]).Invoke(new object[0]);
+                        Binding = (Binding) bce.BindingType.GetConstructor(new Type[0]).Invoke(new object[0]);
 
                         bind.ApplyConfiguration(Binding);
 
@@ -259,7 +253,14 @@ namespace NUnitBenchmarker
 
             throw new Exception("Invalid binding configuration, binding \"" + bindingName + "\" was not found.");
         }
-
         #endregion
+
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="XmlServiceEndpoint" /> class.
+        /// </summary>
+        ~XmlServiceEndpoint()
+        {
+            DeleteConfigFile();
+        }
     }
 }

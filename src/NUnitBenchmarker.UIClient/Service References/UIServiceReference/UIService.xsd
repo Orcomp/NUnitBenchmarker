@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data" />
+  <xs:import schemaLocation="http://localhost:8091/NUnitBenchmarker/UIService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.Data" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence>
@@ -18,14 +18,14 @@
   <xs:element name="GetImplementations">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data" minOccurs="0" name="interfaceType" nillable="true" type="q1:TypeSpecification" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.Data" minOccurs="0" name="interfaceType" nillable="true" type="q1:TypeSpecification" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetImplementationsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data" minOccurs="0" name="GetImplementationsResult" nillable="true" type="q2:ArrayOfTypeSpecification" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.Data" minOccurs="0" name="GetImplementationsResult" nillable="true" type="q2:ArrayOfTypeSpecification" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -44,7 +44,7 @@
   <xs:element name="UpdateResult">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data" minOccurs="0" name="result" nillable="true" type="q3:BenchmarkResult" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.Data" minOccurs="0" name="result" nillable="true" type="q3:BenchmarkResult" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

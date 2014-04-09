@@ -81,9 +81,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\NUnitBenchmarker.Data.TypeSpecification.datasource" />
-    <None Include="Service References\UIServiceReference\NUnitBenchmarker.UIServiceReference.TypeSpecification.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\UIServiceReference\UIService.wsdl" />
     <None Include="Service References\UIServiceReference\UIService.xsd">
       <SubType>Designer</SubType>

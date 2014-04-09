@@ -9,147 +9,7 @@
 //------------------------------------------------------------------------------
 
 namespace NUnitBenchmarker.UIServiceReference {
-    using System.Runtime.Serialization;
-    using System;
     
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TypeSpecification", Namespace="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data")]
-    [System.SerializableAttribute()]
-    public partial class TypeSpecification : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AssemblyPathField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string FullNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string AssemblyPath {
-            get {
-                return this.AssemblyPathField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AssemblyPathField, value) != true)) {
-                    this.AssemblyPathField = value;
-                    this.RaisePropertyChanged("AssemblyPath");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string FullName {
-            get {
-                return this.FullNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.FullNameField, value) != true)) {
-                    this.FullNameField = value;
-                    this.RaisePropertyChanged("FullName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="BenchmarkResult", Namespace="http://schemas.datacontract.org/2004/07/NUnitBenchmarker.UIService.Data")]
-    [System.SerializableAttribute()]
-    public partial class BenchmarkResult : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string KeyField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string[] TestCasesField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Collections.Generic.Dictionary<string, System.Collections.Generic.KeyValuePair<string, double>[]> ValuesField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Key {
-            get {
-                return this.KeyField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.KeyField, value) != true)) {
-                    this.KeyField = value;
-                    this.RaisePropertyChanged("Key");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string[] TestCases {
-            get {
-                return this.TestCasesField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TestCasesField, value) != true)) {
-                    this.TestCasesField = value;
-                    this.RaisePropertyChanged("TestCases");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.KeyValuePair<string, double>[]> Values {
-            get {
-                return this.ValuesField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ValuesField, value) != true)) {
-                    this.ValuesField = value;
-                    this.RaisePropertyChanged("Values");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="UIServiceReference.IUIService")]
@@ -198,18 +58,16 @@ namespace NUnitBenchmarker.UIServiceReference {
         public string Ping(string message) {
             return base.Channel.Ping(message);
         }
-
-        public NUnitBenchmarker.Data.TypeSpecification[] GetImplementations(NUnitBenchmarker.Data.TypeSpecification interfaceType)
-        {
+        
+        public NUnitBenchmarker.Data.TypeSpecification[] GetImplementations(NUnitBenchmarker.Data.TypeSpecification interfaceType) {
             return base.Channel.GetImplementations(interfaceType);
         }
         
         public void LogEvent(string loggingEventString) {
             base.Channel.LogEvent(loggingEventString);
         }
-
-        public void UpdateResult(NUnitBenchmarker.Data.BenchmarkResult result)
-        {
+        
+        public void UpdateResult(NUnitBenchmarker.Data.BenchmarkResult result) {
             base.Channel.UpdateResult(result);
         }
     }
