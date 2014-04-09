@@ -80,6 +80,7 @@ namespace NUnitBenchmarker
 
         private void RegisterServices(IServiceLocator serviceLocator)
         {
+            serviceLocator.RegisterType<IReflectionService, ReflectionService>();
             serviceLocator.RegisterType<IViewService, WpfViewService>();
             serviceLocator.RegisterType<IUIServiceHost, UIServiceHost>();
             serviceLocator.RegisterType<ISettings, Settings>();
@@ -88,6 +89,7 @@ namespace NUnitBenchmarker
         private void RegisterCommands(ICommandManager commandManager)
         {
             commandManager.CreateCommand("File.Open");
+            commandManager.CreateCommand("File.SaveAllResults");
             commandManager.CreateCommand("File.Exit");
 
             commandManager.CreateCommand("Log.Clear");

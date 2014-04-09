@@ -12,12 +12,12 @@
         <ResourceDictionary Source="MainWindowResources.xaml" />
     </Window.Resources>
 
-    <behaviors:Piper.DataPipes>
+    <!--<behaviors:Piper.DataPipes>
         <behaviors:DataPipeCollection>
             <behaviors:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=RestoreBounds}"
                                 Target="{Binding RestoreBounds, Mode=OneWayToSource}" />
         </behaviors:DataPipeCollection>
-    </behaviors:Piper.DataPipes>
+    </behaviors:Piper.DataPipes>-->
 
     <DockPanel Name="DockPanel" LastChildFill="True">
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="{Binding ElementName=DockPanel, Path=ActualWidth}">
@@ -37,7 +37,7 @@
             </MenuItem>
 
             <MenuItem Header="_Option">
-                <MenuItem Header="_Always on Top" IsCheckable="True" IsChecked="{Binding IsAlwaysOnTopChecked}" Command="{Binding AlwaysOnTopCommand}" />
+                <!--<MenuItem Header="_Always on Top" IsCheckable="True" IsChecked="{Binding IsAlwaysOnTopChecked}" Command="{Binding AlwaysOnTopCommand}" />-->
                 <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding Settings.IsLogarithmicTimeAxisChecked}" />
             </MenuItem>
 
@@ -47,9 +47,9 @@
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="Auto">
-            <StatusBarItem BorderThickness="1" Padding="10,3,3,3">
+            <!--<StatusBarItem BorderThickness="1" Padding="10,3,3,3">
                 <TextBlock Text="{Binding StatusBarText}" />
-            </StatusBarItem>
+            </StatusBarItem>-->
         </StatusBar>
 
         <Grid>
