@@ -57,6 +57,8 @@ namespace NUnitBenchmarker
             var serviceEndpoint = new XmlServiceEndpoint(typeof (IUIService), configXml, endpointName);
             var channelFactory = new ChannelFactory<IUIServiceChannel>(serviceEndpoint);
             Client = new UIServiceClient(channelFactory.Endpoint.Binding, channelFactory.Endpoint.Address);
+
+            LogManager.AddListener(new ClientLogListener(Client));
         }
 
         public static bool DisplayUI { get; set; }
@@ -131,6 +133,7 @@ namespace NUnitBenchmarker
                     return result;
                 }
             }
+
             return null;
         }
 
@@ -149,6 +152,7 @@ namespace NUnitBenchmarker
             {
                 return files[0].FullName;
             }
+
             return null;
         }
 
@@ -158,8 +162,6 @@ namespace NUnitBenchmarker
             {
                 return true;
             }
-
-            LogManager.AddListener(new ClientLogListener(Client));
 
             _uiProcessName = GetUiProcessName();
 
