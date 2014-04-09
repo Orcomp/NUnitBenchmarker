@@ -19,8 +19,6 @@ namespace NUnitBenchmarker.ViewModels
     {
         private readonly IUIServiceHost _uiServiceHost;
 
-        private DispatcherTimer _testTimer = new DispatcherTimer();
-
         public LogEntriesViewModel(ICommandManager commandManager, IUIServiceHost uiServiceHost)
         {
             Argument.IsNotNull(() => commandManager);
@@ -33,9 +31,6 @@ namespace NUnitBenchmarker.ViewModels
             ClearLog = new Command(OnClearLogExecute);
 
             commandManager.RegisterCommand("Log.Clear", ClearLog, this);
-
-            _testTimer.Interval = TimeSpan.FromSeconds(1);
-            _testTimer.Tick += (sender, e) => LogEntries.Add(new LogEntry() {Message = "test item"});
         }
 
         #region Properties
@@ -64,14 +59,10 @@ namespace NUnitBenchmarker.ViewModels
             base.Initialize();
 
             _uiServiceHost.Logged += OnLogged;
-
-            _testTimer.Start();
         }
 
         protected override void Close()
         {
-            _testTimer.Stop();
-
             _uiServiceHost.Logged -= OnLogged;
 
             base.Close();

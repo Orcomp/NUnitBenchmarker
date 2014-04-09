@@ -281,8 +281,9 @@ namespace NUnitBenchmarker
             }
             else
             {
-                yAxis = new LogarithmicAxis(AxisPosition.Left, 0)
+                yAxis = new LogarithmicAxis()
                 {
+                    Position = AxisPosition.Left,
                     MajorGridlineStyle = LineStyle.Solid,
                     MinorGridlineStyle = LineStyle.Dot,
                     Title = "Time (ms)",
@@ -375,14 +376,20 @@ namespace NUnitBenchmarker
                 LegendBorder = OxyColors.Black
             };
 
-            var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases);
+            var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases)
+            {
+                Position = AxisPosition.Bottom,
+                Title = "Categories"
+            };
+
             plotModel.Axes.Add(dateAxis);
 
             Axis valueAxis;
             if (isLinear)
             {
-                valueAxis = new LinearAxis(AxisPosition.Left, 0)
+                valueAxis = new LinearAxis
                 {
+                    Position = AxisPosition.Left,
                     MajorGridlineStyle = LineStyle.Solid,
                     MinorGridlineStyle = LineStyle.Dot,
                     Title = "Time (ms)"
@@ -390,8 +397,9 @@ namespace NUnitBenchmarker
             }
             else
             {
-                valueAxis = new LogarithmicAxis(AxisPosition.Left, 0)
+                valueAxis = new LogarithmicAxis
                 {
+                    Position = AxisPosition.Left,
                     MajorGridlineStyle = LineStyle.Solid,
                     MinorGridlineStyle = LineStyle.Dot,
                     Title = "Time (ms)",
@@ -440,6 +448,7 @@ namespace NUnitBenchmarker
                     testResults[series.Key].Add(dataPoint.Value.ToString(CultureInfo.CurrentCulture));
                 }
             }
+
             sb.AppendLine("Description, " + string.Join(", ", testCases.Select(n => string.Format("{0} (ms)", NumericUtils.TryToFormatAsNumber(n)))));
 
             foreach (var series in testResults)
