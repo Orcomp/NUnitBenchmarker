@@ -30,7 +30,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>71f8ed2d</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>1862d04a</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -261,12 +261,12 @@
     <PostBuildEvent>rem This is not working because other referenced assemblies + config file etc also should be copied there... so overcomplicated
 rem copy "$(TargetPath)" "..\..\$(ConfigurationName)\NUnitBenchmarker.Benchmark.Tests"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\..\lib\Fody.1.22.1\build\Fody.targets" Condition="Exists('..\..\lib\Fody.1.22.1\build\Fody.targets')" />
+  <Import Project="..\..\lib\Fody.1.23.1\build\Fody.targets" Condition="Exists('..\..\lib\Fody.1.23.1\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\lib\Fody.1.22.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\lib\Fody.1.22.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\..\lib\Fody.1.23.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\lib\Fody.1.23.1\build\Fody.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
