@@ -5,7 +5,7 @@
 
     <Grid>
         <TextBlock Text="{Binding DataTitle}" />
-        <DataGrid ItemsSource ="{Binding DataTable}" IsReadOnly="True" />
+        <DataGrid ItemsSource="{Binding DataTable}" IsReadOnly="True" />
     </Grid>
     
 </catel:UserControl>

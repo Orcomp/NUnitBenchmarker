@@ -1,18 +1,18 @@
 ﻿<catel:UserControl x:Class="NUnitBenchmarker.Views.ResultsView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				   xmlns:catel="http://catel.codeplex.com"
-				   xmlns:views="clr-namespace:NUnitBenchmarker.Views">
+                   xmlns:catel="http://catel.codeplex.com"
+                   xmlns:views="clr-namespace:NUnitBenchmarker.Views">
 
-    <catel:StackGrid>
+    <Grid>
 
-        <catel:StackGrid.RowDefinitions>
+        <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
-        </catel:StackGrid.RowDefinitions>
+        </Grid.RowDefinitions>
 
-        <views:ResultsPlotView DataContext="{Binding BenchmarkResult}" />
-        <views:ResultsDataView DataContext="{Binding BenchmarkResult}" />
+        <views:ResultsPlotView Grid.Row="0" DataContext="{Binding BenchmarkResult}" />
+        <views:ResultsDataView Grid.Row="1" DataContext="{Binding BenchmarkResult}" />
 
-    </catel:StackGrid>
+    </Grid>
 </catel:UserControl>

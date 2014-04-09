@@ -107,12 +107,21 @@
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
                               Width="2" Background="#FFBCBCBC" />
 
-                <catel:TabControl Grid.Column="2" LoadTabItems="SingleUnloadOthers" ItemsSource="{Binding BenchmarkResults}">
-                    <catel:TabControl.ItemTemplate>
+                <catel:TabControl Grid.Column="2" LoadTabItems="SingleUnloadOthers"
+                                  ItemsSource="{Binding BenchmarkResults}" SelectedItem="{Binding SelectedBenchmarkResult}">
+                    <TabControl.ItemTemplate>
                         <DataTemplate>
-                            <views:ResultsView />
+                            <TextBlock Text="{Binding Key}" />
                         </DataTemplate>
-                    </catel:TabControl.ItemTemplate>
+                    </TabControl.ItemTemplate>
+
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <ContentControl>
+                                <views:ResultsView />
+                            </ContentControl>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
                 </catel:TabControl>
             </Grid>
 

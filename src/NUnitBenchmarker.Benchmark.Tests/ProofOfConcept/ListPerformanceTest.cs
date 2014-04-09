@@ -89,6 +89,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
                     target.Add(item);
                 }
             });
+
             action.Benchmark(conf, "Add", conf.ToString());
         }
 

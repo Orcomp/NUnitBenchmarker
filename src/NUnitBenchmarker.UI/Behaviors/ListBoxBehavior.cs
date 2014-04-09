@@ -16,15 +16,10 @@ namespace NUnitBenchmarker.Behaviors
     public class ListBoxBehavior
     {
         #region Constants
-        private static readonly Dictionary<ListBox, Capture> Associations =
-            new Dictionary<ListBox, Capture>();
+        private static readonly Dictionary<ListBox, Capture> Associations = new Dictionary<ListBox, Capture>();
 
-        public static readonly DependencyProperty ScrollOnNewItemProperty =
-            DependencyProperty.RegisterAttached(
-                "ScrollOnNewItem",
-                typeof (bool),
-                typeof (ListBoxBehavior),
-                new UIPropertyMetadata(false, OnScrollOnNewItemChanged));
+        public static readonly DependencyProperty ScrollOnNewItemProperty = DependencyProperty.RegisterAttached("ScrollOnNewItem", 
+            typeof (bool), typeof (ListBoxBehavior), new UIPropertyMetadata(false, OnScrollOnNewItemChanged));
         #endregion
 
         #region Methods
@@ -45,20 +40,22 @@ namespace NUnitBenchmarker.Behaviors
             {
                 return;
             }
+
             bool oldValue = (bool) e.OldValue, newValue = (bool) e.NewValue;
             if (newValue == oldValue)
             {
                 return;
             }
+
             if (newValue)
             {
-                listBox.Loaded += ListBox_Loaded;
-                listBox.Unloaded += ListBox_Unloaded;
+                listBox.Loaded += OnListBoxLoaded;
+                listBox.Unloaded += OnListBoxUnloaded;
             }
             else
             {
-                listBox.Loaded -= ListBox_Loaded;
-                listBox.Unloaded -= ListBox_Unloaded;
+                listBox.Loaded -= OnListBoxLoaded;
+                listBox.Unloaded -= OnListBoxUnloaded;
                 if (Associations.ContainsKey(listBox))
                 {
                     Associations[listBox].Dispose();
@@ -66,27 +63,28 @@ namespace NUnitBenchmarker.Behaviors
             }
         }
 
-        private static void ListBox_Unloaded(object sender, RoutedEventArgs e)
+        private static void OnListBoxLoaded(object sender, RoutedEventArgs e)
+        {
+            var listBox = (ListBox)sender;
+            var incc = listBox.Items as INotifyCollectionChanged;
+            if (incc == null)
+            {
+                return;
+            }
+            listBox.Loaded -= OnListBoxLoaded;
+            Associations[listBox] = new Capture(listBox);
+        }
+
+        private static void OnListBoxUnloaded(object sender, RoutedEventArgs e)
         {
             var listBox = (ListBox) sender;
             if (Associations.ContainsKey(listBox))
             {
                 Associations[listBox].Dispose();
             }
-            listBox.Unloaded -= ListBox_Unloaded;
+            listBox.Unloaded -= OnListBoxUnloaded;
         }
 
-        private static void ListBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            var listBox = (ListBox) sender;
-            var incc = listBox.Items as INotifyCollectionChanged;
-            if (incc == null)
-            {
-                return;
-            }
-            listBox.Loaded -= ListBox_Loaded;
-            Associations[listBox] = new Capture(listBox);
-        }
         #endregion
 
         #region Nested type: Capture
@@ -99,8 +97,7 @@ namespace NUnitBenchmarker.Behaviors
                 NotifyCollectionChanged = listBox.ItemsSource as INotifyCollectionChanged;
                 if (NotifyCollectionChanged != null)
                 {
-                    NotifyCollectionChanged.CollectionChanged +=
-                        incc_CollectionChanged;
+                    NotifyCollectionChanged.CollectionChanged += OnCollectionChanged;
                 }
             }
             #endregion
@@ -115,13 +112,13 @@ namespace NUnitBenchmarker.Behaviors
             {
                 if (NotifyCollectionChanged != null)
                 {
-                    NotifyCollectionChanged.CollectionChanged -= incc_CollectionChanged;
+                    NotifyCollectionChanged.CollectionChanged -= OnCollectionChanged;
                 }
             }
             #endregion
 
             #region Methods
-            private void incc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+            private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
                 {

@@ -90,6 +90,8 @@ namespace NUnitBenchmarker.ViewModels
         public ObservableCollection<ReflectionNodeViewModel> Roots { get; private set; }
 
         public ObservableCollection<BenchmarkResult> BenchmarkResults { get; private set; }
+
+        public BenchmarkResult SelectedBenchmarkResult { get; set; }
         #endregion
 
         #region Commands
@@ -196,7 +198,8 @@ namespace NUnitBenchmarker.ViewModels
             }
 
             _uiServiceHost.Ping += OnPing;
-            _uiServiceHost.GetImplementations += GetImplementations;
+            _uiServiceHost.GetImplementations += OnGetImplementations;
+            _uiServiceHost.UpdateResult += OnUpdateResult;
         }
 
         protected override void Close()
@@ -204,12 +207,20 @@ namespace NUnitBenchmarker.ViewModels
             _uiServiceHost.Stop();
 
             _uiServiceHost.Ping -= OnPing;
-            _uiServiceHost.GetImplementations -= GetImplementations;
+            _uiServiceHost.GetImplementations -= OnGetImplementations;
+            _uiServiceHost.UpdateResult -= OnUpdateResult;
 
             base.Close();
         }
 
-        private IEnumerable<TypeSpecification> GetImplementations(TypeSpecification typeSpecification)
+        private string OnPing(string message)
+        {
+            LastPingMessage = message;
+
+            return string.Format("Welcome to the machine: {0}", message);
+        }
+
+        private IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification typeSpecification)
         {
             var result = new List<TypeSpecification>();
             foreach (var node in Roots)
@@ -226,16 +237,29 @@ namespace NUnitBenchmarker.ViewModels
             return result;
         }
 
-        /// <summary>
-        /// Called when Ping event raises (by the UIService)
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns>System.String.</returns>
-        private string OnPing(string message)
+        private void OnUpdateResult(BenchmarkResult result)
         {
-            LastPingMessage = message;
+            // TODO: Update existing result instead of refreshing complete view
 
-            return string.Format("Welcome to the machine: {0}", message);
+            bool reselect = false;
+            int index = BenchmarkResults.Count;
+
+            var currentItem = (from x in BenchmarkResults
+                               where string.Equals(x.Key, result.Key)
+                               select x).FirstOrDefault();
+            if (currentItem != null)
+            {
+                reselect = ReferenceEquals(SelectedBenchmarkResult, currentItem);
+                index = BenchmarkResults.IndexOf(currentItem);
+                BenchmarkResults.Remove(currentItem);
+            }
+
+            BenchmarkResults.Insert(index, result);
+
+            if (reselect || SelectedBenchmarkResult == null)
+            {
+                SelectedBenchmarkResult = result;
+            }
         }
 
         private void OnNodeViewModelOnRequestRemove(object sender, EventArgs eventArgs)

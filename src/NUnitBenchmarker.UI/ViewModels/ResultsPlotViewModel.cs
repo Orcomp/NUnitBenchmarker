@@ -36,7 +36,7 @@ namespace NUnitBenchmarker.ViewModels
         #region Properties
         public BenchmarkResult BenchmarkResult { get; private set; }
 
-        public PlotModel PlotModel { get; set; }
+        public PlotModel PlotModel { get; private set; }
         #endregion
 
         #region Methods

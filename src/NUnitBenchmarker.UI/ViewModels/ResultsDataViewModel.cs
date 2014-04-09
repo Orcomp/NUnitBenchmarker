@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarkerViewModels
+namespace NUnitBenchmarker.ViewModels
 {
     using System.Data;
     using Catel;
@@ -23,6 +23,7 @@ namespace NUnitBenchmarkerViewModels
             Argument.IsNotNull(() => benchmarkResult);
             Argument.IsNotNull(() => uiServiceHost);
 
+            Title = benchmarkResult.Key;
             BenchmarkResult = benchmarkResult;
             _uiServiceHost = uiServiceHost;
 
@@ -32,7 +33,7 @@ namespace NUnitBenchmarkerViewModels
         #region Properties
         public BenchmarkResult BenchmarkResult { get; private set; }
 
-        public DataTable DataTable { get; set; }
+        public DataTable DataTable { get; private set; }
         #endregion
 
         #region Methods
