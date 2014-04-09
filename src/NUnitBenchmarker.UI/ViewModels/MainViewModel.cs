@@ -10,7 +10,6 @@ namespace NUnitBenchmarker.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
     using Catel;
@@ -36,6 +35,7 @@ namespace NUnitBenchmarker.ViewModels
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly IOpenFileService _openFileService;
         private readonly IReflectionService _reflectionService;
+        private readonly IPleaseWaitService _pleaseWaitService;
         #endregion
 
         #region Constructors
@@ -44,7 +44,7 @@ namespace NUnitBenchmarker.ViewModels
         /// </summary>
         public MainViewModel(IViewService viewService, IUIServiceHost uiServiceHost, IMessageService messageService,
             ISelectDirectoryService selectDirectoryService, IOpenFileService openFileService, ICommandManager commandManager,
-            ISettings settings, IReflectionService reflectionService)
+            ISettings settings, IReflectionService reflectionService, IPleaseWaitService pleaseWaitService)
         {
             Argument.IsNotNull(() => viewService);
             Argument.IsNotNull(() => uiServiceHost);
@@ -54,6 +54,7 @@ namespace NUnitBenchmarker.ViewModels
             Argument.IsNotNull(() => commandManager);
             Argument.IsNotNull(() => settings);
             Argument.IsNotNull(() => reflectionService);
+            Argument.IsNotNull(() => pleaseWaitService);
 
             _viewService = viewService;
             _uiServiceHost = uiServiceHost;
@@ -61,6 +62,7 @@ namespace NUnitBenchmarker.ViewModels
             _selectDirectoryService = selectDirectoryService;
             _openFileService = openFileService;
             _reflectionService = reflectionService;
+            _pleaseWaitService = pleaseWaitService;
             Settings = settings;
 
             Roots = new ObservableCollection<ReflectionNodeViewModel>();
@@ -71,6 +73,7 @@ namespace NUnitBenchmarker.ViewModels
             SaveAllResults = new Command(OnSaveAllResultsExecute);
 
             commandManager.RegisterCommand("File.Open", FileOpen, this);
+            commandManager.RegisterCommand("File.SaveAllResults", SaveAllResults, this);
         }
         #endregion
 
@@ -114,12 +117,14 @@ namespace NUnitBenchmarker.ViewModels
                         return;
                     }
 
-                    var assemblyEntry = _reflectionService.GetAssemblyEntry(fileName);
-                    var nodeViewModel = new ReflectionNodeViewModel(assemblyEntry, null);
+                    _pleaseWaitService.Show(() =>
+                    {
+                        var assemblyEntry = _reflectionService.GetAssemblyEntry(fileName);
+                        var nodeViewModel = new ReflectionNodeViewModel(assemblyEntry, null);
 
-                    nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
-                    Roots.Add(nodeViewModel);
-                    var x = nodeViewModel.GetChildrenData();
+                        nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
+                        Roots.Add(nodeViewModel);
+                    });
                 }
                 catch (Exception ex)
                 {
