@@ -4,7 +4,6 @@
 				   xmlns:catel="http://catel.codeplex.com">
 
     <Grid>
-        <TextBlock Text="{Binding DataTitle}" />
         <DataGrid ItemsSource="{Binding DataTable}" IsReadOnly="True" />
     </Grid>
     

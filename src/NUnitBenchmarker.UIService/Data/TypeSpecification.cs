@@ -8,10 +8,10 @@
 namespace NUnitBenchmarker.Data
 {
     using System;
-    using System.Runtime.Serialization;
+    using Catel.Data;
 
-    [DataContract]
-    public class TypeSpecification
+    //[DataContract]
+    public class TypeSpecification : ModelBase
     {
         #region Constructors
         public TypeSpecification()
@@ -26,10 +26,10 @@ namespace NUnitBenchmarker.Data
         #endregion
 
         #region Properties
-        [DataMember]
+        //[DataMember]
         public string AssemblyPath { get; set; }
 
-        [DataMember]
+        //[DataMember]
         public string FullName { get; set; }
         #endregion
     }

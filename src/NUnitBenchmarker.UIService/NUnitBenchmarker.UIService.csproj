@@ -36,7 +36,7 @@
   <ItemGroup>
     <Reference Include="Catel.Core, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Catel.Core.3.9.0.1404091418-beta\lib\net40\Catel.Core.dll</HintPath>
+      <HintPath>..\..\..\Catel\output\debug\NET40\Catel.Extensions.Controls\Catel.Core.dll</HintPath>
     </Reference>
     <Reference Include="Catel.Fody.Attributes">
       <HintPath>..\..\lib\Catel.Fody.1.9.0\lib\portable-net4+sl4+wp7+win8+wpa81+MonoAndroid14+MonoTouch40\Catel.Fody.Attributes.dll</HintPath>
@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Data\BenchmarkResult.cs" />
     <Compile Include="Data\TypeSpecification.cs" />
+    <Compile Include="Extensions\BenchmarkResultExtensions.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Services\EventArgs\LogEventArgs.cs" />
     <Compile Include="Services\Interfaces\IUIService.cs" />

@@ -107,7 +107,7 @@
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
                               Width="2" Background="#FFBCBCBC" />
 
-                <catel:TabControl Grid.Column="2" LoadTabItems="SingleUnloadOthers"
+                <catel:TabControl Grid.Column="2" LoadTabItems="AllOnFirstUse"
                                   ItemsSource="{Binding BenchmarkResults}" SelectedItem="{Binding SelectedBenchmarkResult}">
                     <TabControl.ItemTemplate>
                         <DataTemplate>

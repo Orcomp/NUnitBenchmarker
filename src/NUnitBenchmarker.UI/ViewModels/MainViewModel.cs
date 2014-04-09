@@ -239,24 +239,18 @@ namespace NUnitBenchmarker.ViewModels
 
         private void OnUpdateResult(BenchmarkResult result)
         {
-            // TODO: Update existing result instead of refreshing complete view
-
-            bool reselect = false;
-            int index = BenchmarkResults.Count;
-
             var currentItem = (from x in BenchmarkResults
                                where string.Equals(x.Key, result.Key)
                                select x).FirstOrDefault();
             if (currentItem != null)
             {
-                reselect = ReferenceEquals(SelectedBenchmarkResult, currentItem);
-                index = BenchmarkResults.IndexOf(currentItem);
-                BenchmarkResults.Remove(currentItem);
+                currentItem.UpdateResults(result);
+                return;
             }
 
-            BenchmarkResults.Insert(index, result);
+            BenchmarkResults.Add(result);
 
-            if (reselect || SelectedBenchmarkResult == null)
+            if (SelectedBenchmarkResult == null)
             {
                 SelectedBenchmarkResult = result;
             }

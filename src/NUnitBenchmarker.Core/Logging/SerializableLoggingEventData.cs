@@ -15,7 +15,6 @@ namespace NUnitBenchmarker.Logging
     /// unfortunatelly not marked as serializable.
     /// </summary>
     [Serializable]
-    [Catel.Fody.NoWeaving]
     public class SerializableLoggingEventData
     {
         public DateTime Timestamp { get; set; }

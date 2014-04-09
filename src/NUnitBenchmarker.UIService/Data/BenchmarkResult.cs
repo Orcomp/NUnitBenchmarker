@@ -8,19 +8,24 @@
 namespace NUnitBenchmarker.Data
 {
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
+    using Catel.Data;
 
-    [DataContract]
-    public class BenchmarkResult
+    //[DataContract]
+    public class BenchmarkResult : ModelBase
     {
+        public BenchmarkResult()
+        {
+            Values = new Dictionary<string, List<KeyValuePair<string, double>>>();
+        }
+
         #region Properties
-        [DataMember]
+        //[DataMember]
         public string Key { get; set; }
 
-        [DataMember]
+        //[DataMember]
         public Dictionary<string, List<KeyValuePair<string, double>>> Values { get; set; }
 
-        [DataMember]
+        //[DataMember]
         public string[] TestCases { get; set; }
         #endregion
     }
