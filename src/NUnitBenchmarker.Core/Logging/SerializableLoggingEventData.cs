@@ -5,10 +5,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Core.Infrastructure.Logging
+namespace NUnitBenchmarker.Logging
 {
     using System;
-    using Catel.Data;
     using Catel.Logging;
 
     /// <summary>

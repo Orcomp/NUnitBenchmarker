@@ -19,8 +19,10 @@ namespace NUnitBenchmarker.ViewModels
 
         public LogEntriesViewModel(ICommandManager commandManager, IUIServiceHost uiServiceHost)
         {
-            _uiServiceHost = uiServiceHost;
             Argument.IsNotNull(() => commandManager);
+            Argument.IsNotNull(() => uiServiceHost);
+
+            _uiServiceHost = uiServiceHost;
 
             LogEntries = new ObservableCollection<LogEntry>();
 
@@ -54,12 +56,22 @@ namespace NUnitBenchmarker.ViewModels
         {
             base.Initialize();
 
-
+            _uiServiceHost.Logged += OnLogged;
         }
 
         protected override void Close()
         {
+            _uiServiceHost.Logged -= OnLogged;
+
             base.Close();
+        }
+
+        private void OnLogged(string message)
+        {
+            var logEntry = new LogEntry();
+            logEntry.Message = message;
+
+            LogEntries.Add(logEntry);
         }
         #endregion
     }

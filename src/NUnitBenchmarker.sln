@@ -48,7 +48,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Content", "Content", "{E4B9D0D7-1893-4B71-A706-D7BECE0A03CD}"
 	ProjectSection(SolutionItems) = preProject
 		..\deployment\templates\content\App.config.transform = ..\deployment\templates\content\App.config.transform
-		..\deployment\templates\content\NUnitBenchmarker.log4net.config = ..\deployment\templates\content\NUnitBenchmarker.log4net.config
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NUnitBenchmarker", "NUnitBenchmarker", "{9CE4E5AA-8CE3-4CE3-BE2A-7E79898BC8E3}"

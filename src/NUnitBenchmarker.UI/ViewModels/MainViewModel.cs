@@ -250,38 +250,6 @@ namespace NUnitBenchmarker.ViewModels
             node.RequestRemove -= OnNodeViewModelOnRequestRemove;
             Roots.Remove(node);
         }
-
-        //private bool CanExecuteLogarithmicTimeAxisCommand(object notUsed)
-        //{
-        //    if (Tabs.Count == 0)
-        //    {
-        //        IsLogarithmicTimeAxisChecked = false;
-        //        return false;
-        //    }
-
-        //    if (TabsSelectedIndex >= Tabs.Count)
-        //    {
-        //        IsLogarithmicTimeAxisChecked = false;
-        //        return false;
-        //    }
-
-        //    return Tabs[TabsSelectedIndex] is PlotTabViewModel;
-        //}
-
-        //private PlotTabViewModel GetSelectedPlotTabViewModel()
-        //{
-        //    if (Tabs.Count == 0)
-        //    {
-        //        return null;
-        //    }
-
-        //    if (TabsSelectedIndex >= Tabs.Count)
-        //    {
-        //        return null;
-        //    }
-
-        //    return Tabs[TabsSelectedIndex] as PlotTabViewModel;
-        //}
         #endregion
     }
 }

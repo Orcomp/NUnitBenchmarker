@@ -7,6 +7,7 @@
 
 namespace NUnitBenchmarker.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.ServiceModel;
     using NUnitBenchmarker.Data;

@@ -18,12 +18,17 @@ namespace NUnitBenchmarker.Services
         private ServiceHost _host;
         #endregion
 
+        #region Constructors
+        public UIServiceHost()
+        {
+
+        }
+        #endregion
+
         #region Methods
         public string OnPing(string message)
         {
-            // Prevent race condition if other thread accidentally unsubscribes
             var handler = Ping;
-            // Call the handler if any:
             if (handler != null)
             {
                 return handler(message);
@@ -32,11 +37,18 @@ namespace NUnitBenchmarker.Services
             return null;
         }
 
+        public void OnLogged(string message)
+        {
+            var handler = Logged;
+            if (handler != null)
+            {
+                handler(message);
+            }
+        }
+
         public IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification interfaceType)
         {
-            // Prevent race condition if other thread accidentally unsubscribes
             var handler = GetImplementations;
-            // Call the handler if any:
             if (handler != null)
             {
                 return handler(interfaceType);
@@ -47,9 +59,7 @@ namespace NUnitBenchmarker.Services
 
         public void OnUpdateResult(BenchmarkResult result)
         {
-            // Prevent race condition if other thread accidentally unsubscribes
             var handler = UpdateResult;
-            // Call the handler if any:
             if (handler != null)
             {
                 handler(result);
@@ -61,7 +71,7 @@ namespace NUnitBenchmarker.Services
         /// </summary>
         public void Start()
         {
-            _host = new ServiceHost(typeof (UIService));
+            _host = new ServiceHost(typeof(UIService));
             _host.Open();
         }
 
@@ -74,6 +84,7 @@ namespace NUnitBenchmarker.Services
         }
         #endregion
 
+        public event Action<string> Logged;
         public event Func<string, string> Ping;
         public event Func<TypeSpecification, IEnumerable<TypeSpecification>> GetImplementations;
         public event Action<BenchmarkResult> UpdateResult;

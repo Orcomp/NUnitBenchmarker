@@ -63,7 +63,7 @@ namespace NUnitBenchmarker
                 string configFilePath = Path.GetTempFileName();
                 configurationFile = new FileInfo(configFilePath);
 
-                using (FileStream stream = configurationFile.Create())
+                using (var stream = configurationFile.Create())
                 {
                     using (var writer = new StreamWriter(stream))
                     {
@@ -85,9 +85,7 @@ namespace NUnitBenchmarker
                 }
 
                 ChannelEndpointElement endpoint = null;
-                foreach (
-                    ChannelEndpointElement end in
-                        ServiceModel.Client.Endpoints.Cast<ChannelEndpointElement>().Where(end => end.Name == endpointName))
+                foreach (var end in ServiceModel.Client.Endpoints.Cast<ChannelEndpointElement>().Where(end => end.Name == endpointName))
                 {
                     endpoint = end;
                 }
@@ -96,6 +94,7 @@ namespace NUnitBenchmarker
                 {
                     throw new ArgumentException("Invalid endpointName \"" + endpointName + "\".");
                 }
+
                 if (endpoint.Address == null)
                 {
                     throw new ArgumentException("Invalid endpoint address.");
@@ -118,6 +117,7 @@ namespace NUnitBenchmarker
                 catch
                 {
                 }
+
                 DeleteConfigFile();
             }
         }
@@ -174,18 +174,14 @@ namespace NUnitBenchmarker
             }
             try
             {
-                foreach (IEndpointBehavior b in from EndpointBehaviorElement behavior in ServiceModel.Behaviors.EndpointBehaviors
-                    where behavior != null
-                    from behaviorExtension in behavior.Where(b => b != null)
-                    let createBehavior = behaviorExtension.GetType()
-                        .GetMethod(
-                            "CreateBehavior",
-                            BindingFlags.NonPublic
-                            | BindingFlags.Instance)
-                    select (IEndpointBehavior) createBehavior.Invoke(behaviorExtension, new object[0])
-                    into b
-                    where b != null
-                    select b)
+                foreach (var b in from EndpointBehaviorElement behavior in ServiceModel.Behaviors.EndpointBehaviors
+                                  where behavior != null
+                                  from behaviorExtension in behavior.Where(b => b != null)
+                                  let createBehavior = behaviorExtension.GetType().GetMethod("CreateBehavior", BindingFlags.NonPublic |BindingFlags.Instance)
+                                  select (IEndpointBehavior) createBehavior.Invoke(behaviorExtension, new object[0])
+                                  into b
+                                  where b != null
+                                  select b)
                 {
                     Behaviors.Add(b);
                 }

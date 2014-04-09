@@ -35,10 +35,6 @@ namespace NUnitBenchmarker.Services
         }
         #endregion
 
-        #region Events
-        public event EventHandler<LogEventArgs> Logged;
-        #endregion
-
         #region IUIService Members
         /// <summary>
         /// Sent by the client to get diagnostic ping.
@@ -55,7 +51,8 @@ namespace NUnitBenchmarker.Services
         /// </summary>
         public void LogEvent(string loggingEventString)
         {
-            Logged.SafeInvoke(this, new LogEventArgs(loggingEventString));
+            var host = _dependencyResolver.Resolve<IUIServiceHost>();
+            host.OnLogged(loggingEventString);
         }
         #endregion
 

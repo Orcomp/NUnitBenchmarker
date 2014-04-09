@@ -11,7 +11,6 @@ namespace NUnitBenchmarker.Logging
     using System.Text;
     using Catel;
     using Catel.Logging;
-    using NUnitBenchmarker.Core.Infrastructure.Logging;
     using NUnitBenchmarker.UIServiceReference;
 
     public class ClientLogListener : LogListenerBase
@@ -23,25 +22,27 @@ namespace NUnitBenchmarker.Logging
             Argument.IsNotNull(() => client);
 
             _client = client;
+
+            IgnoreCatelLogging = true;
         }
 
         protected override void Write(ILog log, string message, LogEvent logEvent, object extraData)
         {
-            string loggingEventString;
-            using (var memoryStream = new MemoryStream())
-            {
-                var data = new SerializableLoggingEventData()
-                {
-                    Message = message,
-                    LogEvent = logEvent
-                };
+            //string loggingEventString;
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    var data = new SerializableLoggingEventData()
+            //    {
+            //        Message = message,
+            //        LogEvent = logEvent
+            //    };
 
-                var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter();
-                formatter.Serialize(memoryStream, data);
-                loggingEventString = Encoding.UTF8.GetString(memoryStream.ToArray());
-            }
+            //    var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter();
+            //    formatter.Serialize(memoryStream, data);
+            //    loggingEventString = Encoding.UTF8.GetString(memoryStream.ToArray());
+            //}
 
-            _client.LogEvent(loggingEventString);
+            _client.LogEvent(message);
         }
     }
 }

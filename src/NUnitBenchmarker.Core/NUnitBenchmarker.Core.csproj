@@ -89,7 +89,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logging\PublisherAppender.cs" />
     <Compile Include="Logging\SerializableLoggingEventData.cs" />
     <Compile Include="Helpers\NumericUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,10 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="NUnitBenchmarker.log4net.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

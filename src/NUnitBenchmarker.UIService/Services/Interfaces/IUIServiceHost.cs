@@ -14,6 +14,7 @@ namespace NUnitBenchmarker.Services
     public interface IUIServiceHost
     {
         #region Methods
+        void OnLogged(string message);
         string OnPing(string message);
 
         IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification interfaceType);
@@ -31,6 +32,7 @@ namespace NUnitBenchmarker.Services
         void Stop();
         #endregion
 
+        event Action<string> Logged;
         event Func<string, string> Ping;
         event Func<TypeSpecification, IEnumerable<TypeSpecification>> GetImplementations;
         event Action<BenchmarkResult> UpdateResult;

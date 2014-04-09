@@ -38,7 +38,7 @@ namespace NUnitBenchmarker
 
         static UI()
         {
-            string resourceStreamName = string.Format("NUnitBenchmarker.UIClient.{0}", "UIServiceClient.config");
+            string resourceStreamName = string.Format("NUnitBenchmarker.{0}", "UIServiceClient.config");
             string configXml = string.Empty;
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceStreamName))

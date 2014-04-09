@@ -40,7 +40,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
             return Activator.CreateInstance<T>();
         }
 
-        public static IList<T> CreateListInstance<T>(ListPerformanceTestCaseConfiguration<T> conf)
+        public static IList<T> CreateListInstance(ListPerformanceTestCaseConfiguration<T> conf)
         {
             return conf.TargetImplementationType.MakeGenericType(typeof (T)).CreateInstance() as IList<T>;
         }
