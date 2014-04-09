@@ -124,7 +124,7 @@
     <Compile Include="ViewModels\AssemblyTree\TreeViewItemViewModel.cs" />
     <Compile Include="ViewModels\AssemblyTree\ReflectionNodeViewModel.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />
-    <Compile Include="Behaviors\ListBoxBehavior.cs" />
+    <Compile Include="Behaviors\ScrollToEndBehavior.cs" />
     <Compile Include="ViewModels\ResultsDataViewModel.cs" />
     <Compile Include="ViewModels\ResultsPlotViewModel.cs" />
     <Compile Include="ViewModels\ResultsViewModel.cs" />
