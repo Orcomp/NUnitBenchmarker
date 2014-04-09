@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Converters
+namespace NUnitBenchmarker.Converters
 {
     using System;
     using System.Windows;

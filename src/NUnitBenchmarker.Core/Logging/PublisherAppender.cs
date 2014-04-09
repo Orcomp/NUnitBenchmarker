@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Core.Infrastructure.Logging
+namespace NUnitBenchmarker.Logging
 {
     using Catel.Logging;
 

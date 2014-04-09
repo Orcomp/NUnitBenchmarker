@@ -1,12 +1,20 @@
-﻿using System.Configuration;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ConfigurationHelper.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NUnitBenchmarker.Benchmark.Configuration
+
+namespace NUnitBenchmarker.Configuration
 {
+    using System.Configuration;
+
     /// <summary>
     /// ConfigurationHelper is a simple static helper to ease loading NUnitBenchmarker configuration
     /// </summary>
     public static class ConfigurationHelper
     {
+        #region Methods
         /// <summary>
         /// Loads the specified configuration from the given file name.
         /// </summary>
@@ -18,7 +26,7 @@ namespace NUnitBenchmarker.Benchmark.Configuration
             const string sectionName = "NUnitBenchmarkerConfigSection";
             if (configFileName == null)
             {
-                return Check((NUnitBenchmarkerConfigurationSection)ConfigurationManager.GetSection(sectionName));
+                return Check((NUnitBenchmarkerConfigurationSection) ConfigurationManager.GetSection(sectionName));
             }
 
             var configMap = new ExeConfigurationFileMap
@@ -28,7 +36,7 @@ namespace NUnitBenchmarker.Benchmark.Configuration
 
             System.Configuration.Configuration config = ConfigurationManager.OpenMappedExeConfiguration(configMap, ConfigurationUserLevel.None);
 
-            return Check((NUnitBenchmarkerConfigurationSection)config.GetSection(sectionName));
+            return Check((NUnitBenchmarkerConfigurationSection) config.GetSection(sectionName));
         }
 
         /// <summary>
@@ -64,7 +72,7 @@ namespace NUnitBenchmarker.Benchmark.Configuration
             else
             {
                 configuration = new NUnitBenchmarkerConfigurationSection();
-                configuration.SearchFolders.Add(new SearchFolder { Folder = "." });
+                configuration.SearchFolders.Add(new SearchFolder {Folder = "."});
                 //configuration.SearchFolders.Add(new SearchFolder {Folder = exeFolder});
             }
 
@@ -89,5 +97,6 @@ namespace NUnitBenchmarker.Benchmark.Configuration
             // TODO: Check for valid settings
             return configuration;
         }
+        #endregion
     }
 }

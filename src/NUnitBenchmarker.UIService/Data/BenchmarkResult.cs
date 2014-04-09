@@ -1,18 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="BenchmarkResult.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NUnitBenchmarker.UIService.Data
+
+namespace NUnitBenchmarker.Data
 {
-	[DataContract]
-	public class BenchmarkResult
-	{
-		[DataMember]
-		public string Key { get; set; }
+    using System.Collections.Generic;
+    using System.Runtime.Serialization;
 
-		[DataMember]
-		public Dictionary<string, List<KeyValuePair<string, double>>> Values { get; set; }
+    [DataContract]
+    public class BenchmarkResult
+    {
+        #region Properties
+        [DataMember]
+        public string Key { get; set; }
 
-		[DataMember]
-		public string[] TestCases { get; set; }
-	}
-}
+        [DataMember]
+        public Dictionary<string, List<KeyValuePair<string, double>>> Values { get; set; }
+
+        [DataMember]
+        public string[] TestCases { get; set; }
+        #endregion
+    }
+} 

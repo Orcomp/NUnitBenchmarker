@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Views
+namespace NUnitBenchmarker.Views
 {
     using Catel.Windows;
 

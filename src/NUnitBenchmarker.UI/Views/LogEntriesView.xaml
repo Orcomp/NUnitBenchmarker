@@ -1,8 +1,8 @@
-﻿<catel:UserControl x:Class="NUnitBenchmarker.UI.Views.LogEntriesView"
+﻿<catel:UserControl x:Class="NUnitBenchmarker.Views.LogEntriesView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 				   xmlns:catel="http://catel.codeplex.com"
-				   xmlns:behaviors="clr-namespace:NUnitBenchmarker.UI.Behaviors">
+				   xmlns:behaviors="clr-namespace:NUnitBenchmarker.Behaviors">
 
     <ListBox ItemsSource="{Binding LogEntries}" behaviors:ListBoxBehavior.ScrollOnNewItem="true">
         <ListBox.ItemTemplate>

@@ -7,7 +7,7 @@
     <ProjectGuid>{957DDC89-4E75-DB09-9590-CB56F3BD5269}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NUnitBenchmarker.Benchmark</RootNamespace>
+    <RootNamespace>NUnitBenchmarker</RootNamespace>
     <AssemblyName>NUnitBenchmarker.Benchmark</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -84,6 +84,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -102,7 +103,7 @@
     <Compile Include="..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Helper\ReflectionHelper.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NUnitBenchmarker.Core\NUnitBenchmarker.Core.csproj">
@@ -114,7 +115,7 @@
       <Name>NUnitBenchmarker.UIClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\NUnitBenchmarker.UIService\NUnitBenchmarker.UIService.csproj">
-      <Project>{E5D0D050-596E-44FE-A068-2268266DA6FB}</Project>
+      <Project>{e5d0d050-596e-44fe-a068-2268266da6fb}</Project>
       <Name>NUnitBenchmarker.UIService</Name>
     </ProjectReference>
   </ItemGroup>

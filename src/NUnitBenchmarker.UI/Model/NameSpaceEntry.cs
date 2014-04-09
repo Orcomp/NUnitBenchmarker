@@ -8,7 +8,7 @@ using NUnitBenchmarker.Benchmark.Helper;
 
 #endregion
 
-namespace NUnitBenchmarker.UI.Model
+namespace NUnitBenchmarker.Model
 {
     public class NameSpaceEntry : ReflectionEntry, IEquatable<NameSpaceEntry>
     {

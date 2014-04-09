@@ -1,29 +1,25 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LogEntry.cs" company="Orcomp development team">
+// <copyright file="LogEventArgs.cs" company="Orcomp development team">
 //   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Model
+namespace NUnitBenchmarker.Services
 {
     using System;
-    using Catel.Data;
-    using Catel.Logging;
 
-    public class LogEntry : ModelBase
+    public class LogEventArgs : EventArgs
     {
-        public LogEntry()
+        #region Constructors
+        public LogEventArgs(string message)
         {
-            SuspendValidation = true;
+            Message = message;
         }
+        #endregion
 
         #region Properties
-        public DateTime Timestamp { get; set; }
-
         public string Message { get; set; }
-
-        public LogEvent LogEvent { get; set; }
         #endregion
     }
 }

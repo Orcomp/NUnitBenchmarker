@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Behaviors
+namespace NUnitBenchmarker.Behaviors
 {
     using System.Windows;
     using System.Windows.Interactivity;

@@ -5,15 +5,14 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.ViewModels
+namespace NUnitBenchmarker.ViewModels
 {
     using System.Linq;
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.Benchmark;
-    using NUnitBenchmarker.UI.Models;
-    using NUnitBenchmarker.UIService;
-    using NUnitBenchmarker.UIService.Data;
+    using NUnitBenchmarker.Data;
+    using NUnitBenchmarker.Models;
+    using NUnitBenchmarker.Services;
     using OxyPlot;
 
     public class ResultsPlotViewModel : ViewModelBase

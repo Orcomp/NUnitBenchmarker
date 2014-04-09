@@ -29,14 +29,14 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Log">
+  <xs:element name="LogEvent">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="loggingEventString" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="LogResponse">
+  <xs:element name="LogEventResponse">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>

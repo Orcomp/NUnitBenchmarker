@@ -21,11 +21,11 @@
   <wsdl:message name="IUIService_GetImplementations_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetImplementationsResponse" />
   </wsdl:message>
-  <wsdl:message name="IUIService_Log_InputMessage">
-    <wsdl:part name="parameters" element="tns:Log" />
+  <wsdl:message name="IUIService_LogEvent_InputMessage">
+    <wsdl:part name="parameters" element="tns:LogEvent" />
   </wsdl:message>
-  <wsdl:message name="IUIService_Log_OutputMessage">
-    <wsdl:part name="parameters" element="tns:LogResponse" />
+  <wsdl:message name="IUIService_LogEvent_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogEventResponse" />
   </wsdl:message>
   <wsdl:message name="IUIService_UpdateResult_InputMessage">
     <wsdl:part name="parameters" element="tns:UpdateResult" />
@@ -42,9 +42,9 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IUIService/GetImplementations" message="tns:IUIService_GetImplementations_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IUIService/GetImplementationsResponse" message="tns:IUIService_GetImplementations_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="Log">
-      <wsdl:input wsaw:Action="http://tempuri.org/IUIService/Log" message="tns:IUIService_Log_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IUIService/LogResponse" message="tns:IUIService_Log_OutputMessage" />
+    <wsdl:operation name="LogEvent">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUIService/LogEvent" message="tns:IUIService_LogEvent_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUIService/LogEventResponse" message="tns:IUIService_LogEvent_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="UpdateResult">
       <wsdl:input wsaw:Action="http://tempuri.org/IUIService/UpdateResult" message="tns:IUIService_UpdateResult_InputMessage" />
@@ -71,8 +71,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="Log">
-      <soap:operation soapAction="http://tempuri.org/IUIService/Log" style="document" />
+    <wsdl:operation name="LogEvent">
+      <soap:operation soapAction="http://tempuri.org/IUIService/LogEvent" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

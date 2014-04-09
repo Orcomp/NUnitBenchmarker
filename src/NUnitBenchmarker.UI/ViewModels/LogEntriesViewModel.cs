@@ -5,17 +5,21 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.ViewModels
+namespace NUnitBenchmarker.ViewModels
 {
     using System.Collections.ObjectModel;
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.UI.Model;
+    using NUnitBenchmarker.Model;
+    using NUnitBenchmarker.Services;
 
     public class LogEntriesViewModel : ViewModelBase
     {
-        public LogEntriesViewModel(ICommandManager commandManager)
+        private readonly IUIServiceHost _uiServiceHost;
+
+        public LogEntriesViewModel(ICommandManager commandManager, IUIServiceHost uiServiceHost)
         {
+            _uiServiceHost = uiServiceHost;
             Argument.IsNotNull(() => commandManager);
 
             LogEntries = new ObservableCollection<LogEntry>();
@@ -49,6 +53,8 @@ namespace NUnitBenchmarker.UI.ViewModels
         protected override void Initialize()
         {
             base.Initialize();
+
+
         }
 
         protected override void Close()

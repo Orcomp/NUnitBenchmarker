@@ -5,14 +5,14 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UIClient.Logging
+namespace NUnitBenchmarker.Logging
 {
     using System.IO;
     using System.Text;
     using Catel;
     using Catel.Logging;
     using NUnitBenchmarker.Core.Infrastructure.Logging;
-    using NUnitBenchmarker.UIClient.UIServiceReference;
+    using NUnitBenchmarker.UIServiceReference;
 
     public class ClientLogListener : LogListenerBase
     {
@@ -41,7 +41,7 @@ namespace NUnitBenchmarker.UIClient.Logging
                 loggingEventString = Encoding.UTF8.GetString(memoryStream.ToArray());
             }
 
-            _client.Log(loggingEventString);
+            _client.LogEvent(loggingEventString);
         }
     }
 }

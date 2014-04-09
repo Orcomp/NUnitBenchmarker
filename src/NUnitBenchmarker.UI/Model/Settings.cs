@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Models
+namespace NUnitBenchmarker.Models
 {
     using Catel.Data;
 

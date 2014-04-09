@@ -1,10 +1,10 @@
-﻿<catel:DataWindow x:Class="NUnitBenchmarker.UI.Views.MainWindow"
+﻿<catel:DataWindow x:Class="NUnitBenchmarker.Views.MainWindow"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:behaviors="clr-namespace:NUnitBenchmarker.UI.Behaviors"
-                  xmlns:tree="clr-namespace:NUnitBenchmarker.UI.ViewModels.AssemblyTree"
+                  xmlns:behaviors="clr-namespace:NUnitBenchmarker.Behaviors"
+                  xmlns:viewmodels="clr-namespace:NUnitBenchmarker.ViewModels"
                   xmlns:catel="http://catel.codeplex.com"
-                  xmlns:views="clr-namespace:NUnitBenchmarker.UI.Views"
+                  xmlns:views="clr-namespace:NUnitBenchmarker.Views"
                   ShowInTaskbar="True" SizeToContent="Manual" WindowState="Normal" ResizeMode="CanResizeWithGrip"
                   FontSize="14" Icon="/NUnitBenchmarker.UI;component/NunitBenchmarker.ico">
 
@@ -86,7 +86,7 @@
                     </TreeView.ItemContainerStyle>
 
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type tree:ReflectionNodeViewModel}" ItemsSource="{Binding Children}">
+                        <HierarchicalDataTemplate DataType="{x:Type viewmodels:ReflectionNodeViewModel}" ItemsSource="{Binding Children}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Margin="{Binding ImageMargin}" Source="{Binding Image}" />
                                 <CheckBox Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsChecked}" />

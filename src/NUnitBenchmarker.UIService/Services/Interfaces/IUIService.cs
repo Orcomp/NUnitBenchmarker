@@ -5,11 +5,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UIService
+namespace NUnitBenchmarker.Services
 {
     using System.Collections.Generic;
     using System.ServiceModel;
-    using NUnitBenchmarker.UIService.Data;
+    using NUnitBenchmarker.Data;
 
     [ServiceContract]
     public interface IUIService

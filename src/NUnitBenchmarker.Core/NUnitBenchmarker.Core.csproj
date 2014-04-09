@@ -7,7 +7,7 @@
     <ProjectGuid>{CB56F3BD-DB09-4E75-9590-957DDC895269}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NUnitBenchmarker.Core</RootNamespace>
+    <RootNamespace>NUnitBenchmarker</RootNamespace>
     <AssemblyName>NUnitBenchmarker.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -89,9 +89,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\Logging\PublisherAppender.cs" />
-    <Compile Include="Infrastructure\Logging\SerializableLoggingEventData.cs" />
-    <Compile Include="NumericUtils.cs" />
+    <Compile Include="Logging\PublisherAppender.cs" />
+    <Compile Include="Logging\SerializableLoggingEventData.cs" />
+    <Compile Include="Helpers\NumericUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>

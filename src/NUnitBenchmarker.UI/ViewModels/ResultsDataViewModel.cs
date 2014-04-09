@@ -5,14 +5,14 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.ViewModels
+namespace NUnitBenchmarkerViewModels
 {
     using System.Data;
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.Benchmark;
-    using NUnitBenchmarker.UIService;
-    using NUnitBenchmarker.UIService.Data;
+    using NUnitBenchmarker;
+    using NUnitBenchmarker.Data;
+    using NUnitBenchmarker.Services;
 
     public class ResultsDataViewModel : ViewModelBase
     {

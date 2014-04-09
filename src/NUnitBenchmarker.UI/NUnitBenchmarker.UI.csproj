@@ -7,7 +7,7 @@
     <ProjectGuid>{F65803B8-681C-4318-978F-32A7ADCA3CA0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NUnitBenchmarker.UI</RootNamespace>
+    <RootNamespace>NUnitBenchmarker</RootNamespace>
     <AssemblyName>NUnitBenchmarker.UI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

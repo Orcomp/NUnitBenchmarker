@@ -1,187 +1,168 @@
-﻿using System;
-using System.Configuration;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="NUnitBenchmarkerConfigurationSection.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NUnitBenchmarker.Benchmark.Configuration
+
+namespace NUnitBenchmarker.Configuration
 {
-	public class NUnitBenchmarkerConfigurationSection : ConfigurationSection
-	{
-		public string ConfigFile { get; set; }
-		
-		private const string DisplayUIAttributeName = "displayUI";
-		[ConfigurationProperty(DisplayUIAttributeName, DefaultValue = "false", IsRequired = false)]
-		public Boolean DisplayUI
-		{
-			get
-			{
-				return (Boolean)this[DisplayUIAttributeName];
-			}
-			set
-			{
-				this[DisplayUIAttributeName] = value;
-			}
-		}
+    using System;
+    using System.Configuration;
 
-		private const string SearchFoldersElementName = "SearchFolders";
-		[ConfigurationProperty(SearchFoldersElementName)]
-		public SearchFolderCollection SearchFolders
-		{
-			get
-			{
-				return ((SearchFolderCollection)(this[SearchFoldersElementName]));
-			}
-		}
+    public class NUnitBenchmarkerConfigurationSection : ConfigurationSection
+    {
+        #region Constants
+        private const string DisplayUIAttributeName = "displayUI";
 
-		private const string ImplementationFiltersElementName = "ImplementationFilters";
-		[ConfigurationProperty(ImplementationFiltersElementName)]
-		public ExcludeIncludeCollection ImplementationFilters
-		{
-			get { return ((ExcludeIncludeCollection)(base[ImplementationFiltersElementName])); }
-		}
+        private const string SearchFoldersElementName = "SearchFolders";
 
-		private const string TestCaseFiltersElementName = "TestCaseFilters";
-		[ConfigurationProperty(TestCaseFiltersElementName)]
-		public ExcludeIncludeCollection TestCaseFilters
-		{
-			get { return ((ExcludeIncludeCollection)(base[TestCaseFiltersElementName])); }
-		}
-	}
+        private const string ImplementationFiltersElementName = "ImplementationFilters";
 
-	[ConfigurationCollection(typeof(SearchFolder))]
-	public class SearchFolderCollection : ConfigurationElementCollection
-	{
+        private const string TestCaseFiltersElementName = "TestCaseFilters";
+        #endregion
 
-		protected override ConfigurationElement CreateNewElement()
-		{
-			return new SearchFolder();
-		}
+        #region Properties
+        public string ConfigFile { get; set; }
 
-		protected override object GetElementKey(ConfigurationElement element)
-		{
-			return ((SearchFolder)(element)).Folder;
-		}
+        [ConfigurationProperty(DisplayUIAttributeName, DefaultValue = "false", IsRequired = false)]
+        public Boolean DisplayUI
+        {
+            get { return (Boolean) this[DisplayUIAttributeName]; }
+            set { this[DisplayUIAttributeName] = value; }
+        }
 
-		public void Add(SearchFolder searchFolder)
-		{
-			BaseAdd(searchFolder);
-		}
+        [ConfigurationProperty(SearchFoldersElementName)]
+        public SearchFolderCollection SearchFolders
+        {
+            get { return ((SearchFolderCollection) (this[SearchFoldersElementName])); }
+        }
 
+        [ConfigurationProperty(ImplementationFiltersElementName)]
+        public ExcludeIncludeCollection ImplementationFilters
+        {
+            get { return ((ExcludeIncludeCollection) (base[ImplementationFiltersElementName])); }
+        }
 
-		public SearchFolder this[int idx]
-		{
-			get
-			{
-				return (SearchFolder)BaseGet(idx);
-			}
-		}
-	}
+        [ConfigurationProperty(TestCaseFiltersElementName)]
+        public ExcludeIncludeCollection TestCaseFilters
+        {
+            get { return ((ExcludeIncludeCollection) (base[TestCaseFiltersElementName])); }
+        }
+        #endregion
+    }
 
-	[ConfigurationCollection(typeof(ExcludeIncludeElement))]
-	public class ExcludeIncludeCollection : ConfigurationElementCollection
-	{
+    [ConfigurationCollection(typeof (SearchFolder))]
+    public class SearchFolderCollection : ConfigurationElementCollection
+    {
+        #region Properties
+        public SearchFolder this[int idx]
+        {
+            get { return (SearchFolder) BaseGet(idx); }
+        }
+        #endregion
 
-		protected override ConfigurationElement CreateNewElement()
-		{
-			return new ExcludeIncludeElement();
-		}
+        #region Methods
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new SearchFolder();
+        }
 
-		protected override object GetElementKey(ConfigurationElement element)
-		{
-			return ((ExcludeIncludeElement)(element)).Exclude + ((ExcludeIncludeElement)(element)).Include;
-		}
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return ((SearchFolder) (element)).Folder;
+        }
 
-		public void Add(ExcludeIncludeElement item)
-		{
-			base.BaseAdd(item);
-		}
+        public void Add(SearchFolder searchFolder)
+        {
+            BaseAdd(searchFolder);
+        }
+        #endregion
+    }
 
-		public ExcludeIncludeElement this[int idx]
-		{
-			get
-			{
-				return (ExcludeIncludeElement)BaseGet(idx);
-			}
-		}
-	}	
-	
-	public class SearchFolder : ConfigurationElement
-	{
-		private const string ExcludeAttributeName = "Exclude";
-		private const string IncludeAttributeName = "Include";
-		private const string FolderAttributeName = "Folder";
-		
-		[ConfigurationProperty(FolderAttributeName, IsKey = true, IsRequired = true)]
-		// MinLength has a known issue [StringValidator(InvalidCharacters = "<>|?*/", MinLength=1, MaxLength = 255)]
-		[StringValidator(InvalidCharacters = "<>|?*/", MaxLength = 255)]
-		public string Folder
-		{
-			get
-			{
-				return ((string)(this[FolderAttributeName]));
-			}
-			set
-			{
-				this[FolderAttributeName] = value;
-			}
-		}
+    [ConfigurationCollection(typeof (ExcludeIncludeElement))]
+    public class ExcludeIncludeCollection : ConfigurationElementCollection
+    {
+        #region Properties
+        public ExcludeIncludeElement this[int idx]
+        {
+            get { return (ExcludeIncludeElement) BaseGet(idx); }
+        }
+        #endregion
 
-		[ConfigurationProperty(ExcludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
-		public string Exclude
-		{
-			get
-			{
-				return ((string)(this[ExcludeAttributeName]));
-			}
-			set
-			{
-				this[ExcludeAttributeName] = value;
-			}
-		}
+        #region Methods
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new ExcludeIncludeElement();
+        }
 
-		[ConfigurationProperty(IncludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
-		public string Include
-		{
-			get
-			{
-				return ((string)(this[IncludeAttributeName]));
-			}
-			set
-			{
-				this[IncludeAttributeName] = value;
-			} 
-		}
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return ((ExcludeIncludeElement) (element)).Exclude + ((ExcludeIncludeElement) (element)).Include;
+        }
 
-	}
+        public void Add(ExcludeIncludeElement item)
+        {
+            base.BaseAdd(item);
+        }
+        #endregion
+    }
 
-	public class ExcludeIncludeElement : ConfigurationElement
-	{
-		private const string ExcludeAttributeName = "Exclude";
-		private const string IncludeAttributeName = "Include";
+    public class SearchFolder : ConfigurationElement
+    {
+        #region Constants
+        private const string ExcludeAttributeName = "Exclude";
+        private const string IncludeAttributeName = "Include";
+        private const string FolderAttributeName = "Folder";
+        #endregion
 
-		[ConfigurationProperty(ExcludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
-		public string Exclude
-		{
-			get
-			{
-				return ((string)(this[ExcludeAttributeName]));
-			}
-			set
-			{
-				this[ExcludeAttributeName] = value;
-			}
-		}
+        #region Properties
+        [ConfigurationProperty(FolderAttributeName, IsKey = true, IsRequired = true)]
+        // MinLength has a known issue [StringValidator(InvalidCharacters = "<>|?*/", MinLength=1, MaxLength = 255)]
+        [StringValidator(InvalidCharacters = "<>|?*/", MaxLength = 255)]
+        public string Folder
+        {
+            get { return ((string) (this[FolderAttributeName])); }
+            set { this[FolderAttributeName] = value; }
+        }
 
-		[ConfigurationProperty(IncludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
-		public string Include
-		{
-			get
-			{
-				return ((string)(this[IncludeAttributeName]));
-			}
-			set
-			{
-				this[IncludeAttributeName] = value;
-			}
-		}
-	}
+        [ConfigurationProperty(ExcludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
+        public string Exclude
+        {
+            get { return ((string) (this[ExcludeAttributeName])); }
+            set { this[ExcludeAttributeName] = value; }
+        }
 
+        [ConfigurationProperty(IncludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
+        public string Include
+        {
+            get { return ((string) (this[IncludeAttributeName])); }
+            set { this[IncludeAttributeName] = value; }
+        }
+        #endregion
+    }
+
+    public class ExcludeIncludeElement : ConfigurationElement
+    {
+        #region Constants
+        private const string ExcludeAttributeName = "Exclude";
+        private const string IncludeAttributeName = "Include";
+        #endregion
+
+        #region Properties
+        [ConfigurationProperty(ExcludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
+        public string Exclude
+        {
+            get { return ((string) (this[ExcludeAttributeName])); }
+            set { this[ExcludeAttributeName] = value; }
+        }
+
+        [ConfigurationProperty(IncludeAttributeName, DefaultValue = "", IsKey = false, IsRequired = false)]
+        public string Include
+        {
+            get { return ((string) (this[IncludeAttributeName])); }
+            set { this[IncludeAttributeName] = value; }
+        }
+        #endregion
+    }
 }

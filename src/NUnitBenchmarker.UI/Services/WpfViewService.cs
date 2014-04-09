@@ -5,13 +5,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Services
+namespace NUnitBenchmarker.Services
 {
-    using System;
-    using System.Windows.Forms;
     using Catel;
     using Catel.Services;
-    using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
     /// <summary>
     /// IViewService interface implementation for WPF.

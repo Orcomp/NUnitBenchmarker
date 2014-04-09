@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.ServiceModel;
-using NUnitBenchmarker.UIClient.Properties;
-using NUnitBenchmarker.UIClient.UIServiceReference;
-using NUnitBenchmarker.UIService.Data;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UI.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NUnitBenchmarker.UIClient
+
+namespace NUnitBenchmarker
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.ServiceModel;
     using Catel.Logging;
-    using NUnitBenchmarker.UIClient.Logging;
+    using NUnitBenchmarker.Logging;
+    using NUnitBenchmarker.Properties;
+    using NUnitBenchmarker.UIServiceReference;
+    using IUIService = NUnitBenchmarker.Services.IUIService;
+    using BenchmarkResult = NUnitBenchmarker.UIServiceReference.BenchmarkResult;
+    using TypeSpecification = NUnitBenchmarker.UIServiceReference.TypeSpecification;
 
     // TODO: Refactor this static helper to an instance which implements IUIService
     public static class UI
@@ -46,7 +54,7 @@ namespace NUnitBenchmarker.UIClient
 
             const string endpointName = "BasicHttpBinding_IUIService";
 
-            var serviceEndpoint = new XmlServiceEndpoint(typeof(IUIService), configXml, endpointName);
+            var serviceEndpoint = new XmlServiceEndpoint(typeof (IUIService), configXml, endpointName);
             var channelFactory = new ChannelFactory<IUIServiceChannel>(serviceEndpoint);
             Client = new UIServiceClient(channelFactory.Endpoint.Binding, channelFactory.Endpoint.Address);
         }
@@ -68,8 +76,8 @@ namespace NUnitBenchmarker.UIClient
             SendMessageAction(() => Client.UpdateResult(result));
         }
 
-#if NET45		
-		private static void SendMessageAction(Action action, [CallerMemberName] string memberName = "")
+#if NET45
+        private static void SendMessageAction(Action action, [CallerMemberName] string memberName = "")
 #else
         private static void SendMessageAction(Action action, string memberName = "")
 #endif

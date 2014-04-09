@@ -5,24 +5,25 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UIService
+namespace NUnitBenchmarker.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Catel;
     using Catel.IoC;
-    using Catel.Logging;
-    using NUnitBenchmarker.UIService.Data;
+    using NUnitBenchmarker.Data;
 
     /// <summary>
-    ///     Class UIService
-    ///     Service definition class for exchanging data with Runner client
+    /// Class UIService Service definition class for exchanging data with Runner client
     /// </summary>
     public class UIService : IUIService
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
+        #region Fields
         private readonly IDependencyResolver _dependencyResolver;
+        #endregion
 
+        #region Constructors
         public UIService()
         {
             // Note: Not DI in constructor possible here because this instance is created by 
@@ -32,9 +33,15 @@ namespace NUnitBenchmarker.UIService
 
             _dependencyResolver = this.GetDependencyResolver();
         }
+        #endregion
 
+        #region Events
+        public event EventHandler<LogEventArgs> Logged;
+        #endregion
+
+        #region IUIService Members
         /// <summary>
-        ///     Sent by the client to get diagnostic ping.
+        /// Sent by the client to get diagnostic ping.
         /// </summary>
         /// <param name="message">The message.</param>
         public string Ping(string message)
@@ -44,6 +51,16 @@ namespace NUnitBenchmarker.UIService
         }
 
         /// <summary>
+        /// Logs a standard log4net logging event
+        /// </summary>
+        public void LogEvent(string loggingEventString)
+        {
+            Logged.SafeInvoke(this, new LogEventArgs(loggingEventString));
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
         /// Gets the implementations to test
         /// </summary>
         /// <param name="interfaceType">Type of the interface.</param>
@@ -52,28 +69,6 @@ namespace NUnitBenchmarker.UIService
         {
             var host = _dependencyResolver.Resolve<IUIServiceHost>();
             return host.OnGetImplementations(interfaceType);
-        }
-
-        /// <summary>
-        /// Logs a standard log4net logging event
-        /// </summary>
-        public void LogEvent(string loggingEventString)
-        {
-            // Note: This message is already depends on log4net via the LoggingEvent type. 
-            // No additional depency is caused by accepting Log4NetLogger (specific implementation of
-            // ILogger here:
-
-            // TODO: Write log
-
-            //LoggingEventData loggingEventData;
-            //using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(loggingEventString)))
-            //{
-            //    var formatter = new System.Runtime.Serialization.Formatters.Soap.SoapFormatter();
-            //    loggingEventData = ((SerializableLoggingEventData) formatter.Deserialize(ms)).ToLoggingEventData();
-            //}
-
-            //var loggingEvent = new LoggingEvent(loggingEventData);
-            //((Log4NetLogger) logger).Log(loggingEvent);
         }
 
         public void UpdateResult(BenchmarkResult result)
@@ -89,10 +84,11 @@ namespace NUnitBenchmarker.UIService
                 return string.Empty;
             }
 
-            string result = @object.GetType().GetProperties().Aggregate(string.Empty, 
+            string result = @object.GetType().GetProperties().Aggregate(string.Empty,
                 (current, propertyInfo) => current + string.Format("'{0}': >{1}<, ", propertyInfo.Name, propertyInfo.GetValue(@object, null)));
 
             return result.Trim().Trim(',');
         }
+        #endregion
     }
 }

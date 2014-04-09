@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Behaviors
+namespace NUnitBenchmarker.Behaviors
 {
     using System;
     using System.Collections.Generic;

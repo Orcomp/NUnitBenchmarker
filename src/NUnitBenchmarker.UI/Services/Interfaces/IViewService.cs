@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.Services
+namespace NUnitBenchmarker.Services
 {
     /// <summary>
     /// Interface IViewService: Interface for MVVM message showing.

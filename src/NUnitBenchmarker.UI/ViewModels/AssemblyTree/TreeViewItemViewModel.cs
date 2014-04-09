@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
+namespace NUnitBenchmarker.ViewModels
 {
     using System;
     using System.Collections.Generic;

@@ -1,10 +1,19 @@
-using System;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IPerformanceTestCaseConfiguration.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NUnitBenchmarker.Benchmark.Configuration
+
+namespace NUnitBenchmarker.Configuration
 {
-	public interface IPerformanceTestCaseConfiguration
-	{
-		string Identifier { get; set; }
-		Type TargetImplementationType { get; set; }
-	}
+    using System;
+
+    public interface IPerformanceTestCaseConfiguration
+    {
+        #region Properties
+        string Identifier { get; set; }
+        Type TargetImplementationType { get; set; }
+        #endregion
+    }
 }

@@ -1,29 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TypeSpecification.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace NUnitBenchmarker.UIService.Data
+
+namespace NUnitBenchmarker.Data
 {
-	[DataContract]
-	public class TypeSpecification
-	{
-		public TypeSpecification()
-		{
-		}
+    using System;
+    using System.Runtime.Serialization;
 
-		public TypeSpecification(Type type)
-		{
-			FullName = type.FullName;
-			AssemblyPath = type.Assembly.CodeBase;
-		}
+    [DataContract]
+    public class TypeSpecification
+    {
+        #region Constructors
+        public TypeSpecification()
+        {
+        }
 
-		[DataMember]
-		public string AssemblyPath { get; set; }
+        public TypeSpecification(Type type)
+        {
+            FullName = type.FullName;
+            AssemblyPath = type.Assembly.CodeBase;
+        }
+        #endregion
 
-		[DataMember]
-		public string FullName { get; set; }
-	}
+        #region Properties
+        [DataMember]
+        public string AssemblyPath { get; set; }
+
+        [DataMember]
+        public string FullName { get; set; }
+        #endregion
+    }
 }

@@ -1,37 +1,36 @@
-﻿#region using...
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Benchmarker.cs" company="Orcomp development team">
+//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Fasterflect;
-using NUnitBenchmarker.Benchmark.Configuration;
-using NUnitBenchmarker.Core;
-using NUnitBenchmarker.UIClient;
-using NUnitBenchmarker.UIService.Data;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using SimpleSpeedTester.Core;
-using SimpleSpeedTester.Core.OutcomeFilters;
 
-#endregion
-
-namespace NUnitBenchmarker.Benchmark
+namespace NUnitBenchmarker
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using System.Text.RegularExpressions;
     using Catel.Logging;
+    using Fasterflect;
+    using NUnitBenchmarker.Configuration;
+    using NUnitBenchmarker.Data;
+    using OxyPlot;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
+    using SimpleSpeedTester.Core;
+    using SimpleSpeedTester.Core.OutcomeFilters;
 
     public static class Benchmarker
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
+        #region Constants
         private const int NumberOfIterations = 5;
+        private const int SignificantDigitCount = 3;
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private static readonly Dictionary<string, Dictionary<string, List<KeyValuePair<string, double>>>> Results;
         private static readonly HashSet<string> TestCases;
         private static readonly NUnitBenchmarkerConfigurationSection Configuration;
@@ -40,8 +39,9 @@ namespace NUnitBenchmarker.Benchmark
         private static DateTime _timestamp;
         private static Type _interfaceType;
         private static IEnumerable<ImplementationInfo> _implementationInfos;
-        private const int SignificantDigitCount = 3;
+        #endregion
 
+        #region Constructors
         static Benchmarker()
         {
             Results = new Dictionary<string, Dictionary<string, List<KeyValuePair<string, double>>>>();
@@ -55,16 +55,17 @@ namespace NUnitBenchmarker.Benchmark
 
             _timestamp = DateTime.Now;
         }
-
+        #endregion
 
         // Ensure static constructor was executed. This may or may not needed when using UI static class.
         // TODO: Resolve this by more professional way. Benchmarker's constructor must run before than UI's constructor
         // but this can not be achieved by referencing Benchmarker class in UI's static constructor because of circular reference
-        static public void Init()
+
+        #region Methods
+        public static void Init()
         {
             // Dummy
         }
-
 
         private static void FindImplementations(Type interfaceType, bool displayUI = false)
         {
@@ -84,7 +85,6 @@ namespace NUnitBenchmarker.Benchmark
             // Refresh or get implementations:
             IEnumerable<ImplementationInfo> findImplementations = FindImplementations(interfaceType, Configuration.SearchFolders);
             _implementationInfos = ApplyImplementationFilter(findImplementations, Configuration.ImplementationFilters.Cast<ExcludeIncludeElement>());
-
         }
 
         private static IEnumerable<ImplementationInfo> ApplyImplementationFilter(IEnumerable<ImplementationInfo> infos, IEnumerable<ExcludeIncludeElement> filters)
@@ -98,18 +98,15 @@ namespace NUnitBenchmarker.Benchmark
                 //removables.AddRange(implementationInfos.Where(i => excludeIncludeElements.Where(f => f.Include.Length > 0).All(f => !i.TypeName.Contains(f.Include))));
                 removables.AddRange(implementationInfos
                     .Where(i => excludeIncludeElements.Where(f => f.Include.Length > 0)
-                    .All(f => !Regex.IsMatch(i.TypeName, f.Include))));
+                        .All(f => !Regex.IsMatch(i.TypeName, f.Include))));
             }
 
             //removables.AddRange(implementationInfos.Where(i => excludeIncludeElements.Where(f => f.Exclude.Length > 0).Any(f => i.TypeName.Contains(f.Exclude))));
             removables.AddRange(implementationInfos
                 .Where(i => excludeIncludeElements.Where(f => f.Exclude.Length > 0)
-                .Any(f => Regex.IsMatch(i.TypeName, f.Exclude))));
+                    .Any(f => Regex.IsMatch(i.TypeName, f.Exclude))));
             return implementationInfos.Where(i => !removables.Contains(i)).ToList();
         }
-
-
-
 
         private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType,
             SearchFolderCollection searchFolders)
@@ -183,7 +180,6 @@ namespace NUnitBenchmarker.Benchmark
             return assemblyNames.Where(an => !removables.Contains(an)).ToList();
         }
 
-
         public static void Benchmark(this Action action, IPerformanceTestCaseConfiguration conf, string testName, string testCase)
         {
             var testGroup = conf.Identifier;
@@ -201,12 +197,15 @@ namespace NUnitBenchmarker.Benchmark
             Log.Info("[{0}] {1} - {2}: {3} (ms)", testGroup, testName, NumericUtils.TryToFormatAsNumber(testCase), averageExecutionTime);
 
             Save(testGroup, testName, testCase, averageExecutionTime);
-            UI.UpdateResult(new BenchmarkResult
+
+            var benchmarkResult = new BenchmarkResult
             {
                 Key = testName,
                 Values = Results[testName],
                 TestCases = TestCases.ToArray(),
-            });
+            };
+
+            UI.UpdateResult(benchmarkResult);
         }
 
         private static bool FilterTestCaseOut(string testCase, IEnumerable<ExcludeIncludeElement> filters)
@@ -224,8 +223,7 @@ namespace NUnitBenchmarker.Benchmark
 
             if (excludeIncludeElements.Any(f => f.Exclude.Length > 0))
             {
-                if (excludeIncludeElements.Where(f => f.Exclude.Length > 0)
-                    .Any(f => Regex.IsMatch(testCase, f.Exclude)))
+                if (excludeIncludeElements.Where(f => f.Exclude.Length > 0).Any(f => Regex.IsMatch(testCase, f.Exclude)))
                 {
                     return true;
                 }
@@ -408,7 +406,7 @@ namespace NUnitBenchmarker.Benchmark
 
             foreach (var series in result.Values)
             {
-                var columnSeries = new ColumnSeries { Title = series.Key };
+                var columnSeries = new ColumnSeries {Title = series.Key};
 
                 var categoryIndex = 0;
                 foreach (var dataPoint in series.Value)
@@ -449,7 +447,6 @@ namespace NUnitBenchmarker.Benchmark
                 sb.AppendLine(series.Key + "," + string.Join(",", series.Value.Select(v => v.ToString())));
             }
 
-
             sb.AppendLine();
 
             var fileName = Path.Combine(folderPath, result.Key) + ".csv";
@@ -461,7 +458,8 @@ namespace NUnitBenchmarker.Benchmark
         {
             FindImplementations(interfaceType, displayUI);
             var result = new List<Type>();
-            var typeSpecifications = UI.GetImplementations(new TypeSpecification(_interfaceType));
+            var typeSpecification = new TypeSpecification(_interfaceType);
+            var typeSpecifications = UI.GetImplementations(typeSpecification);
 
             var assemblies = new Dictionary<string, Assembly>();
             foreach (var spec in typeSpecifications)
@@ -476,6 +474,7 @@ namespace NUnitBenchmarker.Benchmark
                     assembly = Assembly.LoadFrom(spec.AssemblyPath);
                     assemblies.Add(spec.AssemblyPath, assembly);
                 }
+
                 result.AddRange(assembly
                     .Types()
                     .Where(t => t.FullName.Equals(spec.FullName))
@@ -502,5 +501,6 @@ namespace NUnitBenchmarker.Benchmark
             }
             return result;
         }
+        #endregion
     }
 }

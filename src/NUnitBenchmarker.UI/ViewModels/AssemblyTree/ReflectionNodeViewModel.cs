@@ -5,14 +5,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.ViewModels.AssemblyTree
+namespace NUnitBenchmarker.ViewModels
 {
     using System;
     using System.Windows;
     using System.Windows.Media;
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.UI.Model;
 
     /// <summary>
     ///     Foundation class for all ViewModel classes displayed by TreeViewItems.

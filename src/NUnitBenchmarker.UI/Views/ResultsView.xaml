@@ -1,8 +1,8 @@
-﻿<catel:UserControl x:Class="NUnitBenchmarker.UI.Views.ResultsView"
+﻿<catel:UserControl x:Class="NUnitBenchmarker.Views.ResultsView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 				   xmlns:catel="http://catel.codeplex.com"
-				   xmlns:views="clr-namespace:NUnitBenchmarker.UI.Views">
+				   xmlns:views="clr-namespace:NUnitBenchmarker.Views">
 
     <catel:StackGrid>
 

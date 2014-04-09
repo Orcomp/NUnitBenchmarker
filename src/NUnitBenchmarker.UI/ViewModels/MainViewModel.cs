@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.UI.ViewModels
+namespace NUnitBenchmarker.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -17,13 +17,8 @@ namespace NUnitBenchmarker.UI.ViewModels
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
-    using NUnitBenchmarker.UI.Model;
-    using NUnitBenchmarker.UI.Models;
-    using NUnitBenchmarker.UI.Resources;
-    using NUnitBenchmarker.UI.Services;
-    using NUnitBenchmarker.UI.ViewModels.AssemblyTree;
-    using NUnitBenchmarker.UIService;
-    using NUnitBenchmarker.UIService.Data;
+    using NUnitBenchmarker.Models;
+    using NUnitBenchmarker.Services;
 
     /// <summary>
     /// Class MainViewModel: MVVM ViewModel for MainWindow
