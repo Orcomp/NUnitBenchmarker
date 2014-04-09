@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Model
+namespace NUnitBenchmarker.Models
 {
     using System;
     using Catel.Data;

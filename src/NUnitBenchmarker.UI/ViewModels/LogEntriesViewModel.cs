@@ -10,7 +10,7 @@ namespace NUnitBenchmarker.ViewModels
     using System.Collections.ObjectModel;
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.Model;
+    using NUnitBenchmarker.Models;
     using NUnitBenchmarker.Services;
 
     public class LogEntriesViewModel : ViewModelBase

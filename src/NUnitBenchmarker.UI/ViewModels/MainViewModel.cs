@@ -18,7 +18,6 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.MVVM;
     using Catel.Services;
     using NUnitBenchmarker.Data;
-    using NUnitBenchmarker.Model;
     using NUnitBenchmarker.Models;
     using NUnitBenchmarker.Resources;
     using NUnitBenchmarker.Services;
@@ -36,6 +35,7 @@ namespace NUnitBenchmarker.ViewModels
         private readonly IMessageService _messageService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly IOpenFileService _openFileService;
+        private readonly IReflectionService _reflectionService;
         #endregion
 
         #region Constructors
@@ -44,7 +44,7 @@ namespace NUnitBenchmarker.ViewModels
         /// </summary>
         public MainViewModel(IViewService viewService, IUIServiceHost uiServiceHost, IMessageService messageService,
             ISelectDirectoryService selectDirectoryService, IOpenFileService openFileService, ICommandManager commandManager,
-            ISettings settings)
+            ISettings settings, IReflectionService reflectionService)
         {
             Argument.IsNotNull(() => viewService);
             Argument.IsNotNull(() => uiServiceHost);
@@ -53,12 +53,14 @@ namespace NUnitBenchmarker.ViewModels
             Argument.IsNotNull(() => openFileService);
             Argument.IsNotNull(() => commandManager);
             Argument.IsNotNull(() => settings);
+            Argument.IsNotNull(() => reflectionService);
 
             _viewService = viewService;
             _uiServiceHost = uiServiceHost;
             _messageService = messageService;
             _selectDirectoryService = selectDirectoryService;
             _openFileService = openFileService;
+            _reflectionService = reflectionService;
             Settings = settings;
 
             Roots = new ObservableCollection<ReflectionNodeViewModel>();
@@ -108,20 +110,12 @@ namespace NUnitBenchmarker.ViewModels
                 {
                     if (Roots.Any(item => (item.Data).Path == fileName))
                     {
-                        _viewService.ShowMessage(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
+                        _messageService.ShowInformation(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
                         return;
                     }
 
-                    var assembly = Assembly.LoadFile(fileName);
-                    string fullName = assembly.FullName.Replace(", ", "\n");
-
-                    // TODO: Don't create 
-                    var nodeViewModel = new ReflectionNodeViewModel(new AssemblyEntry
-                    {
-                        Path = fileName,
-                        Name = Path.GetFileName(fileName),
-                        Description = string.Format("{0}\nLoaded from: {1}", fullName, fileName)
-                    }, null);
+                    var assemblyEntry = _reflectionService.GetAssemblyEntry(fileName);
+                    var nodeViewModel = new ReflectionNodeViewModel(assemblyEntry, null);
 
                     nodeViewModel.RequestRemove += OnNodeViewModelOnRequestRemove;
                     Roots.Add(nodeViewModel);

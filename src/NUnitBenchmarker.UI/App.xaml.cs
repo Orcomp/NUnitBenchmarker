@@ -32,7 +32,12 @@ namespace NUnitBenchmarker
         /// </param>
         protected override void OnStartup(StartupEventArgs e)
         {
+#if DEBUG
+            LogManager.AddDebugListener(true);
+#endif
+
             base.OnStartup(e);
+
             try
             {
                 var serviceLocator = ServiceLocator.Default;

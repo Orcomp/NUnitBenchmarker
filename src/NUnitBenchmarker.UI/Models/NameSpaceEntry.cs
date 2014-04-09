@@ -5,15 +5,22 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Model
+namespace NUnitBenchmarker.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Fasterflect;
 
     public class NameSpaceEntry : ReflectionEntry, IEquatable<NameSpaceEntry>
     {
+        private readonly List<ReflectionEntry> _children; 
+
+        #region Constructors
+        public NameSpaceEntry(IEnumerable<ReflectionEntry> children)
+        {
+            _children = new List<ReflectionEntry>(children);
+        }
+        #endregion
+
         #region IEquatable<NameSpaceEntry> Members
         /// <summary>
         ///     Indicates whether the current object is equal to another object of the same type.
@@ -31,19 +38,7 @@ namespace NUnitBenchmarker.Model
         #region Methods
         public override IEnumerable<ReflectionEntry> GetChildren()
         {
-            return Assembly.Types()
-                //.Where(x => x.Implements(interfaceType))
-                .Where(x => NormalizeNamespace(x) == Name)
-                .Select(x => new TypeEntry
-                {
-                    Path = Path,
-                    AssemblyFullName = AssemblyFullName,
-                    Assembly = Assembly,
-                    TypeFullName = x.FullName,
-                    Name = x.GetFriendlyName(),
-                    Description = string.Format("{0}\n{1}", x.Namespace, x.GetFriendlyName()),
-                    LeafEntry = true
-                }).OrderBy(e => e.Name).ToList();
+            return _children;
         }
 
         /// <summary>
@@ -61,14 +56,17 @@ namespace NUnitBenchmarker.Model
             {
                 return false;
             }
+
             if (ReferenceEquals(this, obj))
             {
                 return true;
             }
+
             if (obj.GetType() != GetType())
             {
                 return false;
             }
+
             return Equals((NameSpaceEntry) obj);
         }
 

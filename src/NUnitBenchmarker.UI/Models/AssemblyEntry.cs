@@ -1,24 +1,30 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TypeEntry.cs" company="Orcomp development team">
+// <copyright file="AssemblyEntry.cs" company="Orcomp development team">
 //   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Model
+namespace NUnitBenchmarker.Models
 {
+    using Catel;
     using System.Collections.Generic;
 
-    public class TypeEntry : ReflectionEntry
+    public class AssemblyEntry : ReflectionEntry
     {
-        #region Properties
-        public string TypeFullName { get; set; }
-        #endregion
+        private readonly List<ReflectionEntry> _children; 
+
+        public AssemblyEntry(IEnumerable<ReflectionEntry> children)
+        {
+            Argument.IsNotNull("children", children);
+
+            _children = new List<ReflectionEntry>(children);
+        }
 
         #region Methods
         public override IEnumerable<ReflectionEntry> GetChildren()
         {
-            return new List<ReflectionEntry>();
+            return _children;
         }
         #endregion
     }

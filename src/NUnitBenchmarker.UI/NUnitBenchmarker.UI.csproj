@@ -111,13 +111,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\AssemblyEntry.cs" />
-    <Compile Include="Model\LogEntry.cs" />
-    <Compile Include="Model\NameSpaceEntry.cs" />
-    <Compile Include="Model\ReflectionEntry.cs" />
-    <Compile Include="Model\TypeEntry.cs" />
-    <Compile Include="Model\Interfaces\ISettings.cs" />
-    <Compile Include="Model\Settings.cs" />
+    <Compile Include="Models\AssemblyEntry.cs" />
+    <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Models\NameSpaceEntry.cs" />
+    <Compile Include="Models\ReflectionEntry.cs" />
+    <Compile Include="Models\TypeEntry.cs" />
+    <Compile Include="Models\Interfaces\ISettings.cs" />
+    <Compile Include="Models\Settings.cs" />
+    <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="Services\Interfaces\IReflectionService.cs" />
+    <Compile Include="Services\ReflectionService.cs" />
     <Compile Include="ViewModels\AssemblyTree\TreeViewItemViewModel.cs" />
     <Compile Include="ViewModels\AssemblyTree\ReflectionNodeViewModel.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />

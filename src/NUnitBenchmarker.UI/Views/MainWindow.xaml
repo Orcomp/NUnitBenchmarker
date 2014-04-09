@@ -107,16 +107,13 @@
                               Grid.Column="1" ResizeBehavior="PreviousAndNext"
                               Width="2" Background="#FFBCBCBC" />
 
-                <catel:TabControl LoadTabItems="SingleUnloadOthers" ItemsSource="{Binding BenchmarkResults}">
+                <catel:TabControl Grid.Column="2" LoadTabItems="SingleUnloadOthers" ItemsSource="{Binding BenchmarkResults}">
                     <catel:TabControl.ItemTemplate>
                         <DataTemplate>
                             <views:ResultsView />
                         </DataTemplate>
                     </catel:TabControl.ItemTemplate>
                 </catel:TabControl>
-
-                <ContentControl Grid.Column="2" Content="{Binding Tabs}"
-                                ContentTemplate="{StaticResource TabsDataTemplate}" Style="{StaticResource TabsContentStyle}" />
             </Grid>
 
             <GridSplitter Grid.Row="1" VerticalAlignment="Bottom"
