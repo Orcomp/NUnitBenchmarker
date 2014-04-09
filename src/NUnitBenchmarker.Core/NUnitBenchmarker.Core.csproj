@@ -51,31 +51,31 @@
     </Reference>
     <Reference Include="MigraDoc.DocumentObjectModel, Version=1.32.4334.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.270.1\lib\NET40\MigraDoc.DocumentObjectModel.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.271.1\lib\NET40\MigraDoc.DocumentObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.Rendering, Version=1.32.4334.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.270.1\lib\NET40\MigraDoc.Rendering.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.271.1\lib\NET40\MigraDoc.Rendering.dll</HintPath>
     </Reference>
     <Reference Include="MigraDoc.RtfRendering, Version=1.32.4334.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.270.1\lib\NET40\MigraDoc.RtfRendering.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.271.1\lib\NET40\MigraDoc.RtfRendering.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot, Version=2014.1.270.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+    <Reference Include="OxyPlot, Version=2014.1.271.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Core.2014.1.270.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Core.2014.1.271.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Pdf, Version=2014.1.270.1, Culture=neutral, PublicKeyToken=c167629db8cf8ad9, processorArchitecture=MSIL">
+    <Reference Include="OxyPlot.Pdf, Version=2014.1.271.1, Culture=neutral, PublicKeyToken=c167629db8cf8ad9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.270.1\lib\NET40\OxyPlot.Pdf.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.271.1\lib\NET40\OxyPlot.Pdf.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.270.1\lib\NET40\PdfSharp.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.271.1\lib\NET40\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.270.1\lib\NET40\PdfSharp.Charting.dll</HintPath>
+      <HintPath>..\..\lib\OxyPlot.Pdf.2014.1.271.1\lib\NET40\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="SimpleSpeedTester">
       <HintPath>..\..\lib\SimpleSpeedTester.1.1.0\lib\net40\SimpleSpeedTester.dll</HintPath>
