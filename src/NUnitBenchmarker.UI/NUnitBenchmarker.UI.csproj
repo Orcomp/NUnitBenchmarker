@@ -111,6 +111,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\CollectionToVisibilityConverter.cs" />
     <Compile Include="Converters\IsFilterEnabledConverter.cs" />
     <Compile Include="Converters\ReflectionEntryToImageConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

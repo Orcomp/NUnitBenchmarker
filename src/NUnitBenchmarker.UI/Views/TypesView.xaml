@@ -21,7 +21,8 @@
             </i:Interaction.Behaviors>
         </catel:WatermarkTextBox>
         
-        <TreeView Grid.Row="1" ItemsSource="{Binding Assemblies}" Margin="4" Padding="3" BorderThickness="1">
+        <TreeView Grid.Row="1" ItemsSource="{Binding Assemblies}" Margin="4" Padding="3" BorderThickness="1"
+                  Visibility="{Binding Assemblies, Converter={converters:CollectionToVisibilityConverter}}">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding ElementName=layoutRoot, Path=DataContext.Filter, Converter={converters:IsFilterEnabledConverter}}" />
@@ -51,5 +52,10 @@
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
+
+        <Label Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,0,20,0"
+               Visibility="{Binding Assemblies, Converter={converters:CollectionToVisibilityConverter}, ConverterParameter=True}">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap" Text="No assemblies loaded or no assemblies match the specified filter" />
+        </Label>
     </Grid>
 </catel:UserControl>
