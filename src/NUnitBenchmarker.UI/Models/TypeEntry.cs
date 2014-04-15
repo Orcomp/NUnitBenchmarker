@@ -7,19 +7,8 @@
 
 namespace NUnitBenchmarker.Models
 {
-    using System.Collections.Generic;
-
     public class TypeEntry : ReflectionEntry
     {
-        #region Properties
         public string TypeFullName { get; set; }
-        #endregion
-
-        #region Methods
-        public override IEnumerable<ReflectionEntry> GetChildren()
-        {
-            return new List<ReflectionEntry>();
-        }
-        #endregion
     }
 }

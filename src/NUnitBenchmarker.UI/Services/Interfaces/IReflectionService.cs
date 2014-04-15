@@ -14,6 +14,6 @@ namespace NUnitBenchmarker.Services
     {
         AssemblyEntry GetAssemblyEntry(string assemblyPath);
         IEnumerable<TypeEntry> GetTypes(string assemblyPath, string namespaceName);
-        IEnumerable<NameSpaceEntry> GetNamespaces(string assemblyPath);
+        IEnumerable<NamespaceEntry> GetNamespaces(string assemblyPath);
     }
 }

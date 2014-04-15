@@ -95,6 +95,9 @@
     <None Include="Service References\UIServiceReference\UIService3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\UIServiceReference\UIService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

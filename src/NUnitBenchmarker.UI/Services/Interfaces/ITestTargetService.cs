@@ -1,20 +1,13 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AssemblyEntry.cs" company="Orcomp development team">
+// <copyright file="ITestTargetService.cs" company="Orcomp development team">
 //   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace NUnitBenchmarker.Models
+namespace NUnitBenchmarker.Services
 {
-    using System.Collections.Generic;
-
-    public class AssemblyEntry : ReflectionEntry
+    public interface ITestTargetService
     {
-        public AssemblyEntry(IEnumerable<ReflectionEntry> children)
-            : base(children)
-        {
-            
-        }
     }
 }

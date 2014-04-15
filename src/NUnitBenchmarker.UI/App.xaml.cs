@@ -36,7 +36,10 @@ namespace NUnitBenchmarker
             LogManager.AddDebugListener(true);
 #endif
 
-            base.OnStartup(e);
+            Catel.Data.ModelBase.DefaultSuspendValidationValue = true;
+
+            Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
+            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
 
             try
             {
@@ -49,12 +52,14 @@ namespace NUnitBenchmarker
                 Thread.CurrentThread.Name = "UI";
 
                 // Informational log message
-                Log.Info("Application started.");
+                Log.Info("Application started");
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
             }
+
+            base.OnStartup(e);
         }
 
         /// <summary>
@@ -81,8 +86,8 @@ namespace NUnitBenchmarker
         private void RegisterServices(IServiceLocator serviceLocator)
         {
             serviceLocator.RegisterType<IReflectionService, ReflectionService>();
-            serviceLocator.RegisterType<IViewService, WpfViewService>();
             serviceLocator.RegisterType<IUIServiceHost, UIServiceHost>();
+            serviceLocator.RegisterType<ITestTargetService, TestTargetService>();
             serviceLocator.RegisterType<ISettings, Settings>();
         }
 

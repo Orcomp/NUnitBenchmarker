@@ -37,16 +37,14 @@ namespace NUnitBenchmarker.Services
             return assemblyEntry;
         }
 
-        public IEnumerable<NameSpaceEntry> GetNamespaces(string assemblyPath)
+        public IEnumerable<NamespaceEntry> GetNamespaces(string assemblyPath)
         {
             Argument.IsNotNullOrWhitespace("assemblyPath", assemblyPath);
 
             var types = GetTypesFromAssembly(assemblyPath);
-            return types.Select(x => new NameSpaceEntry(GetTypes(assemblyPath, x.GetNamespace()))
+            return types.Select(x => new NamespaceEntry(GetTypes(assemblyPath, x.GetNamespace()))
             {
                 Path = assemblyPath,
-                //AssemblyFullName = assembly.FullName,
-                //Assembly = assembly,
                 Name = x.GetNamespace(),
                 Description = x.GetNamespace(),
                 LeafEntry = false
@@ -62,8 +60,6 @@ namespace NUnitBenchmarker.Services
                 .Select(x => new TypeEntry
                 {
                     Path = assemblyPath,
-                    //AssemblyFullName = assembly.FullName,
-                    //Assembly = assembly,
                     TypeFullName = x.FullName,
                     Name = x.GetFriendlyName(),
                     Description = string.Format("{0}\n{1}", x.GetNamespace(), x.GetFriendlyName()),
@@ -76,7 +72,7 @@ namespace NUnitBenchmarker.Services
             return _assemblyTypes.GetFromCacheOrFetch(assemblyPath, () =>
             {
                 var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
-                var allTypes = new List<Type>(AssemblyHelper.GetAllTypesSafely(assembly));
+                var allTypes = new List<Type>(assembly.GetAllTypesSafely());
 
                 return allTypes;
             });

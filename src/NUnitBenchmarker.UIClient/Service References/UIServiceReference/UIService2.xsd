@@ -18,6 +18,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Key" nillable="true" type="xs:string" />
       <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="TestCases" nillable="true" type="q1:ArrayOfstring" />
+      <xs:element minOccurs="0" name="TypeSpecification" nillable="true" type="tns:TypeSpecification" />
       <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Values" nillable="true" type="q2:ArrayOfKeyValueOfstringArrayOfKeyValuePairOfstringdoubletwCi8m_S7" />
     </xs:sequence>
   </xs:complexType>

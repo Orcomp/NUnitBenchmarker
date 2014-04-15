@@ -15,7 +15,6 @@ namespace NUnitBenchmarker.Models
     {
         public LogEntry()
         {
-            SuspendValidation = true;
         }
 
         #region Properties

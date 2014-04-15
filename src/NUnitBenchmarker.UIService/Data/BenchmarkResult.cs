@@ -21,6 +21,9 @@ namespace NUnitBenchmarker.Data
 
         #region Properties
         [DataMember]
+        public TypeSpecification TypeSpecification { get; set; }
+
+        [DataMember]
         public string Key { get; set; }
 
         [DataMember]

@@ -108,14 +108,15 @@ namespace NUnitBenchmarker
             return implementationInfos.Where(i => !removables.Contains(i)).ToList();
         }
 
-        private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType,
-            SearchFolderCollection searchFolders)
+        private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType, SearchFolderCollection searchFolders)
         {
             var result = new List<ImplementationInfo>();
+
             foreach (SearchFolder searchFolder in searchFolders)
             {
                 result.AddRange(FindImplementations(interfaceType, searchFolder));
             }
+
             return result;
         }
 
@@ -123,10 +124,12 @@ namespace NUnitBenchmarker
         {
             var result = new List<ImplementationInfo>();
             var assemblyFileNames = GetAssemblyFileNames(searchFolder);
+
             foreach (var assemblyFileName in assemblyFileNames)
             {
                 result.AddRange(FindImplementations(interfaceType, assemblyFileName));
             }
+
             return result;
         }
 
@@ -214,8 +217,7 @@ namespace NUnitBenchmarker
 
             if (excludeIncludeElements.Any(f => f.Include.Length > 0))
             {
-                if (excludeIncludeElements.Where(f => f.Include.Length > 0)
-                    .All(f => !Regex.IsMatch(testCase, f.Include)))
+                if (excludeIncludeElements.Where(f => f.Include.Length > 0).All(f => !Regex.IsMatch(testCase, f.Include)))
                 {
                     return true;
                 }
@@ -256,8 +258,9 @@ namespace NUnitBenchmarker
 
         public static PlotModel CreatePlotModel(BenchmarkResult result, bool isLinear = true)
         {
-            var plotModel = new PlotModel(result.Key)
+            var plotModel = new PlotModel
             {
+                Title = result.Key,
                 LegendTitle = "Legend",
                 LegendOrientation = LegendOrientation.Vertical,
                 LegendPlacement = LegendPlacement.Inside,
@@ -266,14 +269,18 @@ namespace NUnitBenchmarker
                 LegendBorder = OxyColors.Black
             };
 
-            var xAxis = new LinearAxis(AxisPosition.Bottom);
+            var xAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom
+            };
             plotModel.Axes.Add(xAxis);
 
             Axis yAxis;
             if (isLinear)
             {
-                yAxis = new LinearAxis(AxisPosition.Left, 0)
+                yAxis = new LinearAxis
                 {
+                    Position = AxisPosition.Left,
                     MajorGridlineStyle = LineStyle.Solid,
                     MinorGridlineStyle = LineStyle.Dot,
                     Title = "Time (ms)",
@@ -281,7 +288,7 @@ namespace NUnitBenchmarker
             }
             else
             {
-                yAxis = new LogarithmicAxis()
+                yAxis = new LogarithmicAxis
                 {
                     Position = AxisPosition.Left,
                     MajorGridlineStyle = LineStyle.Solid,
@@ -366,8 +373,9 @@ namespace NUnitBenchmarker
 
         public static PlotModel CreateCategoryPlotModel(BenchmarkResult result, bool isLinear = false)
         {
-            var plotModel = new PlotModel(result.Key)
+            var plotModel = new PlotModel
             {
+                Title = result.Key,
                 LegendTitle = "Legend",
                 LegendOrientation = LegendOrientation.Vertical,
                 LegendPlacement = LegendPlacement.Inside,
@@ -376,7 +384,8 @@ namespace NUnitBenchmarker
                 LegendBorder = OxyColors.Black
             };
 
-            var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases)
+            //var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases)
+            var dateAxis = new CategoryAxis
             {
                 Position = AxisPosition.Bottom,
                 Title = "Categories"

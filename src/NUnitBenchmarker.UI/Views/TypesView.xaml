@@ -1,0 +1,44 @@
+﻿<catel:UserControl x:Class="NUnitBenchmarker.Views.TypesView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:catel="http://catel.codeplex.com"
+                   xmlns:models="clr-namespace:NUnitBenchmarker.Models"
+                   xmlns:converters="clr-namespace:NUnitBenchmarker.Converters">
+
+    <TreeView ItemsSource="{Binding Assemblies}" Margin="5" Padding="3" BorderThickness="1">
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <!--<Setter
+                                    Property="FontWeight"
+                                    Value="Bold"/>-->
+                        <!--<Setter
+                                    Property="Behaviors:TreeViewItemBehavior.BringIntoViewWhenSelected"
+                                    Value="True"/>-->
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </TreeView.ItemContainerStyle>
+
+        <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type models:ReflectionEntry}" ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="16" Height="16" Source="{Binding Converter={converters:ReflectionEntryToImageConverter}}" />
+                    <CheckBox Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsChecked}" />
+                    <TextBlock Text="{Binding Name}" ToolTip="{Binding ToolTip}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="_Remove from the tree..." Command="{catel:CommandManagerBinding Remove}" />
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+        </TreeView.Resources>
+    </TreeView>
+    
+</catel:UserControl>
