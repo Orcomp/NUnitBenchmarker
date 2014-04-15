@@ -40,12 +40,12 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Width="16" Height="16" Source="{Binding Converter={converters:ReflectionEntryToImageConverter}}" />
                         <CheckBox Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsChecked}" />
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock.ContextMenu>
+                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!--<TextBlock.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="_Remove from the tree..." Command="{catel:CommandManagerBinding Remove}" />
                                 </ContextMenu>
-                            </TextBlock.ContextMenu>
+                            </TextBlock.ContextMenu>-->
                         </TextBlock>
                     </StackPanel>
                 </HierarchicalDataTemplate>

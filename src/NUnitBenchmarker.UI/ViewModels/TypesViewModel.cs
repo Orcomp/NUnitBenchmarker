@@ -161,7 +161,6 @@ namespace NUnitBenchmarker.ViewModels
             foreach (var node in Assemblies)
             {
                 result.AddRange(node.Children
-                    .Where(e => e.LeafEntry)
                     .Select(e => new TypeSpecification
                     {
                         AssemblyPath = e.Path,

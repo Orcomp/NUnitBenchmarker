@@ -9,6 +9,11 @@ namespace NUnitBenchmarker.Models
 {
     public class TypeEntry : ReflectionEntry
     {
+        public TypeEntry(ReflectionEntry parent)
+            : base(parent)
+        {
+        }
+
         public string TypeFullName { get; set; }
     }
 }

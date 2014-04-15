@@ -7,14 +7,11 @@
 
 namespace NUnitBenchmarker.Models
 {
-    using System.Collections.Generic;
-
     public class AssemblyEntry : ReflectionEntry
     {
-        public AssemblyEntry(IEnumerable<ReflectionEntry> children)
-            : base(children)
+        public AssemblyEntry()
+            : base(null)
         {
-            
         }
     }
 }

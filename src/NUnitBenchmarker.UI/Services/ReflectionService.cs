@@ -26,44 +26,52 @@ namespace NUnitBenchmarker.Services
             var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
             string fullName = assembly.FullName.Replace(", ", "\n");
 
-            var namespaces = GetNamespaces(assemblyPath);
-            var assemblyEntry = new AssemblyEntry(namespaces)
+            var assemblyEntry = new AssemblyEntry
             {
                 Path = assemblyPath,
                 Name = Path.GetFileName(assemblyPath),
                 Description = string.Format("{0}\nLoaded from: {1}", fullName, assemblyPath)
             };
 
+            var namespaces = GetNamespaces(assemblyEntry, assemblyPath);
+            assemblyEntry.InitializeChildren(namespaces);
+
             return assemblyEntry;
         }
 
-        public IEnumerable<NamespaceEntry> GetNamespaces(string assemblyPath)
+        public IEnumerable<NamespaceEntry> GetNamespaces(AssemblyEntry assemblyEntry, string assemblyPath)
         {
             Argument.IsNotNullOrWhitespace("assemblyPath", assemblyPath);
 
             var types = GetTypesFromAssembly(assemblyPath);
-            return types.Select(x => new NamespaceEntry(GetTypes(assemblyPath, x.GetNamespace()))
+            var namespaces = types.Select(x => new NamespaceEntry(assemblyEntry)
             {
                 Path = assemblyPath,
                 Name = x.GetNamespace(),
-                Description = x.GetNamespace(),
-                LeafEntry = false
+                Description = x.GetNamespace()
             }).Distinct().OrderBy(e => e.Name).ToList();
+
+            foreach (var space in namespaces)
+            {
+                var namespaceTypes = GetTypes(space, assemblyPath);
+                space.InitializeChildren(namespaceTypes);
+            }
+
+            return namespaces;
         }
 
-        public IEnumerable<TypeEntry> GetTypes(string assemblyPath, string namespaceName)
+        public IEnumerable<TypeEntry> GetTypes(NamespaceEntry namespaceEntry, string assemblyPath)
         {
             Argument.IsNotNullOrWhitespace("assemblyPath", assemblyPath);
 
             var types = GetTypesFromAssembly(assemblyPath);
-            return types.Where(x => string.Equals(x.GetNamespace(), namespaceName))
-                .Select(x => new TypeEntry
+            return types.Where(x => string.Equals(x.GetNamespace(), namespaceEntry.Name))
+                .Select(x => new TypeEntry(namespaceEntry)
                 {
                     Path = assemblyPath,
                     TypeFullName = x.FullName,
                     Name = x.GetFriendlyName(),
-                    Description = string.Format("{0}\n{1}", x.GetNamespace(), x.GetFriendlyName()),
-                    LeafEntry = true
+                    Description = string.Format("{0}\n{1}", x.GetNamespace(), x.GetFriendlyName())
                 }).OrderBy(e => e.Name).ToList();
         }
 

@@ -13,7 +13,7 @@ namespace NUnitBenchmarker.Services
     public interface IReflectionService
     {
         AssemblyEntry GetAssemblyEntry(string assemblyPath);
-        IEnumerable<TypeEntry> GetTypes(string assemblyPath, string namespaceName);
-        IEnumerable<NamespaceEntry> GetNamespaces(string assemblyPath);
+        IEnumerable<TypeEntry> GetTypes(NamespaceEntry namespaceEntry, string assemblyPath);
+        IEnumerable<NamespaceEntry> GetNamespaces(AssemblyEntry assemblyEntry, string assemblyPath);
     }
 }

@@ -13,8 +13,8 @@ namespace NUnitBenchmarker.Models
     public class NamespaceEntry : ReflectionEntry, IEquatable<NamespaceEntry>
     {
         #region Constructors
-        public NamespaceEntry(IEnumerable<ReflectionEntry> children)
-            : base(children)
+        public NamespaceEntry(ReflectionEntry parent)
+            : base(parent)
         {
         }
         #endregion
