@@ -14,9 +14,6 @@
         </Setter>
     </Style>
 
-    <!--
-        Consistent border style
-    -->
     <Style x:Key="MainBorderStyle" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="WhiteSmoke" />
         <Setter Property="BorderBrush" Value="LightGray" />
@@ -27,30 +24,15 @@
     
     <DataTemplate x:Key="ClosableTabDataTemplate">
         <DockPanel Width="120">
-            <Button
-                Command="{Binding Path=CloseCommand}"
-                Content="X"
-                Cursor="Hand"
-                DockPanel.Dock="Right"
-                Focusable="False"
-                FontFamily="Courier"
-                FontSize="9"
-                FontWeight="Bold"
-                Margin="0,1,0,0"
-                Padding="0"
-                VerticalContentAlignment="Bottom"
-                Width="16" Height="16" />
+            <Button Command="{Binding CloseCommand}" Content="X" Cursor="Hand" DockPanel.Dock="Right" Focusable="False" FontFamily="Courier"
+                FontSize="9" FontWeight="Bold" Margin="0,1,0,0" Padding="0" VerticalContentAlignment="Bottom" Width="16" Height="16" />
             <ContentPresenter Content="{Binding Title}" VerticalAlignment="Center" />
         </DockPanel>
     </DataTemplate>
 
     <DataTemplate x:Key="TabsDataTemplate">
-        <TabControl
-            IsSynchronizedWithCurrentItem="True"
-            ItemsSource="{Binding}"
-            ItemTemplate="{StaticResource ClosableTabDataTemplate}"
-            Margin="4" 
-            SelectedIndex="{Binding TabControlSelectedIndex, Mode=TwoWay}">
+        <TabControl IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding}" ItemTemplate="{StaticResource ClosableTabDataTemplate}"
+                    Margin="4" SelectedIndex="{Binding TabControlSelectedIndex, Mode=TwoWay}">
         </TabControl>
     </DataTemplate>
 

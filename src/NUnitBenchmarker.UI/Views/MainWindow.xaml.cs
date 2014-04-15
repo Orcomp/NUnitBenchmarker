@@ -19,6 +19,8 @@ namespace NUnitBenchmarker.Views
             : base(DataWindowMode.Custom)
         {
             InitializeComponent();
+
+            CanCloseUsingEscape = false;
         }
         #endregion
     }

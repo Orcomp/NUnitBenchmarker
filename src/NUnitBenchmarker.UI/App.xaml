@@ -5,19 +5,27 @@
              xmlns:converters="clr-namespace:NUnitBenchmarker.Converters">
     
     <Application.Resources>
-        <Style TargetType="ToolTip">
-            <Setter Property="ContentTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding}" Width="240" TextWrapping='Wrap' />
-                        </StackPanel>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         
-        <converters:GridLengthValueConverter x:Key="GridLengthValueConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Catel.Extensions.Controls;component/themes/generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="ToolTip">
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding}" Width="240" TextWrapping='Wrap' />
+                            </StackPanel>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <converters:GridLengthValueConverter x:Key="GridLengthValueConverter" />
+        </ResourceDictionary>
+
     </Application.Resources>
     
 </Application>

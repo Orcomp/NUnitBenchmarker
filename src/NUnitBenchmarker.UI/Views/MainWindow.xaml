@@ -1,7 +1,6 @@
 ﻿<catel:DataWindow x:Class="NUnitBenchmarker.Views.MainWindow"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:viewmodels="clr-namespace:NUnitBenchmarker.ViewModels"
                   xmlns:catel="http://catel.codeplex.com"
                   xmlns:views="clr-namespace:NUnitBenchmarker.Views"
                   ShowInTaskbar="True" SizeToContent="Manual" WindowState="Normal" ResizeMode="CanResizeWithGrip"
@@ -18,7 +17,7 @@
         </behaviors:DataPipeCollection>
     </behaviors:Piper.DataPipes>-->
 
-    <DockPanel Name="DockPanel" LastChildFill="True">
+    <DockPanel Name="DockPanel" LastChildFill="True" Margin="-6">
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Left" Width="{Binding ElementName=DockPanel, Path=ActualWidth}">
 
             <MenuItem Header="_File">

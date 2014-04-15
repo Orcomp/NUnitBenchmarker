@@ -111,7 +111,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\IsFilterEnabledConverter.cs" />
     <Compile Include="Converters\ReflectionEntryToImageConverter.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\AssemblyEntry.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\NamespaceEntry.cs" />

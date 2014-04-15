@@ -7,9 +7,7 @@
 
 namespace NUnitBenchmarker.ViewModels
 {
-    using System;
     using System.Collections.ObjectModel;
-    using System.Windows.Threading;
     using Catel;
     using Catel.MVVM;
     using NUnitBenchmarker.Models;

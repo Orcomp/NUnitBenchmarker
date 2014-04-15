@@ -9,7 +9,6 @@ namespace NUnitBenchmarker.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using Catel;
     using Catel.Logging;
@@ -30,6 +29,8 @@ namespace NUnitBenchmarker.ViewModels
         private readonly IUIServiceHost _uiServiceHost;
         private readonly IReflectionService _reflectionService;
 
+        private readonly List<AssemblyEntry> _assemblies = new List<AssemblyEntry>();
+
         public TypesViewModel(IOpenFileService openFileService, IMessageService messageService, IPleaseWaitService pleaseWaitService,
             IUIServiceHost uiServiceHost, IReflectionService reflectionService, ICommandManager commandManager)
         {
@@ -46,15 +47,18 @@ namespace NUnitBenchmarker.ViewModels
             _uiServiceHost = uiServiceHost;
             _reflectionService = reflectionService;
 
-            Assemblies = new ObservableCollection<AssemblyEntry>();
+            Assemblies = new List<AssemblyEntry>();
 
             FileOpen = new Command(OnFileOpenExecute);
+            ClearFilter = new Command(OnClearFilterExecute);
 
             commandManager.RegisterCommand("File.Open", FileOpen, this);
         }
 
         #region Properties
-        public ObservableCollection<AssemblyEntry> Assemblies { get; private set; }
+        public List<AssemblyEntry> Assemblies { get; private set; }
+
+        public string Filter { get; set; }
         #endregion
 
         #region Commands
@@ -85,7 +89,9 @@ namespace NUnitBenchmarker.ViewModels
                     _pleaseWaitService.Show(() =>
                     {
                         var assemblyEntry = _reflectionService.GetAssemblyEntry(fileName);
-                        Assemblies.Add(assemblyEntry);
+                        _assemblies.Add(assemblyEntry);
+
+                        UpdateFilter();
                     });
                 }
                 catch (Exception ex)
@@ -95,6 +101,19 @@ namespace NUnitBenchmarker.ViewModels
                     Log.Error(ex);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the ClearFilter command.
+        /// </summary>
+        public Command ClearFilter { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the ClearFilter command is executed.
+        /// </summary>
+        private void OnClearFilterExecute()
+        {
+            Filter = string.Empty;
         }
         #endregion
 
@@ -111,6 +130,27 @@ namespace NUnitBenchmarker.ViewModels
             _uiServiceHost.GetImplementations -= OnGetImplementations;
 
             base.Close();
+        }
+
+        private void OnFilterChanged()
+        {
+            UpdateFilter();
+        }
+
+        private void UpdateFilter()
+        {
+            var assemblies = new List<AssemblyEntry>();
+            var filter = Filter;
+
+            foreach (var assembly in _assemblies)
+            {
+                if (assembly.ApplyFilter(filter))
+                {
+                    assemblies.Add(assembly);
+                }
+            }
+
+            Assemblies = assemblies;
         }
 
         private IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification typeSpecification)
