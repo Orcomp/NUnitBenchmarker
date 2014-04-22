@@ -7,25 +7,21 @@
 
 namespace NUnitBenchmarker.ViewModels
 {
+    using System;
     using System.Data;
     using Catel;
     using Catel.MVVM;
     using NUnitBenchmarker;
     using Data;
-    using Services;
 
     public class ResultsDataViewModel : ViewModelBase
     {
-        private readonly IUIServiceHost _uiServiceHost;
-
-        public ResultsDataViewModel(BenchmarkResult benchmarkResult, IUIServiceHost uiServiceHost)
+        public ResultsDataViewModel(BenchmarkResult benchmarkResult)
         {
             Argument.IsNotNull(() => benchmarkResult);
-            Argument.IsNotNull(() => uiServiceHost);
 
             Title = benchmarkResult.Key;
             BenchmarkResult = benchmarkResult;
-            _uiServiceHost = uiServiceHost;
 
             UpdateResults(BenchmarkResult);
         }
@@ -51,14 +47,19 @@ namespace NUnitBenchmarker.ViewModels
         {
             base.Initialize();
 
-            _uiServiceHost.UpdateResult += UpdateResults;
+            BenchmarkResult.Updated += OnBenchmarkUpdated;
         }
 
         protected override void Close()
         {
-            _uiServiceHost.UpdateResult -= UpdateResults;
+            BenchmarkResult.Updated -= OnBenchmarkUpdated;
 
             base.Close();
+        }
+
+        private void OnBenchmarkUpdated(object sender, EventArgs e)
+        {
+            UpdateResults(BenchmarkResult);
         }
         #endregion
     }

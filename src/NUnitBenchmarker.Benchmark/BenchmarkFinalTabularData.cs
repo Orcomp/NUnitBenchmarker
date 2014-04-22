@@ -10,7 +10,7 @@ namespace NUnitBenchmarker
     using System.Data;
     using System.Linq;
     using Catel;
-    using NUnitBenchmarker.Data;
+    using Data;
 
     public class BenchmarkFinalTabularData
     {
@@ -24,13 +24,20 @@ namespace NUnitBenchmarker
             Argument.IsNotNull(() => result);
 
             Title = result.Key;
-            var table = DataTable = new DataTable(Title);
+            var table = new DataTable(Title);
 
             table.Columns.Add(DescriptionColumnName, typeof (string));
-            foreach (var dataPoint in result.Values.FirstOrDefault().Value)
+
+            foreach (var value in result.Values)
             {
-                var columnName = GetColumnName(dataPoint.Key);
-                table.Columns.Add(columnName, typeof (double));
+                foreach (var dataPoint in value.Value)
+                {
+                    var dataPointColumnName = GetColumnName(dataPoint.Key);
+                    if (!table.Columns.Contains(dataPointColumnName))
+                    {
+                        table.Columns.Add(dataPointColumnName, typeof (double));
+                    }
+                }
             }
 
             foreach (var series in result.Values)
@@ -45,12 +52,14 @@ namespace NUnitBenchmarker
                     row[columnName] = dataPoint.Value;
                 }
             }
+
+            DataTable = table;
         }
         #endregion
 
         #region Properties
-        public string Title { get; set; }
-        public DataTable DataTable { get; set; }
+        public string Title { get; private set; }
+        public DataTable DataTable { get; private set; }
         #endregion
 
         #region Methods

@@ -9,47 +9,49 @@ namespace NUnitBenchmarker
 {
     using System.Collections.Generic;
     using Catel;
+    using Catel.Data;
     using Data;
 
     public static class BenchmarkResultExtensions
     {
-        public static void UpdateResults(this BenchmarkResult benchmarkResult, BenchmarkResult newResults)
+        public static void UpdateResults(this BenchmarkResult benchmarkResult, BenchmarkResult newResult)
         {
             Argument.IsNotNull(() => benchmarkResult);
-            Argument.IsNotNull(() => newResults);
+            Argument.IsNotNull(() => newResult);
 
-            benchmarkResult.Key = newResults.Key;
-            benchmarkResult.TestCases = newResults.TestCases;
+            benchmarkResult.Key = newResult.Key;
+            benchmarkResult.TestCases = newResult.TestCases;
 
-            foreach (var result in newResults.Values)
+            foreach (var result in newResult.Values)
             {
-                var values = new List<KeyValuePair<string, double>>();
+                var groupedValues = new List<KeyValuePair<string, double>>();
+                var existingValues = new HashSet<string>();
 
-                if (benchmarkResult.Values.ContainsKey(result.Key))
-                {
-                    values = benchmarkResult.Values[result.Key];
-                }
-
+                // 1) Create new values
                 foreach (var value in result.Value)
                 {
-                    // TODO: Sync existing values?
-                    //var existingValue = (from x in values
-                    //                     where string.Equals(x.Key, value.Key)
-                    //                     select x).FirstOrDefault();
-                    //if (!string.IsNullOrEmpty(existingValue.Key))
-                    //{
-                    //    existingValue[] = value.Value;
-                    //}
-                    //else
-                    //{
-                    //    values.Add(new KeyValuePair<string, double>());
-                    //}
-
-                    values.Add(new KeyValuePair<string, double>(value.Key, value.Value));
+                    existingValues.Add(value.Key);
+                    groupedValues.Add(new KeyValuePair<string, double>(value.Key, value.Value));
                 }
 
-                benchmarkResult.Values[result.Key] = values;
+                // 2) Copy existing values
+                if (benchmarkResult.Values.ContainsKey(result.Key))
+                {
+                    var existingGroupedValues = benchmarkResult.Values[result.Key];
+                    foreach (var value in existingGroupedValues)
+                    {
+                        if (!existingValues.Contains(value.Key))
+                        {
+                            existingValues.Add(value.Key);
+                            groupedValues.Add(new KeyValuePair<string, double>(value.Key, value.Value));
+                        }
+                    }
+                }
+
+                benchmarkResult.Values[result.Key] = groupedValues;
             }
+
+            benchmarkResult.RaiseUpdated();
         }
     }
 }

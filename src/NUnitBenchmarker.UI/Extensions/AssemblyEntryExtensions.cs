@@ -8,6 +8,7 @@
 namespace NUnitBenchmarker
 {
     using System;
+    using System.Collections.Generic;
     using Catel;
     using Models;
 
@@ -47,6 +48,30 @@ namespace NUnitBenchmarker
             Argument.IsNotNull(() => reflectionEntry);
             Argument.IsNotNullOrWhitespace(() => type);
 
+            var types = GetTypes(reflectionEntry, type);
+            foreach (var x in types)
+            {
+                x.IsChecked = true;
+            }
+        }
+
+        public static IEnumerable<TypeEntry> GetImplementations(this ReflectionEntry reflectionEntry, string type)
+        {
+            Argument.IsNotNull(() => reflectionEntry);
+            Argument.IsNotNullOrWhitespace(() => type);
+
+            // TODO: Filter? Original code was like this, but I think we must filter like "type.IsAssignableFrom(x)"
+            var types = GetTypes(reflectionEntry, type);
+            return types;
+        }
+
+        public static IEnumerable<TypeEntry> GetTypes(this ReflectionEntry reflectionEntry, string type)
+        {
+            Argument.IsNotNull(() => reflectionEntry);
+            Argument.IsNotNullOrWhitespace(() => type);
+
+            var types = new List<TypeEntry>();
+
             foreach (var child in reflectionEntry.Children)
             {
                 var typeEntry = child as TypeEntry;
@@ -59,9 +84,11 @@ namespace NUnitBenchmarker
                 }
                 else
                 {
-                    SelectType(child, type);
+                    types.AddRange(GetTypes(child, type));
                 }
             }
+
+            return types;
         }
         #endregion
     }

@@ -8,8 +8,10 @@
 
 namespace NUnitBenchmarker.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
+    using Catel;
 
     [DataContract]
     public class BenchmarkResult
@@ -32,5 +34,17 @@ namespace NUnitBenchmarker.Data
         [DataMember]
         public string[] TestCases { get; set; }
         #endregion
+
+        #region Events
+        public event EventHandler<EventArgs> Updated;
+        #endregion
+
+        #region Methods
+        public void RaiseUpdated()
+        {
+            Updated.SafeInvoke(this);
+        }
+        #endregion
+
     }
 } 

@@ -136,12 +136,7 @@ namespace NUnitBenchmarker.ViewModels
             var result = new List<TypeSpecification>();
             foreach (var node in Assemblies)
             {
-                result.AddRange(node.Children
-                    .Select(e => new TypeSpecification
-                    {
-                        AssemblyPath = e.Path,
-                        FullName = ((TypeEntry)e).TypeFullName
-                    }));
+                result.AddRange(node.GetImplementations(typeSpecification.FullName).Cast<TypeSpecification>());
             }
 
             return result;
