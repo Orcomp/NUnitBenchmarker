@@ -9,7 +9,7 @@ namespace NUnitBenchmarker.ViewModels
 {
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.Data;
+    using Data;
 
     public class ResultsViewModel : ViewModelBase
     {

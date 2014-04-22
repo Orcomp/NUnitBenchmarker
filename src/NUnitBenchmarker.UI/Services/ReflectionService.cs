@@ -15,13 +15,13 @@ namespace NUnitBenchmarker.Services
     using Catel;
     using Catel.Caching;
     using Catel.Reflection;
-    using NUnitBenchmarker.Models;
+    using Models;
 
     public class ReflectionService : IReflectionService
     {
         private readonly ICacheStorage<string, IEnumerable<Type>> _assemblyTypes = new CacheStorage<string, IEnumerable<Type>>();
 
-        public AssemblyEntry GetAssemblyEntry(string assemblyPath)
+        public AssemblyEntry GetAssemblyEntry(string assemblyPath, bool defaultIsChecked)
         {
             var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
             string fullName = assembly.FullName.Replace(", ", "\n");
@@ -33,13 +33,13 @@ namespace NUnitBenchmarker.Services
                 Description = string.Format("{0}\nLoaded from: {1}", fullName, assemblyPath)
             };
 
-            var namespaces = GetNamespaces(assemblyEntry, assemblyPath);
+            var namespaces = GetNamespaces(assemblyEntry, assemblyPath, defaultIsChecked);
             assemblyEntry.InitializeChildren(namespaces);
 
             return assemblyEntry;
         }
 
-        public IEnumerable<NamespaceEntry> GetNamespaces(AssemblyEntry assemblyEntry, string assemblyPath)
+        public IEnumerable<NamespaceEntry> GetNamespaces(AssemblyEntry assemblyEntry, string assemblyPath, bool defaultIsChecked)
         {
             Argument.IsNotNullOrWhitespace("assemblyPath", assemblyPath);
 
@@ -53,14 +53,14 @@ namespace NUnitBenchmarker.Services
 
             foreach (var space in namespaces)
             {
-                var namespaceTypes = GetTypes(space, assemblyPath);
+                var namespaceTypes = GetTypes(space, assemblyPath, defaultIsChecked);
                 space.InitializeChildren(namespaceTypes);
             }
 
             return namespaces;
         }
 
-        public IEnumerable<TypeEntry> GetTypes(NamespaceEntry namespaceEntry, string assemblyPath)
+        public IEnumerable<TypeEntry> GetTypes(NamespaceEntry namespaceEntry, string assemblyPath, bool defaultIsChecked)
         {
             Argument.IsNotNullOrWhitespace("assemblyPath", assemblyPath);
 
@@ -71,6 +71,7 @@ namespace NUnitBenchmarker.Services
                     Path = assemblyPath,
                     TypeFullName = x.FullName,
                     Name = x.GetFriendlyName(),
+                    IsChecked = defaultIsChecked,
                     Description = string.Format("{0}\n{1}", x.GetNamespace(), x.GetFriendlyName())
                 }).OrderBy(e => e.Name).ToList();
         }

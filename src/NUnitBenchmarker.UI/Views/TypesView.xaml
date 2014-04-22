@@ -25,14 +25,10 @@
                   Visibility="{Binding Assemblies, Converter={converters:CollectionToVisibilityConverter}}">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="{Binding ElementName=layoutRoot, Path=DataContext.Filter, Converter={converters:IsFilterEnabledConverter}}" />
+                    <!--<Setter Property="IsExpanded" Value="{Binding ElementName=layoutRoot, Path=DataContext.Filter, Converter={converters:IsFilterEnabledConverter}}" />-->
+                    <Setter Property="IsExpanded" Value="true" />
                     <Setter Property="FontWeight" Value="Normal"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <!--<Setter Property="FontWeight" Value="Bold"/>-->
-                            <!--<Setter Property="Behaviors:TreeViewItemBehavior.BringIntoViewWhenSelected" Value="True"/>-->
-                        </Trigger>
-                    </Style.Triggers>
+                    <!--<Setter Property="Visibility" Value="{Binding Path=IsChecked, Converter={converters:ReflectionEntryToVisibilityConverter}}" />-->
                 </Style>
             </TreeView.ItemContainerStyle>
 

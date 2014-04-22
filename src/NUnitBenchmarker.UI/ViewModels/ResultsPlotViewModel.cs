@@ -10,9 +10,9 @@ namespace NUnitBenchmarker.ViewModels
     using System.Linq;
     using Catel;
     using Catel.MVVM;
-    using NUnitBenchmarker.Data;
-    using NUnitBenchmarker.Models;
-    using NUnitBenchmarker.Services;
+    using Data;
+    using Models;
+    using Services;
     using OxyPlot;
 
     public class ResultsPlotViewModel : ViewModelBase

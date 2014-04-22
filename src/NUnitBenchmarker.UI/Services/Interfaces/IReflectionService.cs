@@ -7,13 +7,14 @@
 
 namespace NUnitBenchmarker.Services
 {
+    using System;
     using System.Collections.Generic;
-    using NUnitBenchmarker.Models;
+    using Models;
 
     public interface IReflectionService
     {
-        AssemblyEntry GetAssemblyEntry(string assemblyPath);
-        IEnumerable<TypeEntry> GetTypes(NamespaceEntry namespaceEntry, string assemblyPath);
-        IEnumerable<NamespaceEntry> GetNamespaces(AssemblyEntry assemblyEntry, string assemblyPath);
+        AssemblyEntry GetAssemblyEntry(string assemblyPath, bool defaultIsChecked);
+        IEnumerable<TypeEntry> GetTypes(NamespaceEntry namespaceEntry, string assemblyPath, bool defaultIsChecked);
+        IEnumerable<NamespaceEntry> GetNamespaces(AssemblyEntry assemblyEntry, string assemblyPath, bool defaultIsChecked);
     }
 }

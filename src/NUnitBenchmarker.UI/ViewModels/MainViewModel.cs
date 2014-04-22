@@ -15,10 +15,10 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
-    using NUnitBenchmarker.Data;
-    using NUnitBenchmarker.Models;
-    using NUnitBenchmarker.Resources;
-    using NUnitBenchmarker.Services;
+    using Data;
+    using Models;
+    using Resources;
+    using Services;
 
     /// <summary>
     /// Class MainViewModel: MVVM ViewModel for MainWindow
@@ -178,7 +178,7 @@ namespace NUnitBenchmarker.ViewModels
                                select x).FirstOrDefault();
             if (currentItem != null)
             {
-                //currentItem.UpdateResults(result);
+                currentItem.UpdateResults(result);
                 return;
             }
 

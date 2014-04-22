@@ -14,35 +14,32 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
-    using NUnitBenchmarker.Data;
-    using NUnitBenchmarker.Models;
-    using NUnitBenchmarker.Resources;
-    using NUnitBenchmarker.Services;
+    using Data;
+    using Models;
+    using Resources;
+    using Services;
 
     public class TypesViewModel : ViewModelBase
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IOpenFileService _openFileService;
-        private readonly IMessageService _messageService;
         private readonly IPleaseWaitService _pleaseWaitService;
         private readonly IUIServiceHost _uiServiceHost;
         private readonly IReflectionService _reflectionService;
 
         private readonly List<AssemblyEntry> _assemblies = new List<AssemblyEntry>();
 
-        public TypesViewModel(IOpenFileService openFileService, IMessageService messageService, IPleaseWaitService pleaseWaitService,
+        public TypesViewModel(IOpenFileService openFileService, IPleaseWaitService pleaseWaitService,
             IUIServiceHost uiServiceHost, IReflectionService reflectionService, ICommandManager commandManager)
         {
             Argument.IsNotNull(() => openFileService);
-            Argument.IsNotNull(() => messageService);
             Argument.IsNotNull(() => pleaseWaitService);
             Argument.IsNotNull(() => uiServiceHost);
             Argument.IsNotNull(() => reflectionService);
             Argument.IsNotNull(() => commandManager);
 
             _openFileService = openFileService;
-            _messageService = messageService;
             _pleaseWaitService = pleaseWaitService;
             _uiServiceHost = uiServiceHost;
             _reflectionService = reflectionService;
@@ -76,30 +73,7 @@ namespace NUnitBenchmarker.ViewModels
             _openFileService.Filter = "Assembly Files (.dll, .exe)|*.dll;*.exe";
             if (_openFileService.DetermineFile())
             {
-                string fileName = _openFileService.FileName;
-
-                try
-                {
-                    if (Assemblies.Any(item => item.Path == fileName))
-                    {
-                        _messageService.ShowInformation(string.Format(UIStrings.Message_assembly_is_already_in_the_list, fileName));
-                        return;
-                    }
-
-                    _pleaseWaitService.Show(() =>
-                    {
-                        var assemblyEntry = _reflectionService.GetAssemblyEntry(fileName);
-                        _assemblies.Add(assemblyEntry);
-
-                        UpdateFilter();
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _messageService.ShowError(string.Format(UIStrings.Message_error_loading_assembly, fileName));
-
-                    Log.Error(ex);
-                }
+                AddAssembly(_openFileService.FileName, true, true);
             }
         }
 
@@ -123,11 +97,13 @@ namespace NUnitBenchmarker.ViewModels
             base.Initialize();
 
             _uiServiceHost.GetImplementations += OnGetImplementations;
+            _uiServiceHost.UpdateResult += OnUpdateResult;
         }
 
         protected override void Close()
         {
             _uiServiceHost.GetImplementations -= OnGetImplementations;
+            _uiServiceHost.UpdateResult -= OnUpdateResult;
 
             base.Close();
         }
@@ -169,6 +145,68 @@ namespace NUnitBenchmarker.ViewModels
             }
 
             return result;
+        }
+
+        private void OnUpdateResult(BenchmarkResult benchmark)
+        {
+            var typeSpecification = benchmark.TypeSpecification;
+            if (typeSpecification == null)
+            {
+                Log.Warning("Benchmark.TypeSpecification is null, cannot dynamically load assembly information");
+                return;
+            }
+
+            AddAssembly(typeSpecification.AssemblyPath);
+
+            SelectSpecificTypes(typeSpecification.FullName);
+        }
+
+        private void AddAssembly(string assemblyFileName, bool usePleaseWaitService = false, bool defaultIsChecked = false)
+        {
+            Argument.IsNotNull(() => assemblyFileName);
+
+            try
+            {
+                var assembly = Assemblies.FirstOrDefault(item => string.Equals(item.Path, assemblyFileName));
+                if (assembly != null)
+                {
+                    Log.Info(UIStrings.Message_assembly_is_already_in_the_list, assemblyFileName);
+                    return;
+                }
+
+                Log.Info("Loading assembly from '{0}'", assemblyFileName);
+
+                Action action = () =>
+                {
+                    var assemblyEntry = _reflectionService.GetAssemblyEntry(assemblyFileName, defaultIsChecked);
+                    assembly = assemblyEntry;
+
+                    _assemblies.Add(assemblyEntry);
+
+                    UpdateFilter();
+                };
+
+                if (usePleaseWaitService)
+                {
+                    _pleaseWaitService.Show();
+                }
+                else
+                {
+                    action();
+                }
+            }
+            catch (Exception)
+            {
+                Log.Error(UIStrings.Message_error_loading_assembly, assemblyFileName);
+            }
+        }
+
+        private void SelectSpecificTypes(params string[] selectedTypes)
+        {
+            foreach (var assembly in Assemblies)
+            {
+                assembly.SelectTypes(selectedTypes);
+            }
         }
         #endregion
     }

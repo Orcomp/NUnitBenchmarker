@@ -11,8 +11,8 @@ namespace NUnitBenchmarker.ViewModels
     using Catel;
     using Catel.MVVM;
     using NUnitBenchmarker;
-    using NUnitBenchmarker.Data;
-    using NUnitBenchmarker.Services;
+    using Data;
+    using Services;
 
     public class ResultsDataViewModel : ViewModelBase
     {

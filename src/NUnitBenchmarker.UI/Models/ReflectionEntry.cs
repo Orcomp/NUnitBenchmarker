@@ -15,7 +15,6 @@ namespace NUnitBenchmarker.Models
     public abstract class ReflectionEntry : ModelBase
     {
         private List<ReflectionEntry> _children;
-        private string _filter;
         private bool _isUpdatingCheckState;
 
         public ReflectionEntry(ReflectionEntry parent)

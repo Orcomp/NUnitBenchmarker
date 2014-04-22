@@ -203,6 +203,7 @@ namespace NUnitBenchmarker
 
             var benchmarkResult = new BenchmarkResult
             {
+                TypeSpecification = new TypeSpecification(conf.TargetImplementationType),
                 Key = testName,
                 Values = Results[testName],
                 TestCases = TestCases.ToArray(),

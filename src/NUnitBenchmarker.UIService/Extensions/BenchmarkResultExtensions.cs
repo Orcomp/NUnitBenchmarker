@@ -8,9 +8,8 @@
 namespace NUnitBenchmarker
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Catel;
-    using NUnitBenchmarker.Data;
+    using Data;
 
     public static class BenchmarkResultExtensions
     {
