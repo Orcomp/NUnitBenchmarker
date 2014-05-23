@@ -49,6 +49,7 @@ namespace NUnitBenchmarker.Views
             var dataTable = vm.DataTable;
             var dataTableView = dataTable.DefaultView;
 
+            dataGrid.ItemsSource = null;
             dataGrid.ItemsSource = dataTableView;
             dataGrid.Items.Refresh();
         }
