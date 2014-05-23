@@ -1,19 +1,63 @@
+#region Copyright (c) 2008 - 2014 Orcomp development team.
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IPerformanceTestCaseConfiguration.cs" company="Orcomp development team">
 //   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
+#endregion
 
 namespace NUnitBenchmarker.Configuration
 {
-    using System;
+	#region using...
+	using System;
 
-    public interface IPerformanceTestCaseConfiguration
-    {
-        #region Properties
-        string Identifier { get; set; }
-        Type TargetImplementationType { get; set; }
-        #endregion
-    }
+	#endregion
+
+	/// <summary>
+	/// Interface for configuring, preparing and running performance tests
+	/// </summary>
+	public interface IPerformanceTestCaseConfiguration
+	{
+		#region Properties
+
+		/// <summary>
+		/// Gets or sets the Prepare action. The configuration parameter serves to communicate with the Run action
+		/// </summary>
+		/// <value>Prepare action with IPerformanceTestCaseConfiguration parameter</value>
+		Action<IPerformanceTestCaseConfiguration> Prepare { get; set; }
+
+		/// <summary>
+		/// Gets or sets the Run action. The configuration parameter serves to communicate with the Prepare action
+		/// </summary>
+		/// <value>Run action with IPerformanceTestCaseConfiguration parameter</value>
+		Action<IPerformanceTestCaseConfiguration> Run { get; set; }
+		
+		/// <summary>
+		/// Gets or sets the count of how many times the test should run. 
+		/// </summary>
+		/// <value>How many times the test should run</value>
+		int Count { get; set; }
+
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this configuration instance is reusable within identical
+		/// repeated tests
+		/// </summary>
+		/// <value><c>true</c> if this instance is reusable; otherwise, <c>false</c>.</value>
+		bool IsReusable { get; set; }
+		
+		/// <summary>
+		/// Gets or sets the test case identifier, for display and report purposes
+		/// </summary>
+		/// <value>The identifier.</value>
+		string Identifier { get; set; }
+		
+		/// <summary>
+		/// Gets or sets the type of the target implementation type for the particular test case.
+		/// Must be not null in the new versions
+		/// </summary>
+		/// <value>The type of the target implementation.</value>
+		Type TargetImplementationType { get; set; }
+		#endregion
+	}
 }

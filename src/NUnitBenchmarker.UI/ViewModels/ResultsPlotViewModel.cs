@@ -13,6 +13,7 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.MVVM;
     using Data;
     using Models;
+    using OxyPlot.Series;
     using Services;
     using OxyPlot;
 
@@ -65,9 +66,10 @@ namespace NUnitBenchmarker.ViewModels
             base.Close();
         }
 
-        private void OnBenchmarkUpdated(object sender, EventArgs e)
+	    private int i = 0;
+		private void OnBenchmarkUpdated(object sender, EventArgs e)
         {
-            UpdateResults(BenchmarkResult);
+			UpdateResults(BenchmarkResult);
         }
         #endregion
     }
