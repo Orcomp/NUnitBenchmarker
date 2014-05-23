@@ -1,6 +1,4 @@
 using NUnit.Framework;
-using NUnitBenchmarker.Benchmark;
-using NUnitBenchmarker.UIClient;
 
 namespace NUnitBenchmarker
 {

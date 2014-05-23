@@ -16,6 +16,7 @@
 bin
 obj
 [Ll]ib/
+[Tt]ools/FAKE
 *_i.c
 *_p.c
 *.ilk
@@ -115,3 +116,5 @@ Desktop.ini
 
 # mstest test results
 TestResults
+#Build log
+build-log.xml

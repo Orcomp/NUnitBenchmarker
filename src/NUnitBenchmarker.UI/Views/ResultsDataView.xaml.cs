@@ -7,8 +7,6 @@
 
 namespace NUnitBenchmarker.Views
 {
-    using System.ComponentModel;
-    using ViewModels;
     using UserControl = Catel.Windows.Controls.UserControl;
 
     /// <summary>
@@ -25,34 +23,6 @@ namespace NUnitBenchmarker.Views
             InitializeComponent();
         }
 
-        protected override void OnViewModelChanged()
-        {
-            base.OnViewModelChanged();
-
-            UpdateSource();
-        }
-
-        protected override void OnViewModelPropertyChanged(PropertyChangedEventArgs e)
-        {
-            base.OnViewModelPropertyChanged(e);
-
-            if (string.Equals(e.PropertyName, "DataTable"))
-            {
-                UpdateSource();
-            }
-        }
-
-        private void UpdateSource()
-        {
-            var vm = (ResultsDataViewModel)ViewModel;
-
-            var dataTable = vm.DataTable;
-            var dataTableView = dataTable.DefaultView;
-
-            dataGrid.ItemsSource = null;
-            dataGrid.ItemsSource = dataTableView;
-            dataGrid.Items.Refresh();
-        }
         #endregion
     }
 }

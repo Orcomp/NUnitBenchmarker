@@ -4,7 +4,7 @@
 				   xmlns:catel="http://catel.codeplex.com">
 
     <Grid>
-        <DataGrid x:Name="dataGrid" AutoGenerateColumns="True" IsReadOnly="True" />
+        <DataGrid ItemsSource="{Binding DataTable}" AutoGenerateColumns="True" IsReadOnly="True" />
     </Grid>
     
 </catel:UserControl>

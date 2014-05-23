@@ -16,6 +16,8 @@ let netVersions = ["NET40"]
 
 let srcDir  = @".\src\"
 let deploymentDir  = @".\deployment\"
+// This is the deployed (our) package dir. Do not confuse this with the used packages loacation
+// what is called nugetRepositoryDir few lines later
 let packagesDir = deploymentDir @@ "packages"
 
 let dllDeploymentDirs = netVersions |> List.map(fun v -> v, packagesDir @@ "work" @@ "lib" @@ v) |> dict
@@ -26,16 +28,15 @@ let contentTemplatesDir = nuspecTemplatesDir @@ "content"
 let toolTemplatesDir = nuspecTemplatesDir @@ "tools"
 
 
-//let nugetExePath = @".\tools\nuget\nuget.exe"
-let nugetExePath = @".\src\.nuget\nuget.exe"
-let nugetRepositoryDir = @".\packages"
+let nugetExePath = @".\tools\nuget\nuget.exe"
+let nugetRepositoryDir = @".\lib"
 let nugetAccessKey = if File.Exists(@".\Nuget.key") then File.ReadAllText(@".\Nuget.key") else ""
 let version = File.ReadAllText(@".\version.txt")
 
-let solutionAssemblyInfoPath = srcDir @@ "SolutionInfo.cs"
+let solutionAssemblyInfoPath = srcDir @@ "SolutionAssemblyInfo.cs"
 let projectsToPackageAssemblyNames = ["NUnitBenchmarker.Benchmark"; "NUnitBenchmarker.Core"; "NUnitBenchmarker.UIClient"; "NUnitBenchmarker.UIService"]
 let projectsToToolPackageAssemblyNames = ["NUnitBenchmarker.UI"]
-let projectsToPackageDependencies = ["SimpleSpeedTester"; "fasterflect"; "log4net"; "Ninject"; "NUnit"; "OxyPlot.Pdf"]
+let projectsToPackageDependencies = ["SimpleSpeedTester"; "fasterflect"; "Catel.Core"; "NUnit"; "OxyPlot.Pdf"]
 
 let outputDir = @".\output\"
 let outputReleaseDir = outputDir @@ "release" ////@@ netVersion
@@ -82,21 +83,28 @@ Target "DeleteOutputDirectories" (fun _ ->
 // Build projects
 
 Target "RestorePackagesManually" (fun _ ->
-
-// Note: RestorePackages _does_ not use the info in repositories.config. Instead looks
-// for ./**/packages.config similary the algorithm commented out below:
-        RestorePackages()
-//      !! "./**/packages.config"
-//      |> Seq.iter (RestorePackage (fun p -> 
-//                  { p with 
-//                        ToolPath = nugetExePath
-//                        OutputPath = nugetRepositoryDir
-//                    }))
+      !! "./**/packages.config"
+      |> Seq.iter (RestorePackage (fun p -> 
+                  { p with 
+                        ToolPath = nugetExePath
+                        OutputPath = nugetRepositoryDir
+                    }))
 )
 
+// TODO: Implement it with 1.0.4-rc like version.txt also.
+// Currently we can not use release version numbers because one of our dependencies (Catel) and 
+// NuGet build does not allow this package to have a release formatted version attribute.
+//Target "UpdateAssemblyVersion" (fun _ ->
+//      let pattern = Regex("Assembly(|File)Version(\w*)\(.*\)")
+//      let result = "Assembly$1Version$2(\"" + version + "\")"
+//      let content = File.ReadAllLines(solutionAssemblyInfoPath, Encoding.Unicode)
+//                    |> Array.map(fun line -> pattern.Replace(line, result, 1))
+//      File.WriteAllLines(solutionAssemblyInfoPath, content, Encoding.Unicode)
+//)
+//Target "UpdateAssemblyVersion" DoNothing
 Target "UpdateAssemblyVersion" (fun _ ->
-      let pattern = Regex("Assembly(|File)Version(\w*)\(.*\)")
-      let result = "Assembly$1Version$2(\"" + version + "\")"
+      let pattern = Regex("AssemblyInformationalVersion(\w*)\(.*\)")
+      let result = "AssemblyInformationalVersion(\"" + version + "\")"
       let content = File.ReadAllLines(solutionAssemblyInfoPath, Encoding.Unicode)
                     |> Array.map(fun line -> pattern.Replace(line, result, 1))
       File.WriteAllLines(solutionAssemblyInfoPath, content, Encoding.Unicode)
@@ -190,8 +198,7 @@ Target "NuGet" (fun _ ->
         
 
     let cleanPackage name = 
-        DeleteDir (packagesDir @@ "work")
-
+        CleanDirs [packagesDir @@ "work"]
 
     let doPackage dependencies =   
         NuGet (fun p -> 
@@ -206,9 +213,9 @@ Target "NuGet" (fun _ ->
                 AccessKey = nugetAccessPublishKey })
                 getNuspecFile
     
-    let doAll files toolFiles depenencies =
+    let doAll files toolFiles dependencies =
         preparePackage files toolFiles
-        doPackage depenencies
+        doPackage dependencies
         cleanPackage ""
 
     doAll binProjectFiles toolBinProjectFiles nugetDependencies
@@ -237,10 +244,10 @@ Target "Release" DoNothing
 "BuildOtherProjects" ==> "Release"
 "NuGet" ==> "Release"
 
-//RunTargetOrDefault "Clean"
-//RunTargetOrDefault "UpdateAssemblyVersion"
-//RunTargetOrDefault "RestorePackagesManually"
-//RunTargetOrDefault "BuildOtherProjects"
+//RunTargetOrDefault "Clean" fixed and tested at 23 May
+//RunTargetOrDefault "UpdateAssemblyVersion" fixed and tested at 23 May
+//RunTargetOrDefault "RestorePackagesManually" fixed and tested at 23 May
+//RunTargetOrDefault "BuildOtherProjects" fixed and tested at 23 May
 //RunTargetOrDefault "BuildTests"
 //RunTargetOrDefault "NuGet"
 RunTargetOrDefault "Release"
