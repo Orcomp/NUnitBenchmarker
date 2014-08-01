@@ -98,6 +98,7 @@ namespace NUnitBenchmarker
             commandManager.CreateCommand("File.Exit");
 
             commandManager.CreateCommand("Log.Clear");
+			commandManager.CreateCommand("Options.ChangeDefaultAxis");
 
             commandManager.RegisterAction("File.Exit", Shutdown);
         }

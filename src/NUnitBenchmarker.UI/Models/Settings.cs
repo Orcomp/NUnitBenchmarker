@@ -7,10 +7,38 @@
 
 namespace NUnitBenchmarker.Models
 {
-    using Catel.Data;
+	using System;
+	using System.ComponentModel;
+	using Catel.Data;
+	using Catel.Logging;
 
-    public class Settings : ModelBase, ISettings
+	public class Settings : ModelBase, ISettings
     {
-        public bool IsLogarithmicTimeAxisChecked { get; set; }
+		private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+		public Settings()
+	    {
+		    try
+		    {
+			    IsLogarithmicTimeAxisChecked = Properties.Settings.Default.IsLogarithmicTimeAxis;
+		    }
+		    catch (Exception e)
+		    {
+				Log.Error(e);
+		    }
+	    }
+
+	    public bool IsLogarithmicTimeAxisChecked { get; set; }
+	    public void Save()
+	    {
+		    try
+		    {
+			    Properties.Settings.Default.IsLogarithmicTimeAxis = IsLogarithmicTimeAxisChecked;
+			    Properties.Settings.Default.Save();
+		    }
+		    catch (Exception e)
+		    {
+				Log.Error(e);
+		    }
+	    }
     }
 }

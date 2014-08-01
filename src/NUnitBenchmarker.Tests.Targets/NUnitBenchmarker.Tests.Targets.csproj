@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoNotReflect\DoNoReflectClass.cs" />
     <Compile Include="IList\ListImplementationB.cs" />
     <Compile Include="IList\ListImplementationA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

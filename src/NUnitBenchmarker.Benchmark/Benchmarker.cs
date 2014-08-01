@@ -140,7 +140,7 @@ namespace NUnitBenchmarker
 		{
 			return Assembly.LoadFrom(assemblyFileName)
 				.Types()
-				.Where(x => x.Implements(interfaceType))
+				.Where(x => x.Implements(interfaceType) && x.IsClass)
 				.Select(x => new ImplementationInfo
 				{
 					AssemblyFileName = assemblyFileName,
@@ -267,6 +267,7 @@ namespace NUnitBenchmarker
 				var result = test.PlanAndExecute(testName, configuration.Run, configuration, configuration.Count, new ExcludeMinAndMaxTestOutcomeFilter());
 				averageExecutionTime = result.AverageExecutionTime.RoundToSignificantDigits(SignificantDigitCount);
 			}
+			averageExecutionTime /= configuration.Divider;
 
 			Log.Info("[{0}] {1} - {2}: {3} (ms)", testGroup, testName, NumericUtils.TryToFormatAsNumber(testCase), averageExecutionTime);
 			Save(testGroup, testName, testCase, averageExecutionTime);

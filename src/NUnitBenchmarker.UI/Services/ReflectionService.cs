@@ -80,7 +80,19 @@ namespace NUnitBenchmarker.Services
         {
             return _assemblyTypes.GetFromCacheOrFetch(assemblyPath, () =>
             {
-                var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
+                
+				// Loading only for reflection would be a good idea. Unfortunatelly it will not load
+				// reflect types what have dependencies in other assemblies and that assemblies must be
+				// either in GAC or the same folder where the main assemble (the GUI) was started.
+				// Note: in the path where the GUI resides (and not in the path where assemblyPath resides)
+				// Result: One assembly will be loaded from the assemblyPath, where the assembly under 
+				// test resides, but the other assemblies with the very same folder will not found, and many of 
+				// types in the assemblyPath assembly will not be resolved.
+				// 
+				//var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
+
+				// Instead:
+				var assembly = Assembly.LoadFrom(assemblyPath);
                 var allTypes = new List<Type>(assembly.GetAllTypesSafely());
 
                 return allTypes;

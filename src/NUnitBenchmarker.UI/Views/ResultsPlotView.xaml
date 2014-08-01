@@ -7,7 +7,7 @@
     <oxy:Plot Model="{Binding PlotModel}" Margin="10">
         <oxy:Plot.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding IsLogarithmicTimeAxisChecked}"/>
+                <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding IsLogarithmicTimeAxisChecked}" Command="{Binding IsLogarithmicTimeAxisCommand}"/>
             </ContextMenu>
         </oxy:Plot.ContextMenu>
     </oxy:Plot>

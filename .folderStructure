@@ -1,0 +1,28 @@
+#---------------------------------
+#Folder structure definition file.
+#---------------------------------
+
+#Syntax:
+
+#	Both slash and backslash accepted as path separator
+#	Entries end with / considered as folders
+#	Entries end with no / considered as files
+#	Must not exist operator: ! in the beginning of the line
+#	Comment: Lines starting with # considered as comments.
+
+#	All path must be relative to the repo root.
+#	Note: use src/ instead of ./src/. Relative paths referring _outside_ to the repo root are not accepted
+
+#Folders must exist: 
+src/
+docs/
+tools/
+output/
+
+#Folders must not exist: 
+!**/bin/
+
+#Files must exist: 
+.gitignore
+LICENSE
+readme.md

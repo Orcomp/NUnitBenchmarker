@@ -25,6 +25,10 @@ namespace NUnitBenchmarker.Data
         [DataMember]
         public TypeSpecification TypeSpecification { get; set; }
 
+		[DataMember]
+		public TypeSpecification InterfaceSpecification { get; set; }
+
+
         [DataMember]
         public string Key { get; set; }
 

@@ -10,5 +10,6 @@ namespace NUnitBenchmarker.Models
     public interface ISettings
     {
         bool IsLogarithmicTimeAxisChecked { get; set; }
+	    void Save();
     }
 }

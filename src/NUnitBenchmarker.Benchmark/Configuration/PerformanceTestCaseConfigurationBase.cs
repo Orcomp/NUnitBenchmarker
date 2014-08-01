@@ -15,6 +15,8 @@ namespace NUnitBenchmarker.Configuration
 
 	public abstract class PerformanceTestCaseConfigurationBase : IPerformanceTestCaseConfiguration
 	{
+		private double _divider = 1.0;
+
 		#region IPerformanceTestCaseConfiguration Members
 
 		/// <summary>
@@ -54,6 +56,26 @@ namespace NUnitBenchmarker.Configuration
 		/// </summary>
 		/// <value>The type of the target implementation.</value>
 		public Type TargetImplementationType { get; set; }
+
+		/// <summary>
+		/// Divider is any positive number (by default is 1.0) what can be used to normalize 
+		/// the benchmark results. NUnitBenchmarker divide the original result with the divider value. If a test configuration
+		/// defines an execute action with multiple operations for some reason but want to display the benchmark value for one operation set this value to the number of operations.
+		/// </summary>
+		/// <value>The divider.</value>
+		/// <exception cref="System.ArgumentException">Divider must be greater than zero.</exception>
+		public double Divider
+		{
+			get { return _divider; }
+			set
+			{
+				if (value <= 0.0)
+				{
+					throw new ArgumentException("Divider must be greater than zero.");
+				}
+				_divider = value;
+			}
+		}
 		#endregion
 	}
 }

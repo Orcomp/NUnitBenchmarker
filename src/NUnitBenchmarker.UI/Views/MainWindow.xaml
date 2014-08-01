@@ -36,7 +36,7 @@
 
             <MenuItem Header="_Option">
                 <!--<MenuItem Header="_Always on Top" IsCheckable="True" IsChecked="{Binding IsAlwaysOnTopChecked}" Command="{Binding AlwaysOnTopCommand}" />-->
-                <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding Settings.IsLogarithmicTimeAxisChecked}" />
+                <MenuItem Header="_Use Logarithmic Time Axis by Default" IsCheckable="True" IsChecked="{Binding Settings.IsLogarithmicTimeAxisChecked}" Command="{catel:CommandManagerBinding Options.ChangeDefaultAxis}"/>
             </MenuItem>
 
             <MenuItem Header="_Tools">
