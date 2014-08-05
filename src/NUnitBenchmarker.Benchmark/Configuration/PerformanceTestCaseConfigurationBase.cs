@@ -32,6 +32,14 @@ namespace NUnitBenchmarker.Configuration
 		public Action<IPerformanceTestCaseConfiguration> Run { get; set; }
 
 		/// <summary>
+		/// Gets or sets the optional Assert action. The configuration parameter serves to communicate with the Run action
+		/// This action will be called once after the multiple calls of the Run action
+		/// </summary>
+		/// <value>Assert action with IPerformanceTestCaseConfiguration parameter</value>
+		public Action<IPerformanceTestCaseConfiguration> Assert { get; set; }
+
+
+		/// <summary>
 		/// Gets or sets the count of how many times the test should run. 
 		/// </summary>
 		/// <value>How many times the test should run</value>

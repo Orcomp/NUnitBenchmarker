@@ -270,6 +270,7 @@ namespace NUnitBenchmarker
 			averageExecutionTime /= configuration.Divider;
 
 			Log.Info("[{0}] {1} - {2}: {3} (ms)", testGroup, testName, NumericUtils.TryToFormatAsNumber(testCase), averageExecutionTime);
+
 			Save(testGroup, testName, testCase, averageExecutionTime);
 			var benchmarkResult = new BenchmarkResult
 			{
@@ -280,6 +281,11 @@ namespace NUnitBenchmarker
 			};
 
 			UI.UpdateResult(benchmarkResult);
+			var assert = configuration.Assert;
+			if (assert != null)
+			{
+				configuration.Assert(configuration);
+			}
 		}
 
 		private static bool FilterTestCaseOut(string testCase, IEnumerable<ExcludeIncludeElement> filters)
