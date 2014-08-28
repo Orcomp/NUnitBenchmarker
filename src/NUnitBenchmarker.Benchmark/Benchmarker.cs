@@ -26,8 +26,9 @@ namespace NUnitBenchmarker
 	using OxyPlot.Series;
 	using SimpleSpeedTester.Core;
 	using SimpleSpeedTester.Core.OutcomeFilters;
+	using SimpleSpeedTester.Interfaces;
 
-	#endregion
+    #endregion
 
 	public static class Benchmarker
 	{
@@ -229,8 +230,9 @@ namespace NUnitBenchmarker
 			TestCases.Add(testCase);
 
 			var test = new TestGroup(testGroup);
+            var averageExecutionTime = 0.0;
+            ITestResultSummary result = null;
 
-			var averageExecutionTime = 0.0;
 			if (configuration.Prepare != null && !configuration.IsReusable)
 			{
 				var sum = 0.0;
@@ -239,8 +241,9 @@ namespace NUnitBenchmarker
 				for (var i = 0; i < configuration.Count; i++)
 				{
 					configuration.Prepare(configuration);
-					var result = test.PlanAndExecute(testName, configuration.Run, configuration, 1, new ExcludeMinAndMaxTestOutcomeFilter());
-					sum += result.AverageExecutionTime;
+				    result = test.PlanAndExecute(testName, configuration.Run, configuration, 1);
+
+                    sum += result.AverageExecutionTime;
 					if (result.AverageExecutionTime < min)
 					{
 						min = result.AverageExecutionTime;
@@ -256,7 +259,7 @@ namespace NUnitBenchmarker
 					sum -= (min + max);
 					correctedCount -= 2;
 				}
-				averageExecutionTime = (sum/correctedCount).RoundToSignificantDigits(SignificantDigitCount);
+				averageExecutionTime = sum / correctedCount;
 			}
 			else
 			{
@@ -264,11 +267,19 @@ namespace NUnitBenchmarker
 				{
 					configuration.Prepare(configuration);
 				}
-				var result = test.PlanAndExecute(testName, configuration.Run, configuration, configuration.Count, new ExcludeMinAndMaxTestOutcomeFilter());
-				averageExecutionTime = result.AverageExecutionTime.RoundToSignificantDigits(SignificantDigitCount);
-			}
-			averageExecutionTime /= configuration.Divider;
 
+				result = test.PlanAndExecute(testName, configuration.Run, configuration, configuration.Count, new ExcludeMinAndMaxTestOutcomeFilter());
+				averageExecutionTime = result.AverageExecutionTime;
+			}
+            averageExecutionTime = (averageExecutionTime / configuration.Divider).RoundToSignificantDigits(SignificantDigitCount);
+
+            result.TestResult.Outcomes.ForEach(outcome =>
+            {
+                if (outcome.Exception != null)
+                {
+                    Log.Info("[{0}] {1} - {2}: {3}", testGroup, testName, NumericUtils.TryToFormatAsNumber(testCase), outcome.Exception.GetType());
+                }
+            });
 			Log.Info("[{0}] {1} - {2}: {3} (ms)", testGroup, testName, NumericUtils.TryToFormatAsNumber(testCase), averageExecutionTime);
 
 			Save(testGroup, testName, testCase, averageExecutionTime);
