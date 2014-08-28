@@ -354,7 +354,20 @@ namespace NUnitBenchmarker
 				LegendPlacement = LegendPlacement.Inside,
 				LegendPosition = LegendPosition.TopLeft,
 				LegendBackground = OxyColor.FromAColor(200, OxyColors.White),
-				LegendBorder = OxyColors.Black
+				LegendBorder = OxyColors.Black,
+                DefaultColors = new List<OxyColor>
+                {
+                    OxyColors.OrangeRed,
+                    OxyColors.LightGreen,
+                    OxyColors.DeepSkyBlue,
+                    OxyColors.Yellow,
+                    OxyColors.DarkRed,
+                    OxyColors.ForestGreen,
+                    OxyColors.Blue,
+                    OxyColors.Orange,
+                    OxyColors.Indigo,
+                    OxyColors.Violet,
+                }
 			};
 
 			var xAxis = new LinearAxis
@@ -469,9 +482,22 @@ namespace NUnitBenchmarker
 				LegendPlacement = LegendPlacement.Inside,
 				LegendPosition = LegendPosition.TopRight,
 				LegendBackground = OxyColor.FromAColor(200, OxyColors.White),
-				LegendBorder = OxyColors.Black
-			};
-
+				LegendBorder = OxyColors.Black,
+                DefaultColors = new List<OxyColor>
+                {
+                    OxyColors.OrangeRed,
+                    OxyColors.LightGreen,
+                    OxyColors.DeepSkyBlue,
+                    OxyColors.Yellow,
+                    OxyColors.DarkRed,
+                    OxyColors.ForestGreen,
+                    OxyColors.Blue,
+                    OxyColors.Orange,
+                    OxyColors.Indigo,
+                    OxyColors.Violet,
+                }
+            };
+            
 			//var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases)
 			var dateAxis = new CategoryAxis
 			{
