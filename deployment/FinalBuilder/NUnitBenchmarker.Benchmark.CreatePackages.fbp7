@@ -767,7 +767,7 @@ Files=NUnitBenchmarker.*.dll
                   <![CDATA[Source=%BuildOutput%\NET40\NUnitBenchmarker.UI\
 Target=%TargetRootDirectory%\%Name%\tools
 Name=%Name%
-Files=*.dll *.config
+Files=*.dll *.config *.UI.exe
 ]]>
                 </Property>
                 <Property name="PauseInterval" type="Cardinal">0</Property>
