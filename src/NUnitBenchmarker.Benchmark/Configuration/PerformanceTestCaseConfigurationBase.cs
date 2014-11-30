@@ -10,6 +10,7 @@ namespace NUnitBenchmarker.Configuration
 {
 	#region using...
 	using System;
+	using System.Dynamic;
 
 	#endregion
 
@@ -18,6 +19,10 @@ namespace NUnitBenchmarker.Configuration
 		private double _divider = 1.0;
 
 		#region IPerformanceTestCaseConfiguration Members
+		protected PerformanceTestCaseConfigurationBase()
+		{
+			Parameters = new ExpandoObject();
+		}
 
 		/// <summary>
 		/// Gets or sets the Prepare action. The configuration parameter serves to communicate with the Run action
@@ -84,6 +89,15 @@ namespace NUnitBenchmarker.Configuration
 				_divider = value;
 			}
 		}
+
+		public int Size { get; set; }
+		public string TestName { get; set; }
+		public dynamic Parameters { get; private set; }
 		#endregion
+
+		public override string ToString()
+		{
+			return TestName;
+		}
 	}
 }

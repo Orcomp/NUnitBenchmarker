@@ -75,7 +75,27 @@ namespace NUnitBenchmarker.Configuration
 		/// <exception cref="System.ArgumentException">Divider must be greater than zero.</exception>
 		double Divider { get; set; }
 
+		/// <summary>
+		/// Gets or sets the test size. The size is typically the number of items in a collection under test 
+		/// or repeat count 
+		/// </summary>
+		/// <value>The size.</value>
+		int Size { get; set; }
 
+
+		/// <summary>
+		/// Gets or sets the name of the test.
+		/// </summary>
+		/// <value>The name of the test.</value>
+		string TestName { get; set; }
+
+		/// <summary>
+		/// Serves as a dynamic dictionary to communicate between Prepare and Run methods.
+		/// </summary>
+		/// <value>The parameters. This is a dynamic object. Use it with a semantics of a Dictionary 
+		/// to hold Key (name) / Value pairs, but instead of writing Parameters["AnyIdentifier"] = value, just write:
+		/// Parameters.AnyIdentifier = value</value>
+		dynamic Parameters { get; }
 		#endregion
 	}
 }
