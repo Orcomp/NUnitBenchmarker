@@ -2,14 +2,14 @@
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://catel.codeplex.com"
-                   xmlns:oxy="http://oxyplot.codeplex.com">
+                   xmlns:wpf="http://oxyplot.org/wpf">
 
-    <oxy:Plot Model="{Binding PlotModel}" Margin="10">
-        <oxy:Plot.ContextMenu>
+    <wpf:Plot Model="{Binding PlotModel}" Margin="10">
+        <wpf:Plot.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding IsLogarithmicTimeAxisChecked}" Command="{Binding IsLogarithmicTimeAxisCommand}"/>
             </ContextMenu>
-        </oxy:Plot.ContextMenu>
-    </oxy:Plot>
+        </wpf:Plot.ContextMenu>
+    </wpf:Plot>
 
 </catel:UserControl>

@@ -19,6 +19,7 @@ namespace NUnitBenchmarker.ViewModels
     using Models;
     using Resources;
     using Services;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Class MainViewModel: MVVM ViewModel for MainWindow
@@ -147,9 +148,9 @@ namespace NUnitBenchmarker.ViewModels
         #endregion
 
         #region Methods
-        protected override void Initialize()
+        protected override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize();
 
             try
             {
@@ -164,14 +165,14 @@ namespace NUnitBenchmarker.ViewModels
             _uiServiceHost.UpdateResult += OnUpdateResult;
         }
 
-        protected override void Close()
+        protected override async Task Close()
         {
             _uiServiceHost.Stop();
 
             _uiServiceHost.Ping -= OnPing;
             _uiServiceHost.UpdateResult -= OnUpdateResult;
 
-            base.Close();
+            await base.Close();
         }
 
         private string OnPing(string message)

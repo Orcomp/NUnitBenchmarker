@@ -13,6 +13,7 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.MVVM;
     using NUnitBenchmarker;
     using Data;
+    using System.Threading.Tasks;
 
     public class ResultsDataViewModel : ViewModelBase
     {
@@ -43,18 +44,18 @@ namespace NUnitBenchmarker.ViewModels
             DataTable = new BenchmarkFinalTabularData(result).DataTable;
         }
 
-        protected override void Initialize()
+        protected override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize();
 
             BenchmarkResult.Updated += OnBenchmarkUpdated;
         }
 
-        protected override void Close()
+        protected override async Task Close()
         {
             BenchmarkResult.Updated -= OnBenchmarkUpdated;
 
-            base.Close();
+            await base.Close();
         }
 
         private void OnBenchmarkUpdated(object sender, EventArgs e)

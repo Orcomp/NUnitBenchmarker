@@ -7,6 +7,7 @@
 
 namespace NUnitBenchmarker.Logging
 {
+    using System;
     using Catel;
     using Catel.Logging;
     using NUnitBenchmarker.UIServiceReference;
@@ -24,7 +25,7 @@ namespace NUnitBenchmarker.Logging
             IgnoreCatelLogging = true;
         }
 
-        protected override void Write(ILog log, string message, LogEvent logEvent, object extraData)
+        protected override void Write(ILog log, string message, LogEvent logEvent, object extraData, DateTime time)
         {
             _client.LogEvent(message);
         }

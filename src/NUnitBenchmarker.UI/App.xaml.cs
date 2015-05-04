@@ -13,8 +13,10 @@ namespace NUnitBenchmarker
     using Catel.IoC;
     using Catel.Logging;
     using Catel.MVVM;
+    using Catel.Services;
     using NUnitBenchmarker.Models;
     using NUnitBenchmarker.Services;
+    using PleaseWaitService = Services.PleaseWaitService;
 
     /// <summary>
     ///     Interaction logic for App.xaml
@@ -24,12 +26,6 @@ namespace NUnitBenchmarker
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         #region Methods
-        /// <summary>
-        ///     Raises the <see cref="E:System.Windows.Application.Startup" /> event.
-        /// </summary>
-        /// <param name="e">
-        ///     A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.
-        /// </param>
         protected override void OnStartup(StartupEventArgs e)
         {
 #if DEBUG
@@ -62,12 +58,6 @@ namespace NUnitBenchmarker
             base.OnStartup(e);
         }
 
-        /// <summary>
-        ///     Raises the <see cref="E:System.Windows.Application.Exit" /> event.
-        /// </summary>
-        /// <param name="e">
-        ///     An <see cref="T:System.Windows.ExitEventArgs" /> that contains the event data.
-        /// </param>
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
@@ -89,6 +79,7 @@ namespace NUnitBenchmarker
             serviceLocator.RegisterType<IUIServiceHost, UIServiceHost>();
             serviceLocator.RegisterType<ITestTargetService, TestTargetService>();
             serviceLocator.RegisterType<ISettings, Settings>();
+            serviceLocator.RegisterType<IPleaseWaitService, PleaseWaitService>();
         }
 
         private void RegisterCommands(ICommandManager commandManager)

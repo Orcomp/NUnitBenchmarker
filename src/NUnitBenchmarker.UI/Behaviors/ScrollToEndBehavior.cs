@@ -18,17 +18,17 @@ namespace NUnitBenchmarker.Behaviors
         private Capture _capture;
 
         #region Methods
-        protected override void OnAssociatedObjectLoaded(object sender, EventArgs e)
+        protected override void OnAssociatedObjectLoaded()
         {
-            base.OnAssociatedObjectLoaded(sender, e);
+            base.OnAssociatedObjectLoaded();
 
-            var listBox = (ListBox)sender;
+            var listBox = (ListBox)AssociatedObject;
             _capture = new Capture(listBox);
         }
 
-        protected override void OnAssociatedObjectUnloaded(object sender, EventArgs e)
+        protected override void OnAssociatedObjectUnloaded()
         {
-            base.OnAssociatedObjectUnloaded(sender, e);
+            base.OnAssociatedObjectUnloaded();
 
             if (_capture != null)
             {
@@ -41,7 +41,7 @@ namespace NUnitBenchmarker.Behaviors
         #region Nested type: Capture
         private class Capture : IDisposable
         {
-            private ListBox _listBox;
+            private readonly ListBox _listBox;
             private INotifyCollectionChanged _notifyCollectionChanged;
 
             #region Constructors

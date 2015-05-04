@@ -18,6 +18,7 @@ namespace NUnitBenchmarker.ViewModels
     using OxyPlot.Series;
     using Services;
     using OxyPlot;
+    using System.Threading.Tasks;
 
     public class ResultsPlotViewModel : ViewModelBase
     {
@@ -27,12 +28,12 @@ namespace NUnitBenchmarker.ViewModels
             Argument.IsNotNull(() => settings);
 
             BenchmarkResult = benchmarkResult;
-	        IsLogarithmicTimeAxisChecked = settings.IsLogarithmicTimeAxisChecked;
+            IsLogarithmicTimeAxisChecked = settings.IsLogarithmicTimeAxisChecked;
             UpdateResults(BenchmarkResult);
         }
 
 
-	    #region Properties
+        #region Properties
         public BenchmarkResult BenchmarkResult { get; private set; }
 
         public PlotModel PlotModel { get; private set; }
@@ -41,10 +42,10 @@ namespace NUnitBenchmarker.ViewModels
         #region Methods
         private void UpdateResults(BenchmarkResult result = null)
         {
-	        if (result == null)
-	        {
-		        result = BenchmarkResult;
-	        }
+            if (result == null)
+            {
+                result = BenchmarkResult;
+            }
             if (!string.Equals(result.Key, BenchmarkResult.Key))
             {
                 return;
@@ -56,65 +57,65 @@ namespace NUnitBenchmarker.ViewModels
                 : Benchmarker.CreateCategoryPlotModel(result, !IsLogarithmicTimeAxisChecked);
         }
 
-        protected override void Initialize()
+        protected override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize();
 
             BenchmarkResult.Updated += OnBenchmarkUpdated;
         }
 
-        protected override void Close()
+        protected override async Task Close()
         {
             BenchmarkResult.Updated -= OnBenchmarkUpdated;
 
-            base.Close();
+            await base.Close();
         }
 
-		private void OnBenchmarkUpdated(object sender, EventArgs e)
+        private void OnBenchmarkUpdated(object sender, EventArgs e)
         {
-			UpdateResults(BenchmarkResult);
+            UpdateResults(BenchmarkResult);
         }
 
-		//private void IsLogarithmicTimeAxisCheckedChanged(object sender, PropertyChangedEventArgs e)
-		//{
-		//	if (e.PropertyName == "IsLogarithmicTimeAxisChecked")
-		//	{
-		//		UpdateResults(BenchmarkResult);				
-		//	}
-		//}
+        //private void IsLogarithmicTimeAxisCheckedChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //	if (e.PropertyName == "IsLogarithmicTimeAxisChecked")
+        //	{
+        //		UpdateResults(BenchmarkResult);				
+        //	}
+        //}
 
 
-		public bool IsLogarithmicTimeAxisChecked { get; set; }
+        public bool IsLogarithmicTimeAxisChecked { get; set; }
 
-	    private ICommand isLogarithmicTimeAxisCommand;
+        private ICommand isLogarithmicTimeAxisCommand;
 
-	    /// <summary>
-	    ///     Gets the 'IsLogarithmicTimeAxis' command for MVVM binding.
-	    /// </summary>
-	    /// <value>The 'IsLogarithmicTimeAxis' command.</value>
-	    public ICommand IsLogarithmicTimeAxisCommand
-	    { 
-		    get { return isLogarithmicTimeAxisCommand ?? (isLogarithmicTimeAxisCommand = new Command<object>(IsLogarithmicTimeAxisCommandAction, IsLogarithmicTimeAxisCommandCanExecute)); }
-	    }
+        /// <summary>
+        ///     Gets the 'IsLogarithmicTimeAxis' command for MVVM binding.
+        /// </summary>
+        /// <value>The 'IsLogarithmicTimeAxis' command.</value>
+        public ICommand IsLogarithmicTimeAxisCommand
+        {
+            get { return isLogarithmicTimeAxisCommand ?? (isLogarithmicTimeAxisCommand = new Command<object>(IsLogarithmicTimeAxisCommandAction, IsLogarithmicTimeAxisCommandCanExecute)); }
+        }
 
-	    /// <summary>
-	    ///     'IsLogarithmicTimeAxis' command event handler.
-	    /// </summary>
-	    /// <param name="arg">The optional command argument.</param>
-	    private void IsLogarithmicTimeAxisCommandAction(object arg)
-	    {
-			// Binding path does not work (Settings.IsLogarithmicTimeAxisChecked) so bound directly
-			UpdateResults();
-	    }
+        /// <summary>
+        ///     'IsLogarithmicTimeAxis' command event handler.
+        /// </summary>
+        /// <param name="arg">The optional command argument.</param>
+        private void IsLogarithmicTimeAxisCommandAction(object arg)
+        {
+            // Binding path does not work (Settings.IsLogarithmicTimeAxisChecked) so bound directly
+            UpdateResults();
+        }
 
-	    /// <summary>
-	    ///     'IsLogarithmicTimeAxis' command event handler.
-	    /// </summary>
-	    /// <param name="arg">The optional command argument.</param>
-	    private bool IsLogarithmicTimeAxisCommandCanExecute(object arg)
-	    {
-		    return true;
-	    }
+        /// <summary>
+        ///     'IsLogarithmicTimeAxis' command event handler.
+        /// </summary>
+        /// <param name="arg">The optional command argument.</param>
+        private bool IsLogarithmicTimeAxisCommandCanExecute(object arg)
+        {
+            return true;
+        }
 
 
 

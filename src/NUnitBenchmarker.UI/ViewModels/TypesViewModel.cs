@@ -18,6 +18,7 @@ namespace NUnitBenchmarker.ViewModels
     using Models;
     using Resources;
     using Services;
+    using System.Threading.Tasks;
 
     public class TypesViewModel : ViewModelBase
     {
@@ -73,7 +74,7 @@ namespace NUnitBenchmarker.ViewModels
             _openFileService.Filter = "Assembly Files (.dll, .exe)|*.dll;*.exe";
             if (_openFileService.DetermineFile())
             {
-                AddAssembly(_openFileService.FileName, true, true);
+                AddAssembly(_openFileService.FileName, true);
             }
         }
 
@@ -92,20 +93,20 @@ namespace NUnitBenchmarker.ViewModels
         #endregion
 
         #region Methods
-        protected override void Initialize()
+        protected override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize();
 
             _uiServiceHost.GetImplementations += OnGetImplementations;
             _uiServiceHost.UpdateResult += OnUpdateResult;
         }
 
-        protected override void Close()
+        protected override async Task Close()
         {
             _uiServiceHost.GetImplementations -= OnGetImplementations;
             _uiServiceHost.UpdateResult -= OnUpdateResult;
 
-            base.Close();
+            await base.Close();
         }
 
         private void OnFilterChanged()
@@ -156,7 +157,7 @@ namespace NUnitBenchmarker.ViewModels
             SelectSpecificTypes(typeSpecification.FullName);
         }
 
-        private void AddAssembly(string assemblyFileName, bool usePleaseWaitService = false, bool defaultIsChecked = false)
+        private void AddAssembly(string assemblyFileName, bool defaultIsChecked = false)
         {
             Argument.IsNotNull(() => assemblyFileName);
 
@@ -181,11 +182,7 @@ namespace NUnitBenchmarker.ViewModels
                     UpdateFilter();
                 };
 
-                if (usePleaseWaitService)
-                {
-                    _pleaseWaitService.Show();
-                }
-                else
+                using (_pleaseWaitService.PushInScope())
                 {
                     action();
                 }

@@ -12,6 +12,7 @@ namespace NUnitBenchmarker.ViewModels
     using Catel.MVVM;
     using Models;
     using Services;
+    using System.Threading.Tasks;
 
     public class LogEntriesViewModel : ViewModelBase
     {
@@ -52,18 +53,18 @@ namespace NUnitBenchmarker.ViewModels
         #endregion
 
         #region Methods
-        protected override void Initialize()
+        protected override async Task Initialize()
         {
-            base.Initialize();
+            await base.Initialize();
 
             _uiServiceHost.Logged += OnLogged;
         }
 
-        protected override void Close()
+        protected override async Task Close()
         {
             _uiServiceHost.Logged -= OnLogged;
 
-            base.Close();
+            await base.Close();
         }
 
         private void OnLogged(string message)
