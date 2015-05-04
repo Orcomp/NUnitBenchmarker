@@ -24,7 +24,7 @@
       <dependency id="OxyPlot.Pdf" version="[replaced]" />
       <dependency id="SimpleSpeedTester" version="[replaced]" />
       
-      <dependency id="NUnit" version="2.6.3" />
+      <dependency id="NUnit" version="2.6.4" />
     </dependencies>
     
   </metadata>
