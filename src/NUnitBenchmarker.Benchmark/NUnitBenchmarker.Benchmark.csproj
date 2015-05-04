@@ -121,7 +121,7 @@
     <Compile Include="Benchmarker.cs" />
     <Compile Include="BenchmarkFinalTabularData.cs" />
     <Compile Include="Configuration\ConfigurationHelper.cs" />
-    <Compile Include="Configuration\IPerformanceTestCaseConfiguration.cs" />
+    <Compile Include="Configuration\Interfaces\IPerformanceTestCaseConfiguration.cs" />
     <Compile Include="Configuration\NUnitBenchmarkerConfigurationSection.cs" />
     <Compile Include="Configuration\PerformanceTestCaseConfiguration.cs" />
     <Compile Include="Configuration\PerformanceTestCaseConfigurationBase.cs" />

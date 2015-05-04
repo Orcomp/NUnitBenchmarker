@@ -1,14 +1,13 @@
-﻿#region Copyright (c) 2008 - 2014 Orcomp development team.
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PerformanceTestCaseConfiguration.cs" company="Orcomp development team">
-//   Copyright (c) 2008 - 2014 Orcomp development team. All rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PerformanceTestCaseConfiguration.cs" company="Wild Gums">
+//   Copyright (c) 2008 - 2015 Wild Gums. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-#endregion
+
 
 namespace NUnitBenchmarker.Configuration
 {
-	public class PerformanceTestCaseConfiguration : PerformanceTestCaseConfigurationBase
-	{
-	}
+    public class PerformanceTestCaseConfiguration : PerformanceTestCaseConfigurationBase
+    {
+    }
 }
