@@ -57,18 +57,17 @@ namespace NUnitBenchmarker.ViewModels
             CloseBenchmarkResult = new Command<BenchmarkResult>(OnCloseBenchmarkResultExecute);
             SwitchTimeAxis = new Command(OnSwitchTimeAxisExecute);
             SaveAllResults = new Command(OnSaveAllResultsExecute);
-			ChangeDefaultAxis = new Command(OnChangeDefaultAxisExecute);
-			
+            ChangeDefaultAxis = new Command(OnChangeDefaultAxisExecute);
 
-            commandManager.RegisterCommand("File.SaveAllResults", SaveAllResults, this);
-			commandManager.RegisterCommand("Options.ChangeDefaultAxis", ChangeDefaultAxis, this);
+            commandManager.RegisterCommand(Commands.File.SaveAllResults, SaveAllResults, this);
+            commandManager.RegisterCommand(Commands.Options.ChangeDefaultAxis, ChangeDefaultAxis, this);
         }
 
-	    private void OnChangeDefaultAxisExecute()
-	    {
-		    Settings.Save();
-	    }
-	    #endregion
+        private void OnChangeDefaultAxisExecute()
+        {
+            Settings.Save();
+        }
+        #endregion
 
         #region Properties
         public override string Title
@@ -117,7 +116,7 @@ namespace NUnitBenchmarker.ViewModels
         /// </summary>
         public Command SaveAllResults { get; private set; }
 
-		public Command ChangeDefaultAxis { get; private set; }
+        public Command ChangeDefaultAxis { get; private set; }
 
         /// <summary>
         /// Method to invoke when the SaveAllResults command is executed.

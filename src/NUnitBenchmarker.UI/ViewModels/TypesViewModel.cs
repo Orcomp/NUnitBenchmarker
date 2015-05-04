@@ -50,7 +50,7 @@ namespace NUnitBenchmarker.ViewModels
             FileOpen = new Command(OnFileOpenExecute);
             ClearFilter = new Command(OnClearFilterExecute);
 
-            commandManager.RegisterCommand("File.Open", FileOpen, this);
+            commandManager.RegisterCommand(Commands.File.Open, FileOpen, this);
         }
 
         #region Properties
@@ -71,7 +71,8 @@ namespace NUnitBenchmarker.ViewModels
         private void OnFileOpenExecute()
         {
             _openFileService.IsMultiSelect = false;
-            _openFileService.Filter = "Assembly Files (.dll, .exe)|*.dll;*.exe";
+            _openFileService.Filter = Filters.AssemblyFiles;
+
             if (_openFileService.DetermineFile())
             {
                 AddAssembly(_openFileService.FileName, true);

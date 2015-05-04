@@ -29,7 +29,7 @@ namespace NUnitBenchmarker.ViewModels
 
             ClearLog = new Command(OnClearLogExecute);
 
-            commandManager.RegisterCommand("Log.Clear", ClearLog, this);
+            commandManager.RegisterCommand(Commands.Tools.ClearLog, ClearLog, this);
         }
 
         #region Properties

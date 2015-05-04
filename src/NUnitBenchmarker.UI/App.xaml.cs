@@ -16,6 +16,7 @@ namespace NUnitBenchmarker
     using Catel.Services;
     using NUnitBenchmarker.Models;
     using NUnitBenchmarker.Services;
+    using Orchestra;
     using PleaseWaitService = Services.PleaseWaitService;
 
     /// <summary>
@@ -71,6 +72,8 @@ namespace NUnitBenchmarker
             {
                 Log.Error(ex);
             }
+
+            LogManager.FlushAll();
         }
 
         private void RegisterServices(IServiceLocator serviceLocator)
@@ -80,18 +83,19 @@ namespace NUnitBenchmarker
             serviceLocator.RegisterType<ITestTargetService, TestTargetService>();
             serviceLocator.RegisterType<ISettings, Settings>();
             serviceLocator.RegisterType<IPleaseWaitService, PleaseWaitService>();
+            serviceLocator.RegisterType<IUrlReservationService, UrlReservationService>();
         }
 
         private void RegisterCommands(ICommandManager commandManager)
         {
-            commandManager.CreateCommand("File.Open");
-            commandManager.CreateCommand("File.SaveAllResults");
-            commandManager.CreateCommand("File.Exit");
+            commandManager.CreateCommandWithGesture(typeof(Commands.File), "Open");
+            commandManager.CreateCommandWithGesture(typeof(Commands.File), "SaveAllResults");
+            commandManager.CreateCommandWithGesture(typeof(Commands.File), "Exit");
 
-            commandManager.CreateCommand("Log.Clear");
-			commandManager.CreateCommand("Options.ChangeDefaultAxis");
+            commandManager.CreateCommandWithGesture(typeof(Commands.Options), "ChangeDefaultAxis");
 
-            commandManager.RegisterAction("File.Exit", Shutdown);
+            commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "ClearLog");
+            commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "ToggleUrlReservation");
         }
         #endregion
     }

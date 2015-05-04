@@ -87,6 +87,10 @@
       <HintPath>..\..\lib\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Orchestra.Core, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\Orchestra.Core.2.2.0-unstable0043\lib\net40\Orchestra.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="OxyPlot, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\..\lib\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
       <Private>True</Private>
@@ -138,6 +142,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommandContainers\FileExitCommandContainer.cs" />
+    <Compile Include="CommandContainers\ToolsToggleUrlReservationCommandContainer.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Converters\CollectionToVisibilityConverter.cs" />
     <Compile Include="Converters\IsFilterEnabledConverter.cs" />
     <Compile Include="Converters\ReflectionEntryToImageConverter.cs" />
@@ -155,9 +162,11 @@
     <Compile Include="Services\EventArgs\TestTargetUpdatedEventArgs.cs" />
     <Compile Include="Services\Interfaces\IReflectionService.cs" />
     <Compile Include="Services\Interfaces\ITestTargetService.cs" />
+    <Compile Include="Services\Interfaces\IUrlReservationService.cs" />
     <Compile Include="Services\PleaseWaitService.cs" />
     <Compile Include="Services\ReflectionService.cs" />
     <Compile Include="Services\TestTargetService.cs" />
+    <Compile Include="Services\UrlReservationService.cs" />
     <Compile Include="ViewModels\LogEntriesViewModel.cs" />
     <Compile Include="Behaviors\ScrollToEndBehavior.cs" />
     <Compile Include="ViewModels\ResultsDataViewModel.cs" />
