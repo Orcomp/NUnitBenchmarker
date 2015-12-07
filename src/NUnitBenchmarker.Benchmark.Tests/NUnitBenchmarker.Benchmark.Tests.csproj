@@ -122,6 +122,10 @@
       <Project>{1AFE6F25-1F3F-4061-87A6-DD99C5239C1C}</Project>
       <Name>NUnitBenchmarker.UIClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NUnitBenchmarker.UI\NUnitBenchmarker.UI.csproj">
+      <Project>{f65803b8-681c-4318-978f-32a7adca3ca0}</Project>
+      <Name>NUnitBenchmarker.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

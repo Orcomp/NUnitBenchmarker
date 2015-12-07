@@ -30,7 +30,7 @@ namespace NUnitBenchmarker
         #region Constants
         private const int SignificantDigitCount = 3;
 
-        private static readonly ILog Log = LogManager.GetLogger(typeof (Benchmarker));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Benchmarker));
 
         private static readonly Dictionary<string, Dictionary<string, List<KeyValuePair<string, double>>>> Results;
         private static readonly HashSet<string> TestCases;
@@ -449,6 +449,8 @@ namespace NUnitBenchmarker
 
         public static void ExportAllResults(string folderPath = null)
         {
+            var results = new List<BenchmarkResult>();
+
             foreach (var result in Results)
             {
                 var benchmarkResult = new BenchmarkResult
@@ -458,13 +460,23 @@ namespace NUnitBenchmarker
                     TestCases = TestCases.ToArray()
                 };
 
-                int dummy;
-                var plotModel = int.TryParse(benchmarkResult.TestCases.FirstOrDefault(), out dummy)
-                    ? CreatePlotModel(benchmarkResult)
-                    : CreateCategoryPlotModel(benchmarkResult);
+                results.Add(benchmarkResult);
+            }
 
-                ExportResultsToPdf(plotModel, benchmarkResult, folderPath);
-                ExportResultsToCsv(benchmarkResult, folderPath);
+            ExportAllResults(results, folderPath);
+        }
+
+        public static void ExportAllResults(List<BenchmarkResult> results, string folderPath = null)
+        {
+            foreach (var result in results)
+            {
+                int dummy;
+                var plotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
+                    ? CreatePlotModel(result)
+                    : CreateCategoryPlotModel(result);
+
+                ExportResultsToPdf(plotModel, result, folderPath);
+                ExportResultsToCsv(result, folderPath);
             }
         }
 
@@ -533,7 +545,10 @@ namespace NUnitBenchmarker
 
             foreach (var series in result.Values)
             {
-                var columnSeries = new ColumnSeries { Title = series.Key };
+                var columnSeries = new ColumnSeries
+                {
+                    Title = series.Key
+                };
 
                 var categoryIndex = 0;
                 foreach (var dataPoint in series.Value)
@@ -579,7 +594,7 @@ namespace NUnitBenchmarker
 
             var fileName = Path.Combine(folderPath, result.Key) + ".csv";
             File.WriteAllText(fileName, sb.ToString(), Encoding.UTF8);
-            //Log.Info("CSV export for test {0} was successful to file '{1}'", result.Key, fileName);
+            Log.Info("CSV export for test {0} was successful to file '{1}'", result.Key, fileName);
         }
 
         public static IEnumerable<Type> GetImplementations(Type interfaceType, bool displayUI = false)

@@ -4,12 +4,12 @@
                    xmlns:catel="http://catel.codeplex.com"
                    xmlns:wpf="http://oxyplot.org/wpf">
 
-    <wpf:Plot Model="{Binding PlotModel}" Margin="10">
-        <wpf:Plot.ContextMenu>
+    <wpf:PlotView Model="{Binding PlotModel}" Margin="10">
+        <wpf:PlotView.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="_Logarithmic Time axis" IsCheckable="True" IsChecked="{Binding IsLogarithmicTimeAxisChecked}" Command="{Binding IsLogarithmicTimeAxisCommand}"/>
             </ContextMenu>
-        </wpf:Plot.ContextMenu>
-    </wpf:Plot>
+        </wpf:PlotView.ContextMenu>
+    </wpf:PlotView>
 
 </catel:UserControl>

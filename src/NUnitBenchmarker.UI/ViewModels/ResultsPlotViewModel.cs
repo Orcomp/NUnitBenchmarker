@@ -29,7 +29,6 @@ namespace NUnitBenchmarker.ViewModels
 
             BenchmarkResult = benchmarkResult;
             IsLogarithmicTimeAxisChecked = settings.IsLogarithmicTimeAxisChecked;
-            UpdateResults(BenchmarkResult);
         }
 
 
@@ -63,6 +62,8 @@ namespace NUnitBenchmarker.ViewModels
             await base.InitializeAsync();
 
             BenchmarkResult.Updated += OnBenchmarkUpdated;
+
+            UpdateResults(BenchmarkResult);
         }
 
         protected override async Task CloseAsync()
@@ -76,14 +77,6 @@ namespace NUnitBenchmarker.ViewModels
         {
             UpdateResults(BenchmarkResult);
         }
-
-        //private void IsLogarithmicTimeAxisCheckedChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //	if (e.PropertyName == "IsLogarithmicTimeAxisChecked")
-        //	{
-        //		UpdateResults(BenchmarkResult);				
-        //	}
-        //}
 
         public bool IsLogarithmicTimeAxisChecked { get; set; }
 
@@ -116,11 +109,6 @@ namespace NUnitBenchmarker.ViewModels
         {
             return true;
         }
-
-
-
-
-
         #endregion
     }
 }

@@ -105,7 +105,7 @@ namespace NUnitBenchmarker.ViewModels
 
                 try
                 {
-                    Benchmarker.ExportAllResults(folderName);
+                    Benchmarker.ExportAllResults(BenchmarkResults.ToList(), folderName);
                 }
                 catch (Exception ex)
                 {
