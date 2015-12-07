@@ -7,8 +7,8 @@
 
 namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 {
-	using System.Collections.Generic;
-	using NUnitBenchmarker.Configuration;
+    using System.Collections.Generic;
+    using NUnitBenchmarker.Configuration;
 
     /// <summary>
     /// Class ListPerformanceTestCaseConfiguration.
@@ -20,9 +20,9 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
         #region Properties
         public int Size { get; set; }
         public int DummyForTesting { get; set; }
-	    public int[] Items { get; set; }
-	    public IList<int> Target { get; set; }
-	    #endregion
+        public int[] Items { get; set; }
+        public IList<int> Target { get; set; }
+        #endregion
 
         #region Methods
         /// <summary>

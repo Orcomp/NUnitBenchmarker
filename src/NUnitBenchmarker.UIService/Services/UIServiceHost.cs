@@ -71,7 +71,8 @@ namespace NUnitBenchmarker.Services
         /// </summary>
         public void Start()
         {
-            _host = new ServiceHost(new UIService(new UIServiceHost()));
+            var uiService = new UIService(this);
+            _host = new ServiceHost(uiService);
             _host.Open();
         }
 

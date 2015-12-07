@@ -16,6 +16,7 @@ namespace NUnitBenchmarker
     using System.Text.RegularExpressions;
     using Configuration;
     using Data;
+    using Fasterflect;
     using Logging;
     using OxyPlot;
     using OxyPlot.Axes;
@@ -136,7 +137,7 @@ namespace NUnitBenchmarker
         private static IEnumerable<ImplementationInfo> FindImplementations(Type interfaceType, string assemblyFileName)
         {
             return Assembly.LoadFrom(assemblyFileName).GetTypes()
-                .Where(x => x.GetInterfaces().Contains(interfaceType) && x.IsClass)
+                .Where(x => x.Implements(interfaceType) && x.IsClass)
                 .Select(x => new ImplementationInfo
                 {
                     AssemblyFileName = assemblyFileName,
@@ -605,7 +606,7 @@ namespace NUnitBenchmarker
                 result.AddRange(assembly
                     .GetTypes()
                     .Where(t => t.FullName.Equals(spec.FullName))
-                    .Where(x => x.GetInterfaces().Contains(_interfaceType))
+                    .Where(x => x.Implements(_interfaceType))
                     .ToList());
             }
 
