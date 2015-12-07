@@ -7,31 +7,21 @@
 
 namespace NUnitBenchmarker.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Catel;
-    using Catel.IoC;
-    using NUnitBenchmarker.Data;
+    using Data;
 
     /// <summary>
     /// Class UIService Service definition class for exchanging data with Runner client
     /// </summary>
     public class UIService : IUIService
     {
-        #region Fields
-        private readonly IDependencyResolver _dependencyResolver;
-        #endregion
+        private readonly IUIServiceHost _uiServiceHost;
 
         #region Constructors
-        public UIService()
+        public UIService(IUIServiceHost uiServiceHost)
         {
-            // Note: Not DI in constructor possible here because this instance is created by 
-            // indirectly by .NET like this: host = new ServiceHost(typeof(UIService)) 
-            // and _not_ by our configured DI container.
-            // We are using DR instead of DI:
-
-            _dependencyResolver = this.GetDependencyResolver();
+            _uiServiceHost = uiServiceHost;
         }
         #endregion
 
@@ -42,8 +32,7 @@ namespace NUnitBenchmarker.Services
         /// <param name="message">The message.</param>
         public string Ping(string message)
         {
-            var host = _dependencyResolver.Resolve<IUIServiceHost>();
-            return host.OnPing(message);
+            return _uiServiceHost.OnPing(message);
         }
 
         /// <summary>
@@ -51,8 +40,7 @@ namespace NUnitBenchmarker.Services
         /// </summary>
         public void LogEvent(string loggingEventString)
         {
-            var host = _dependencyResolver.Resolve<IUIServiceHost>();
-            host.OnLogged(loggingEventString);
+            _uiServiceHost.OnLogged(loggingEventString);
         }
         #endregion
 
@@ -64,14 +52,12 @@ namespace NUnitBenchmarker.Services
         /// <returns>IEnumerable{TypeSpecification}.</returns>
         public IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)
         {
-            var host = _dependencyResolver.Resolve<IUIServiceHost>();
-            return host.OnGetImplementations(interfaceType);
+            return _uiServiceHost.OnGetImplementations(interfaceType);
         }
 
         public void UpdateResult(BenchmarkResult result)
         {
-            var host = _dependencyResolver.Resolve<IUIServiceHost>();
-            host.OnUpdateResult(result);
+            _uiServiceHost.OnUpdateResult(result);
         }
 
         private string AnonymousToString(object @object)
@@ -81,7 +67,7 @@ namespace NUnitBenchmarker.Services
                 return string.Empty;
             }
 
-            string result = @object.GetType().GetProperties().Aggregate(string.Empty,
+            var result = @object.GetType().GetProperties().Aggregate(string.Empty,
                 (current, propertyInfo) => current + string.Format("'{0}': >{1}<, ", propertyInfo.Name, propertyInfo.GetValue(@object, null)));
 
             return result.Trim().Trim(',');

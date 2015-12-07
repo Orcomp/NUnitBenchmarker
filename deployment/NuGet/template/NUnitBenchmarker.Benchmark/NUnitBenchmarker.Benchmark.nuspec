@@ -18,8 +18,6 @@
 	<projectUrl>https://github.com/Orcomp/NUnitBenchmarker</projectUrl>
 	
     <dependencies>
-      <dependency id="Catel.Core" version="[replaced]" />
-      <dependency id="fasterflect" version="[replaced]" />
       <dependency id="OxyPlot.Core" version="[replaced]" />
       <dependency id="OxyPlot.Pdf" version="[replaced]" />
       <dependency id="SimpleSpeedTester" version="[replaced]" />

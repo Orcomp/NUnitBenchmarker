@@ -8,24 +8,18 @@
 namespace NUnitBenchmarker.Logging
 {
     using System;
-    using Catel;
-    using Catel.Logging;
     using NUnitBenchmarker.UIServiceReference;
 
-    public class ClientLogListener : LogListenerBase
+    internal class ClientLogListener : LogListenerBase
     {
         private readonly UIServiceClient _client;
 
         public ClientLogListener(UIServiceClient client)
         {
-            Argument.IsNotNull(() => client);
-
             _client = client;
-
-            IgnoreCatelLogging = true;
         }
 
-        protected override void Write(ILog log, string message, LogEvent logEvent, object extraData, DateTime time)
+        public override void Write(ILog log, string message, LogEvent logEvent, DateTime time)
         {
             _client.LogEvent(message);
         }

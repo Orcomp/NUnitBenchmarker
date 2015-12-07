@@ -11,7 +11,6 @@ namespace NUnitBenchmarker.Data
     using System;
     using System.Collections.Generic;
     using System.Runtime.Serialization;
-    using Catel;
 
     [DataContract]
     public class BenchmarkResult
@@ -46,7 +45,11 @@ namespace NUnitBenchmarker.Data
         #region Methods
         public void RaiseUpdated()
         {
-            Updated.SafeInvoke(this);
+            var handler = Updated;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
         #endregion
 

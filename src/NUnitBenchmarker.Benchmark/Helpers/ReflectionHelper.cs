@@ -61,7 +61,7 @@ namespace NUnitBenchmarker
 
             if (type.IsGenericType)
             {
-                return type.Name.Split('`')[0] + "<" + String.Join(", ", type.GetGenericArguments().Select(GetFriendlyName)) + ">";
+                return type.Name.Split('`')[0] + "<" + string.Join(", ", type.GetGenericArguments().Select(GetFriendlyName)) + ">";
             }
 
             return type.Name;

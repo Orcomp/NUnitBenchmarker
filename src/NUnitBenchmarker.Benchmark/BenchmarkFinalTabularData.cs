@@ -9,7 +9,6 @@ namespace NUnitBenchmarker
 {
     using System.Data;
     using System.Linq;
-    using Catel;
     using Data;
 
     public class BenchmarkFinalTabularData
@@ -21,8 +20,6 @@ namespace NUnitBenchmarker
         #region Constructors
         public BenchmarkFinalTabularData(BenchmarkResult result)
         {
-            Argument.IsNotNull(() => result);
-
             Title = result.Key;
             var table = new DataTable(Title);
 

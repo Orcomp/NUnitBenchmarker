@@ -6,6 +6,7 @@
 
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // All other assembly info is defined in SharedAssembly.cs
@@ -19,3 +20,8 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 
 [assembly: ComVisible(false)]
+
+[assembly: InternalsVisibleTo("NUnitBenchmarker.Benchmark")]
+[assembly: InternalsVisibleTo("NUnitBenchmarker.UI")]
+[assembly: InternalsVisibleTo("NUnitBenchmarker.UIClient")]
+[assembly: InternalsVisibleTo("NUnitBenchmarker.UIService")]

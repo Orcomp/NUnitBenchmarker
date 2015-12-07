@@ -8,17 +8,12 @@
 namespace NUnitBenchmarker
 {
     using System.Collections.Generic;
-    using Catel;
-    using Catel.Data;
     using Data;
 
     public static class BenchmarkResultExtensions
     {
         public static void UpdateResults(this BenchmarkResult benchmarkResult, BenchmarkResult newResult)
         {
-            Argument.IsNotNull(() => benchmarkResult);
-            Argument.IsNotNull(() => newResult);
-
             benchmarkResult.Key = newResult.Key;
             benchmarkResult.TestCases = newResult.TestCases;
 

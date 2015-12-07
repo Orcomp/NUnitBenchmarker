@@ -8,7 +8,6 @@
 namespace NUnitBenchmarker.Logging
 {
     using System;
-    using Catel.Logging;
 
     /// <summary>
     /// Class SerializableLoggingEventData. Simple wrapper class for log4net's LoggingEventData which is 

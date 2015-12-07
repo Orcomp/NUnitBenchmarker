@@ -8,33 +8,37 @@
 namespace NUnitBenchmarker
 {
     using System;
-    using Catel;
-    using Catel.Caching;
-    using Catel.Logging;
+    using System.Collections.Generic;
 
     public static class ReflectionExtensions
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
-        private static readonly ICacheStorage<Type, string> _namespaceCache = new CacheStorage<Type, string>(); 
+        private static readonly Dictionary<Type, string> _namespaceCache = new Dictionary<Type, string>(); 
 
         public static string GetNamespace(this Type type)
         {
-            Argument.IsNotNull("type", type);
-
-            return _namespaceCache.GetFromCacheOrFetch(type, () =>
+            lock (_namespaceCache)
             {
-                try
+                if (!_namespaceCache.ContainsKey(type))
                 {
-                    return type.Namespace ?? "-";
+                    _namespaceCache[type] = GetNamespaceInternal(type);
                 }
-                catch (Exception)
-                {
-                    Log.Error("Failed to retrieve namespace for type '{0}', falling back to '-'", type.FullName);
 
-                    return "-";
-                }
-            });
+                return _namespaceCache[type];
+            }
+        }
+
+        private static string GetNamespaceInternal(Type type)
+        {
+            try
+            {
+                return type.Namespace ?? "-";
+            }
+            catch (Exception)
+            {
+                //Log.Error("Failed to retrieve namespace for type '{0}', falling back to '-'", type.FullName);
+
+                return "-";
+            }
         }
     }
 }
