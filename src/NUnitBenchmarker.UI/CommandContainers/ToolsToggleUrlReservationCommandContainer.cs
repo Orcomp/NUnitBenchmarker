@@ -9,7 +9,6 @@ namespace NUnitBenchmarker
 {
     using System.Threading.Tasks;
     using Catel.MVVM;
-    using Orchestra;
 
     public class ToolsToggleUrlReservationCommandContainer : CommandContainerBase
     {
@@ -18,11 +17,9 @@ namespace NUnitBenchmarker
         {
         }
 
-        protected override async Task Execute(object parameter)
+        protected override async Task ExecuteAsync(object parameter)
         {
-            await base.Execute(parameter);
-
-
+            await base.ExecuteAsync(parameter);
         }
     }
 }

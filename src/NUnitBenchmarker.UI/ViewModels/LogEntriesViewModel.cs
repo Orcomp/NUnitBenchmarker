@@ -53,18 +53,18 @@ namespace NUnitBenchmarker.ViewModels
         #endregion
 
         #region Methods
-        protected override async Task Initialize()
+        protected override async Task InitializeAsync()
         {
-            await base.Initialize();
+            await base.InitializeAsync();
 
             _uiServiceHost.Logged += OnLogged;
         }
 
-        protected override async Task Close()
+        protected override async Task CloseAsync()
         {
             _uiServiceHost.Logged -= OnLogged;
 
-            await base.Close();
+            await base.CloseAsync();
         }
 
         private void OnLogged(string message)

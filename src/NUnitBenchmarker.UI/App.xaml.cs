@@ -10,13 +10,13 @@ namespace NUnitBenchmarker
     using System;
     using System.Threading;
     using System.Windows;
+    using Catel;
     using Catel.IoC;
     using Catel.Logging;
     using Catel.MVVM;
     using Catel.Services;
     using NUnitBenchmarker.Models;
     using NUnitBenchmarker.Services;
-    using Orchestra;
     using PleaseWaitService = Services.PleaseWaitService;
 
     /// <summary>

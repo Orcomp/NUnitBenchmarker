@@ -11,7 +11,6 @@ namespace NUnitBenchmarker
     using Catel;
     using Catel.MVVM;
     using Catel.Services;
-    using Orchestra;
 
     public class FileExitCommandContainer : CommandContainerBase
     {
@@ -30,7 +29,7 @@ namespace NUnitBenchmarker
         #endregion
 
         #region Methods
-        protected override async Task Execute(object parameter)
+        protected override async Task ExecuteAsync(object parameter)
         {
             _navigationService.CloseApplication();
         }

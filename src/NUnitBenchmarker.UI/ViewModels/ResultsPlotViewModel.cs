@@ -46,6 +46,7 @@ namespace NUnitBenchmarker.ViewModels
             {
                 result = BenchmarkResult;
             }
+
             if (!string.Equals(result.Key, BenchmarkResult.Key))
             {
                 return;
@@ -57,18 +58,18 @@ namespace NUnitBenchmarker.ViewModels
                 : Benchmarker.CreateCategoryPlotModel(result, !IsLogarithmicTimeAxisChecked);
         }
 
-        protected override async Task Initialize()
+        protected override async Task InitializeAsync()
         {
-            await base.Initialize();
+            await base.InitializeAsync();
 
             BenchmarkResult.Updated += OnBenchmarkUpdated;
         }
 
-        protected override async Task Close()
+        protected override async Task CloseAsync()
         {
             BenchmarkResult.Updated -= OnBenchmarkUpdated;
 
-            await base.Close();
+            await base.CloseAsync();
         }
 
         private void OnBenchmarkUpdated(object sender, EventArgs e)
@@ -83,7 +84,6 @@ namespace NUnitBenchmarker.ViewModels
         //		UpdateResults(BenchmarkResult);				
         //	}
         //}
-
 
         public bool IsLogarithmicTimeAxisChecked { get; set; }
 

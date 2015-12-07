@@ -56,16 +56,11 @@ namespace NUnitBenchmarker.ViewModels
 
             CloseBenchmarkResult = new Command<BenchmarkResult>(OnCloseBenchmarkResultExecute);
             SwitchTimeAxis = new Command(OnSwitchTimeAxisExecute);
-            SaveAllResults = new Command(OnSaveAllResultsExecute);
+            SaveAllResults = new TaskCommand(OnSaveAllResultsExecuteAsync);
             ChangeDefaultAxis = new Command(OnChangeDefaultAxisExecute);
 
             commandManager.RegisterCommand(Commands.File.SaveAllResults, SaveAllResults, this);
             commandManager.RegisterCommand(Commands.Options.ChangeDefaultAxis, ChangeDefaultAxis, this);
-        }
-
-        private void OnChangeDefaultAxisExecute()
-        {
-            Settings.Save();
         }
         #endregion
 
@@ -85,48 +80,28 @@ namespace NUnitBenchmarker.ViewModels
         #endregion
 
         #region Commands
-        /// <summary>
-        /// Gets the CloseBenchmarkResult command.
-        /// </summary>
         public Command<BenchmarkResult> CloseBenchmarkResult { get; private set; }
 
-        /// <summary>
-        /// Method to invoke when the CloseBenchmarkResult command is executed.
-        /// </summary>
         private void OnCloseBenchmarkResultExecute(BenchmarkResult result)
         {
             BenchmarkResults.Remove(result);
         }
 
-        /// <summary>
-        /// Gets the SwitchTimeAxis command.
-        /// </summary>
         public Command SwitchTimeAxis { get; private set; }
 
-        /// <summary>
-        /// Method to invoke when the SwitchTimeAxis command is executed.
-        /// </summary>
         private void OnSwitchTimeAxisExecute()
         {
             // TODO: Handle command logic here
         }
 
-        /// <summary>
-        /// Gets the SaveAllResults command.
-        /// </summary>
-        public Command SaveAllResults { get; private set; }
+        public TaskCommand SaveAllResults { get; private set; }
 
-        public Command ChangeDefaultAxis { get; private set; }
-
-        /// <summary>
-        /// Method to invoke when the SaveAllResults command is executed.
-        /// </summary>
-        private void OnSaveAllResultsExecute()
+        private async Task OnSaveAllResultsExecuteAsync()
         {
-            // TODO: Remember last picked folder (in user settings), and start from there
             if (_selectDirectoryService.DetermineDirectory())
             {
                 var folderName = _selectDirectoryService.DirectoryName;
+                var failed = false;
 
                 try
                 {
@@ -138,18 +113,30 @@ namespace NUnitBenchmarker.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    _messageService.ShowError(string.Format(UIStrings.MainViewModel_SaveAllResultsAction_Error_saving_results_));
-
                     Log.Error(ex);
+
+                    failed = true;
+                }
+
+                if (failed)
+                {
+                    await _messageService.ShowErrorAsync(string.Format(UIStrings.MainViewModel_SaveAllResultsAction_Error_saving_results_));
                 }
             }
+        }
+
+        public Command ChangeDefaultAxis { get; private set; }
+
+        private void OnChangeDefaultAxisExecute()
+        {
+            Settings.Save();
         }
         #endregion
 
         #region Methods
-        protected override async Task Initialize()
+        protected override async Task InitializeAsync()
         {
-            await base.Initialize();
+            await base.InitializeAsync();
 
             try
             {
@@ -164,14 +151,14 @@ namespace NUnitBenchmarker.ViewModels
             _uiServiceHost.UpdateResult += OnUpdateResult;
         }
 
-        protected override async Task Close()
+        protected override async Task CloseAsync()
         {
             _uiServiceHost.Stop();
 
             _uiServiceHost.Ping -= OnPing;
             _uiServiceHost.UpdateResult -= OnUpdateResult;
 
-            await base.Close();
+            await base.CloseAsync();
         }
 
         private string OnPing(string message)

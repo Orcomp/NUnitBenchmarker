@@ -9,11 +9,13 @@ namespace NUnitBenchmarker.Services
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.ServiceModel;
     using Data;
 
     /// <summary>
     /// Class UIService Service definition class for exchanging data with Runner client
     /// </summary>
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class UIService : IUIService
     {
         private readonly IUIServiceHost _uiServiceHost;
