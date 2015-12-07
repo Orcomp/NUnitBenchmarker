@@ -9,7 +9,6 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 {
     using System;
     using System.Collections.Generic;
-    using Fasterflect;
 
     internal class ListPerformanceTestHelper<T>
     {
@@ -32,9 +31,9 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
         /// <returns>Created item</returns>
         public static T CreateNewItem()
         {
-            if (typeof (T) == typeof (int))
+            if (typeof(T) == typeof(int))
             {
-                return (T) (object) Random.Next(int.MinValue, int.MaxValue);
+                return (T)(object)Random.Next(int.MinValue, int.MaxValue);
             }
 
             return Activator.CreateInstance<T>();
@@ -42,7 +41,8 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 
         public static IList<T> CreateListInstance(ListPerformanceTestCaseConfiguration<T> conf)
         {
-            return conf.TargetImplementationType.MakeGenericType(typeof (T)).CreateInstance() as IList<T>;
+            var type = conf.TargetImplementationType.MakeGenericType(typeof(T));
+            return Activator.CreateInstance(type) as IList<T>;
         }
         #endregion
     }

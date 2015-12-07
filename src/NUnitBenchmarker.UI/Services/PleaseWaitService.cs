@@ -1,10 +1,8 @@
-﻿#region Copyright (c) 2008 - 2015 Orcomp development team.
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PleaseWaitService.cs" company="Orcomp development team">
 //   Copyright (c) 2008 - 2015 Orcomp development team. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-#endregion
 
 namespace NUnitBenchmarker.Services
 {
