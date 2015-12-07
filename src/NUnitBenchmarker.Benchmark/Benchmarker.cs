@@ -342,6 +342,17 @@ namespace NUnitBenchmarker
 
         public static PlotModel CreatePlotModel(BenchmarkResult result, bool isLinear = true)
         {
+            int dummy = 0;
+
+            var plotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
+                ? CreateLinearPlotModel(result, isLinear)
+                : CreateCategoryPlotModel(result, isLinear);
+
+            return plotModel;
+        }
+
+        private static PlotModel CreateLinearPlotModel(BenchmarkResult result, bool isLinear = true)
+        {
             var plotModel = new PlotModel
             {
                 Title = result.Key,
@@ -414,71 +425,10 @@ namespace NUnitBenchmarker
 
                 plotModel.Series.Add(lineSeries);
             }
+
             return plotModel;
         }
 
-        public static void ExportResultsToPdf(PlotModel plotModel, BenchmarkResult result, string folderPath = null)
-        {
-            var testName = result.Key;
-            var pdfExporter = new PdfExporter
-            {
-                Height = 400,
-                Width = 600
-            };
-
-            folderPath = GetFolderPath(folderPath);
-            var fileName = Path.Combine(folderPath, testName) + ".pdf";
-            pdfExporter.Export(plotModel, File.Create(fileName));
-            Log.Info("PDF export for test {0} was successful to file '{1}'", testName, fileName);
-        }
-
-        private static string GetFolderPath(string folderPath)
-        {
-            if (folderPath == null)
-            {
-                folderPath = @"./Plots/Plots-" + _timestamp.ToString("yy-MM-dd-HH-mm-ss") + "/";
-            }
-
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            return folderPath;
-        }
-
-        public static void ExportAllResults(string folderPath = null)
-        {
-            var results = new List<BenchmarkResult>();
-
-            foreach (var result in Results)
-            {
-                var benchmarkResult = new BenchmarkResult
-                {
-                    Key = result.Key,
-                    Values = result.Value,
-                    TestCases = TestCases.ToArray()
-                };
-
-                results.Add(benchmarkResult);
-            }
-
-            ExportAllResults(results, folderPath);
-        }
-
-        public static void ExportAllResults(List<BenchmarkResult> results, string folderPath = null)
-        {
-            foreach (var result in results)
-            {
-                int dummy;
-                var plotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
-                    ? CreatePlotModel(result)
-                    : CreateCategoryPlotModel(result);
-
-                ExportResultsToPdf(plotModel, result, folderPath);
-                ExportResultsToCsv(result, folderPath);
-            }
-        }
 
         public static PlotModel CreateCategoryPlotModel(BenchmarkResult result, bool isLinear = false)
         {
@@ -561,6 +511,66 @@ namespace NUnitBenchmarker
             }
 
             return plotModel;
+        }
+
+        public static void ExportResultsToPdf(PlotModel plotModel, BenchmarkResult result, string folderPath = null)
+        {
+            var testName = result.Key;
+            var pdfExporter = new PdfExporter
+            {
+                Height = 400,
+                Width = 600
+            };
+
+            folderPath = GetFolderPath(folderPath);
+            var fileName = Path.Combine(folderPath, testName) + ".pdf";
+            pdfExporter.Export(plotModel, File.Create(fileName));
+            Log.Info("PDF export for test {0} was successful to file '{1}'", testName, fileName);
+        }
+
+        private static string GetFolderPath(string folderPath)
+        {
+            if (folderPath == null)
+            {
+                folderPath = @"./Plots/Plots-" + _timestamp.ToString("yy-MM-dd-HH-mm-ss") + "/";
+            }
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            return folderPath;
+        }
+
+        public static void ExportAllResults(string folderPath = null)
+        {
+            var results = new List<BenchmarkResult>();
+
+            foreach (var result in Results)
+            {
+                var benchmarkResult = new BenchmarkResult
+                {
+                    Key = result.Key,
+                    Values = result.Value,
+                    TestCases = TestCases.ToArray()
+                };
+
+                results.Add(benchmarkResult);
+            }
+
+            ExportAllResults(results, folderPath);
+        }
+
+        public static void ExportAllResults(List<BenchmarkResult> results, string folderPath = null)
+        {
+            foreach (var result in results)
+            {
+                var plotModel = CreatePlotModel(result);
+
+                ExportResultsToPdf(plotModel, result, folderPath);
+                ExportResultsToCsv(result, folderPath);
+            }
         }
 
         public static void ExportResultsToCsv(BenchmarkResult result, string folderPath = null)

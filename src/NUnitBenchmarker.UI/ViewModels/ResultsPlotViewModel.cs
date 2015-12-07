@@ -31,7 +31,6 @@ namespace NUnitBenchmarker.ViewModels
             IsLogarithmicTimeAxisChecked = settings.IsLogarithmicTimeAxisChecked;
         }
 
-
         #region Properties
         public BenchmarkResult BenchmarkResult { get; private set; }
 
@@ -51,10 +50,7 @@ namespace NUnitBenchmarker.ViewModels
                 return;
             }
 
-            int dummy;
-            PlotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
-                ? Benchmarker.CreatePlotModel(result, !IsLogarithmicTimeAxisChecked)
-                : Benchmarker.CreateCategoryPlotModel(result, !IsLogarithmicTimeAxisChecked);
+            PlotModel = Benchmarker.CreatePlotModel(result, !IsLogarithmicTimeAxisChecked);
         }
 
         protected override async Task InitializeAsync()

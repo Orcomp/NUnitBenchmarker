@@ -8,6 +8,7 @@
 namespace NUnitBenchmarker
 {
     using System.Data;
+    using System.Diagnostics;
     using System.Linq;
     using Data;
 
@@ -23,7 +24,7 @@ namespace NUnitBenchmarker
             Title = result.Key;
             var table = new DataTable(Title);
 
-            table.Columns.Add(DescriptionColumnName, typeof (string));
+            table.Columns.Add(DescriptionColumnName, typeof(string));
 
             foreach (var value in result.Values)
             {
@@ -32,7 +33,10 @@ namespace NUnitBenchmarker
                     var dataPointColumnName = GetColumnName(dataPoint.Key);
                     if (!table.Columns.Contains(dataPointColumnName))
                     {
-                        table.Columns.Add(dataPointColumnName, typeof (double));
+                        var column = new DataColumn(dataPointColumnName, typeof(double));
+                        column.Caption = GetColumnTitle(dataPoint.Key);
+
+                        table.Columns.Add(column);
                     }
                 }
             }
@@ -60,9 +64,14 @@ namespace NUnitBenchmarker
         #endregion
 
         #region Methods
-        private static string GetColumnName(string text)
+        private static string GetColumnTitle(string text)
         {
             return string.Format("{0} (ms)", NumericUtils.TryToFormatAsNumber(text));
+        }
+
+        private static string GetColumnName(string text)
+        {
+            return string.Format("a_{0}", text.Replace(".", "_").Replace(" ", "_"));
         }
         #endregion
     }

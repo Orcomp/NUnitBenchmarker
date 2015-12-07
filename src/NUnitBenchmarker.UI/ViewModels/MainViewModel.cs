@@ -9,6 +9,7 @@ namespace NUnitBenchmarker.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using Catel;
@@ -20,6 +21,7 @@ namespace NUnitBenchmarker.ViewModels
     using Resources;
     using Services;
     using System.Threading.Tasks;
+    using Catel.Reflection;
 
     /// <summary>
     /// Class MainViewModel: MVVM ViewModel for MainWindow
@@ -67,7 +69,7 @@ namespace NUnitBenchmarker.ViewModels
         #region Properties
         public override string Title
         {
-            get { return string.Format("NUnit Benchmarker v{0}", Assembly.GetExecutingAssembly().GetName().Version); }
+            get { return string.Format("NUnit Benchmarker v{0}", Assembly.GetExecutingAssembly().InformationalVersion()); }
         }
 
         public string LastPingMessage { get; set; }

@@ -11,7 +11,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
     using System.Collections.Generic;
     using System.Linq;
 
-    public class ListPerformanceTestFactory<T>
+    public class ListPerformanceTestFactory
     {
         #region Constructors
         public ListPerformanceTestFactory()
@@ -30,46 +30,27 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
         #endregion
 
         #region Methods
-        public IEnumerable<ListPerformanceTestCaseConfiguration<T>> TestCases()
+        public IEnumerable<ListPerformanceTestCaseConfiguration> TestCases()
         {
             // Issue in NUnit: even this method is called _earlier_ than TestFixtureSetup....
             // so we can not call GetImplementations here, because FindImplementatins was not called yet :-(
+
+            var testBatches = new[] {100, 1000, 10000, 100000};
 
             foreach (var implementation in Implementations)
             {
                 var identifier = string.Format("{0}", implementation.GetFriendlyName());
 
-                yield return new ListPerformanceTestCaseConfiguration<T>()
+                for (int i = 0; i < testBatches.Length; i++)
                 {
-                    Identifier = identifier,
-                    TargetImplementationType = implementation,
-                    Size = 100,
-                    DummyForTesting = 0
-                };
-
-                yield return new ListPerformanceTestCaseConfiguration<T>()
-                {
-                    Identifier = identifier,
-                    TargetImplementationType = implementation,
-                    Size = 1000,
-                    DummyForTesting = 0
-                };
-
-                yield return new ListPerformanceTestCaseConfiguration<T>()
-                {
-                    Identifier = identifier,
-                    TargetImplementationType = implementation,
-                    Size = 10000,
-                    DummyForTesting = 0
-                };
-
-                yield return new ListPerformanceTestCaseConfiguration<T>()
-                {
-                    Identifier = identifier,
-                    TargetImplementationType = implementation,
-                    Size = 100000,
-                    DummyForTesting = 0
-                };
+                    yield return new ListPerformanceTestCaseConfiguration
+                    {
+                        Identifier = identifier,
+                        TargetImplementationType = implementation,
+                        Size = testBatches[i],
+                        DummyForTesting = 0
+                    };
+                }
             }
         }
         #endregion

@@ -65,13 +65,13 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
         /// Tests the IList Add() method performance
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        [Test, TestCaseSource(typeof(ListPerformanceTestFactory<int>), "TestCases")]
+        [Test, TestCaseSource(typeof(ListPerformanceTestFactory), "TestCases")]
         //[MaxTime(10000)]
-        public void AddTest(ListPerformanceTestCaseConfiguration<int> configuration)
+        public void AddTest(ListPerformanceTestCaseConfiguration configuration)
         {
             configuration.Prepare = (i =>
             {
-                var c = (ListPerformanceTestCaseConfiguration<int>)i;
+                var c = (ListPerformanceTestCaseConfiguration)i;
                 c.Items = ListPerformanceTestHelper<int>.GenerateItemsToAdd(configuration).ToArray();
                 c.Target = ListPerformanceTestHelper<int>.CreateListInstance(configuration);
                 c.IsReusable = true;
@@ -79,7 +79,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 
             configuration.Run = (i =>
             {
-                var c = (ListPerformanceTestCaseConfiguration<int>)i;
+                var c = (ListPerformanceTestCaseConfiguration)i;
                 foreach (var item in c.Items)
                 {
                     c.Target.Add(item);
@@ -93,13 +93,13 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
         /// Tests the IList Add() method performance
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        [Test, TestCaseSource(typeof(ListPerformanceTestFactory<int>), "TestCases")]
+        [Test, TestCaseSource(typeof(ListPerformanceTestFactory), "TestCases")]
         [MaxTime(10000)]
-        public void RemoveTest(ListPerformanceTestCaseConfiguration<int> configuration)
+        public void RemoveTest(ListPerformanceTestCaseConfiguration configuration)
         {
             configuration.Prepare = (i =>
             {
-                var c = (ListPerformanceTestCaseConfiguration<int>)i;
+                var c = (ListPerformanceTestCaseConfiguration)i;
                 c.Items = ListPerformanceTestHelper<int>.GenerateItemsToAdd(configuration).ToArray();
                 c.Target = ListPerformanceTestHelper<int>.CreateListInstance(configuration);
                 c.IsReusable = false; // This is the default
@@ -107,7 +107,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 
             configuration.Run = (i =>
             {
-                var c = (ListPerformanceTestCaseConfiguration<int>)i;
+                var c = (ListPerformanceTestCaseConfiguration)i;
                 foreach (var item in c.Items)
                 {
                     c.Target.Remove(item);

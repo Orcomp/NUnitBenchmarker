@@ -17,7 +17,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
         #endregion
 
         #region Methods
-        public static IEnumerable<T> GenerateItemsToAdd(ListPerformanceTestCaseConfiguration<T> conf)
+        public static IEnumerable<T> GenerateItemsToAdd(ListPerformanceTestCaseConfiguration conf)
         {
             for (int i = 0; i < conf.Size; i++)
             {
@@ -39,7 +39,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
             return Activator.CreateInstance<T>();
         }
 
-        public static IList<T> CreateListInstance(ListPerformanceTestCaseConfiguration<T> conf)
+        public static IList<T> CreateListInstance(ListPerformanceTestCaseConfiguration conf)
         {
             var type = conf.TargetImplementationType.MakeGenericType(typeof(T));
             return Activator.CreateInstance(type) as IList<T>;

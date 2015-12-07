@@ -12,13 +12,10 @@ namespace NUnitBenchmarker.Benchmark.Tests.ProofOfConcept
 
     /// <summary>
     /// Class ListPerformanceTestCaseConfiguration.
-    /// TODO: Revise if generic T parameter is useful or overengineered
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ListPerformanceTestCaseConfiguration<T> : PerformanceTestCaseConfigurationBase
+    public class ListPerformanceTestCaseConfiguration : PerformanceTestCaseConfigurationBase
     {
         #region Properties
-        public int Size { get; set; }
         public int DummyForTesting { get; set; }
         public int[] Items { get; set; }
         public IList<int> Target { get; set; }

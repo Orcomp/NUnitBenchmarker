@@ -1,10 +1,10 @@
 ﻿<catel:UserControl x:Class="NUnitBenchmarker.Views.ResultsDataView"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				   xmlns:catel="http://catel.codeplex.com">
+                   xmlns:catel="http://catel.codeplex.com">
 
     <Grid>
-        <DataGrid ItemsSource="{Binding DataTable}" AutoGenerateColumns="True" IsReadOnly="True" />
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding DataTable.DefaultView}" AutoGenerateColumns="True" IsReadOnly="True" />
     </Grid>
-    
+
 </catel:UserControl>
