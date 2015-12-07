@@ -447,7 +447,7 @@ namespace NUnitBenchmarker
             return folderPath;
         }
 
-        public static void ExportAllResults()
+        public static void ExportAllResults(string folderPath = null)
         {
             foreach (var result in Results)
             {
@@ -463,8 +463,8 @@ namespace NUnitBenchmarker
                     ? CreatePlotModel(benchmarkResult)
                     : CreateCategoryPlotModel(benchmarkResult);
 
-                ExportResultsToPdf(plotModel, benchmarkResult);
-                ExportResultsToCsv(benchmarkResult);
+                ExportResultsToPdf(plotModel, benchmarkResult, folderPath);
+                ExportResultsToCsv(benchmarkResult, folderPath);
             }
         }
 

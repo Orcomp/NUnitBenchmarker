@@ -105,11 +105,7 @@ namespace NUnitBenchmarker.ViewModels
 
                 try
                 {
-                    //foreach (var plotTabViewModel in Tabs.Where(t => t is PlotTabViewModel).Cast<PlotTabViewModel>())
-                    //{
-                    //    Benchmark.Benchmarker.ExportResultsToPdf(plotTabViewModel.PlotModel, plotTabViewModel.Result, folderName);
-                    //    Benchmark.Benchmarker.ExportResultsToCsv(plotTabViewModel.Result, folderName);
-                    //}
+                    Benchmarker.ExportAllResults(folderName);
                 }
                 catch (Exception ex)
                 {
