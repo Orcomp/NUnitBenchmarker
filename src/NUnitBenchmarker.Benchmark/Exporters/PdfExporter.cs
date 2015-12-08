@@ -119,6 +119,8 @@ namespace NUnitBenchmarker.Exporters
 
         private void ExportTable(Section section, BenchmarkResult result)
         {
+            const double DescriptionColumnWidth = 10;
+
             var table = section.AddTable();
             table.Style = "Table";
             table.Borders.Width = 0.25;
@@ -129,10 +131,10 @@ namespace NUnitBenchmarker.Exporters
             var widthLeft = PageWidthInCm;
 
             // Before you can add a row, you must define the columns
-            var column = table.AddColumn("5cm");
+            var column = table.AddColumn(string.Format("{0}cm", DescriptionColumnWidth));
             column.Format.Alignment = ParagraphAlignment.Left;
 
-            widthLeft -= 5;
+            widthLeft -= DescriptionColumnWidth;
 
             var columnNames = result.GetColumnNames();
             var columnCount = columnNames.Count;
@@ -153,7 +155,7 @@ namespace NUnitBenchmarker.Exporters
             headerRow.Cells[0].AddParagraph("Description");
             for (int i = 0; i < columnCount; i++)
             {
-                headerRow.Cells[i + 1].AddParagraph(string.Format("{0} (ms)", columnNames[i]));
+                headerRow.Cells[i + 1].AddParagraph(string.Format("{0}", columnNames[i]));
             }
 
             // Put in the results (1 row / testcase) (a test case is a column)
