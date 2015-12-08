@@ -15,9 +15,12 @@ namespace NUnitBenchmarker.Exporters
     using MigraDoc.DocumentObjectModel.Shapes;
     using MigraDoc.Rendering;
     using OxyPlot;
+    using OxyPlot.Wpf;
 
     public class PdfExporter : ExporterBase
     {
+        private const double PageWidthInCm = 17d;
+
         private static readonly ILog Log = LogManager.GetLogger(typeof(PdfExporter));
 
         public void Export(BenchmarkResult result, string folderPath = null)
@@ -32,7 +35,13 @@ namespace NUnitBenchmarker.Exporters
             var section = document.AddSection();
 
             DefineStyles(document);
-            //ExportPlot(section, result);
+
+            ExportHeader(section, result);
+
+            AddHeading(section, "Plot");
+            ExportPlot(section, result);
+
+            AddHeading(section, "Table");
             ExportTable(section, result);
 
             var renderer = new PdfDocumentRenderer();
@@ -44,8 +53,6 @@ namespace NUnitBenchmarker.Exporters
                 renderer.Save(fileStream, false);
             }
 
-            //renderer.PdfDocument.Save(fileName);
-
             Log.Info("PDF export for test {0} was successful to file '{1}'", testName, fileName);
         }
 
@@ -54,10 +61,28 @@ namespace NUnitBenchmarker.Exporters
             var normalStyle = document.Styles["Normal"];
             normalStyle.Font.Name = "Verdana";
 
+            var heading1Style = document.Styles["Heading1"];
+            heading1Style.ParagraphFormat.SpaceBefore = Unit.FromCentimeter(1.5);
+            heading1Style.ParagraphFormat.SpaceAfter = Unit.FromCentimeter(0.5);
+            heading1Style.Font.Size = 20;
+            heading1Style.Font.Bold = true;
+
             // Create a new style called Table based on style Normal
             var tableStyle = document.Styles.AddStyle("Table", "Normal");
             tableStyle.Font.Name = "Verdana";
             tableStyle.Font.Size = 9;
+        }
+
+        private void AddHeading(Section section, string text)
+        {
+            var plotHeading = section.AddParagraph();
+            plotHeading.Style = "Heading1";
+            plotHeading.AddText(text);
+        }
+
+        private void ExportHeader(Section section, BenchmarkResult result)
+        {
+            // TODO: write more info here as heading (e.g. as a PR)
         }
 
         private void ExportPlot(Section section, BenchmarkResult result)
@@ -73,23 +98,23 @@ namespace NUnitBenchmarker.Exporters
             {
                 var plot = PlotFactory.CreatePlotModel(result);
 
-                var pngExporter = new SvgExporter
+                var oxyplotExporter = new PngExporter
                 {
                     Width = 600,
                     Height = 400
                 };
 
-                pngExporter.Export(plot, fileStream);
+                oxyplotExporter.Export(plot, fileStream);
             }
 
             var image = section.AddImage(tempFile);
-            //image.Height = "2.5cm";
             image.LockAspectRatio = true;
             image.RelativeVertical = RelativeVertical.Line;
             image.RelativeHorizontal = RelativeHorizontal.Margin;
+            image.Width = Unit.FromCentimeter(PageWidthInCm);
             //image.Top = ShapePosition.Top;
             //image.Left = ShapePosition.Right;
-            image.WrapFormat.Style = WrapStyle.Through;
+            image.WrapFormat.Style = WrapStyle.TopBottom;
         }
 
         private void ExportTable(Section section, BenchmarkResult result)
@@ -101,7 +126,7 @@ namespace NUnitBenchmarker.Exporters
             table.Borders.Right.Width = 0.5;
             table.Rows.LeftIndent = 0;
 
-            var widthLeft = 17d;
+            var widthLeft = PageWidthInCm;
 
             // Before you can add a row, you must define the columns
             var column = table.AddColumn("5cm");
