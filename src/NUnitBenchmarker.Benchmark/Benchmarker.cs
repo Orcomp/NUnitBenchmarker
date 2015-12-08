@@ -19,12 +19,14 @@ namespace NUnitBenchmarker
     using Data;
     using Fasterflect;
     using Logging;
+    using MigraDoc.DocumentObjectModel;
     using OxyPlot;
     using OxyPlot.Axes;
     using OxyPlot.Series;
     using SimpleSpeedTester.Core;
     using SimpleSpeedTester.Core.OutcomeFilters;
     using SimpleSpeedTester.Interfaces;
+    using PdfExporter = OxyPlot.PdfExporter;
 
     public static class Benchmarker
     {
@@ -341,221 +343,6 @@ namespace NUnitBenchmarker
             Results[testName][testGroup].Add(new KeyValuePair<string, double>(testCase, elapsedTime));
         }
 
-        public static PlotModel CreatePlotModel(BenchmarkResult result, bool isLinear = true)
-        {
-            int dummy = 0;
-
-            var plotModel = int.TryParse(result.TestCases.FirstOrDefault(), out dummy)
-                ? CreateLinearPlotModel(result, isLinear)
-                : CreateCategoryPlotModel(result, isLinear);
-
-            return plotModel;
-        }
-
-        private static PlotModel CreateLinearPlotModel(BenchmarkResult result, bool isLinear = true)
-        {
-            var plotModel = new PlotModel
-            {
-                Title = result.Key,
-                LegendTitle = "Legend",
-                LegendOrientation = LegendOrientation.Vertical,
-                LegendPlacement = LegendPlacement.Inside,
-                LegendPosition = LegendPosition.TopLeft,
-                LegendBackground = OxyColor.FromAColor(200, OxyColors.White),
-                LegendBorder = OxyColors.Black,
-                DefaultColors = new List<OxyColor>
-                {
-                    OxyColors.OrangeRed,
-                    OxyColors.LightGreen,
-                    OxyColors.DeepSkyBlue,
-                    OxyColors.Yellow,
-                    OxyColors.DarkRed,
-                    OxyColors.ForestGreen,
-                    OxyColors.Blue,
-                    OxyColors.Orange,
-                    OxyColors.Indigo,
-                    OxyColors.Violet,
-                }
-            };
-
-            var xAxis = new LinearAxis
-            {
-                Position = AxisPosition.Bottom
-            };
-            plotModel.Axes.Add(xAxis);
-
-            Axis yAxis;
-            if (isLinear)
-            {
-                yAxis = new LinearAxis
-                {
-                    Position = AxisPosition.Left,
-                    MajorGridlineStyle = LineStyle.Solid,
-                    MinorGridlineStyle = LineStyle.Dot,
-                    Title = "Time (ms)",
-                };
-            }
-            else
-            {
-                yAxis = new LogarithmicAxis
-                {
-                    Position = AxisPosition.Left,
-                    MajorGridlineStyle = LineStyle.Solid,
-                    MinorGridlineStyle = LineStyle.Dot,
-                    Title = "Time (ms)",
-                    Minimum = 0.01,
-                    UseSuperExponentialFormat = true
-                };
-            }
-
-            plotModel.Axes.Add(yAxis);
-
-            foreach (var series in result.Values)
-            {
-                var lineSeries = new LineSeries
-                {
-                    Title = series.Key,
-                    MarkerType = MarkerType.Diamond,
-                    MarkerSize = 3
-                };
-
-                foreach (var dataPoint in series.Value)
-                {
-                    lineSeries.Points.Add(new DataPoint(int.Parse(dataPoint.Key), dataPoint.Value));
-                }
-
-                plotModel.Series.Add(lineSeries);
-            }
-
-            return plotModel;
-        }
-
-
-        public static PlotModel CreateCategoryPlotModel(BenchmarkResult result, bool isLinear = false)
-        {
-            var plotModel = new PlotModel
-            {
-                Title = result.Key,
-                LegendTitle = "Legend",
-                LegendOrientation = LegendOrientation.Vertical,
-                LegendPlacement = LegendPlacement.Inside,
-                LegendPosition = LegendPosition.TopRight,
-                LegendBackground = OxyColor.FromAColor(200, OxyColors.White),
-                LegendBorder = OxyColors.Black,
-                DefaultColors = new List<OxyColor>
-                {
-                    OxyColors.OrangeRed,
-                    OxyColors.LightGreen,
-                    OxyColors.DeepSkyBlue,
-                    OxyColors.Yellow,
-                    OxyColors.DarkRed,
-                    OxyColors.ForestGreen,
-                    OxyColors.Blue,
-                    OxyColors.Orange,
-                    OxyColors.Indigo,
-                    OxyColors.Violet,
-                }
-            };
-
-            //var dateAxis = new CategoryAxis(AxisPosition.Bottom, "Categories", result.TestCases)
-            var dateAxis = new CategoryAxis
-            {
-                Position = AxisPosition.Bottom,
-                Title = "Categories"
-            };
-
-            plotModel.Axes.Add(dateAxis);
-
-            Axis valueAxis;
-            if (isLinear)
-            {
-                valueAxis = new LinearAxis
-                {
-                    Position = AxisPosition.Left,
-                    MajorGridlineStyle = LineStyle.Solid,
-                    MinorGridlineStyle = LineStyle.Dot,
-                    Title = "Time (ms)"
-                };
-            }
-            else
-            {
-                valueAxis = new LogarithmicAxis
-                {
-                    Position = AxisPosition.Left,
-                    MajorGridlineStyle = LineStyle.Solid,
-                    MinorGridlineStyle = LineStyle.Dot,
-                    Title = "Time (ms)",
-                    Minimum = 0.01,
-                    UseSuperExponentialFormat = true,
-                    StartPosition = 1,
-                    EndPosition = 0
-                };
-            }
-
-            plotModel.Axes.Add(valueAxis);
-
-            var columns = new Dictionary<string, ColumnSeries>();
-
-            foreach (var series in result.Values)
-            {
-                if (!columns.ContainsKey(series.Key))
-                {
-                    columns[series.Key] = new ColumnSeries
-                    {
-                        Title = series.Key
-                    };
-                }
-
-                var columnSeries = columns[series.Key];
-
-                var categoryIndex = 0;
-                foreach (var dataPoint in series.Value.OrderBy(x => x.Key))
-                {
-                    if (!dateAxis.Labels.Contains(dataPoint.Key))
-                    {
-                        dateAxis.Labels.Add(dataPoint.Key);
-                    }
-
-                    columnSeries.Items.Add(new ColumnItem(dataPoint.Value, categoryIndex));
-                    categoryIndex++;
-                }
-
-                plotModel.Series.Add(columnSeries);
-            }
-
-            return plotModel;
-        }
-
-        public static void ExportResultsToPdf(PlotModel plotModel, BenchmarkResult result, string folderPath = null)
-        {
-            var testName = result.Key;
-            var pdfExporter = new PdfExporter
-            {
-                Height = 400,
-                Width = 600
-            };
-
-            folderPath = GetFolderPath(folderPath);
-            var fileName = Path.Combine(folderPath, testName) + ".pdf";
-            pdfExporter.Export(plotModel, File.Create(fileName));
-            Log.Info("PDF export for test {0} was successful to file '{1}'", testName, fileName);
-        }
-
-        private static string GetFolderPath(string folderPath)
-        {
-            if (folderPath == null)
-            {
-                folderPath = @"./Plots/Plots-" + _timestamp.ToString("yy-MM-dd-HH-mm-ss") + "/";
-            }
-
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            return folderPath;
-        }
-
         public static void ExportAllResults(string folderPath = null)
         {
             var results = new List<BenchmarkResult>();
@@ -577,47 +364,14 @@ namespace NUnitBenchmarker
 
         public static void ExportAllResults(List<BenchmarkResult> results, string folderPath = null)
         {
+            var pdfExporter = new Exporters.PdfExporter();
+            var csvExporter = new Exporters.CsvExporter();
+
             foreach (var result in results)
             {
-                var plotModel = CreatePlotModel(result);
-
-                ExportResultsToPdf(plotModel, result, folderPath);
-                ExportResultsToCsv(result, folderPath);
+                pdfExporter.Export(result, folderPath);
+                csvExporter.Export(result, folderPath);
             }
-        }
-
-        public static void ExportResultsToCsv(BenchmarkResult result, string folderPath = null)
-        {
-            folderPath = GetFolderPath(folderPath);
-            var sb = new StringBuilder();
-
-            var testCases = new List<string>();
-            var testResults = new Dictionary<string, List<string>>();
-
-            foreach (var series in result.Values)
-            {
-                testCases.Clear();
-                testResults.Add(series.Key, new List<string>());
-
-                foreach (var dataPoint in series.Value)
-                {
-                    testCases.Add(dataPoint.Key);
-                    testResults[series.Key].Add(dataPoint.Value.ToString(CultureInfo.CurrentCulture));
-                }
-            }
-
-            sb.AppendLine("Description, " + string.Join(", ", testCases.Select(n => string.Format("{0} (ms)", NumericUtils.TryToFormatAsNumber(n)))));
-
-            foreach (var series in testResults)
-            {
-                sb.AppendLine(series.Key + "," + string.Join(",", series.Value.Select(v => v.ToString())));
-            }
-
-            sb.AppendLine();
-
-            var fileName = Path.Combine(folderPath, result.Key) + ".csv";
-            File.WriteAllText(fileName, sb.ToString(), Encoding.UTF8);
-            Log.Info("CSV export for test {0} was successful to file '{1}'", result.Key, fileName);
         }
 
         public static IEnumerable<Type> GetImplementations(Type interfaceType, bool displayUI = false)

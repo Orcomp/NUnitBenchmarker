@@ -50,7 +50,7 @@ namespace NUnitBenchmarker.ViewModels
                 return;
             }
 
-            PlotModel = Benchmarker.CreatePlotModel(result, !IsLogarithmicTimeAxisChecked);
+            PlotModel = PlotFactory.CreatePlotModel(result, !IsLogarithmicTimeAxisChecked);
         }
 
         protected override async Task InitializeAsync()
