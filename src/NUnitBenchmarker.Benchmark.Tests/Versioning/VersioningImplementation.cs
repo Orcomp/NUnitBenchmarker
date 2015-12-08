@@ -12,11 +12,11 @@ namespace NUnitBenchmarker.Benchmark.Tests.Versioning
 
     public class VersioningImplementation
     {
-        private readonly Random _random = new Random();
+        private static readonly Random Random = new Random();
 
         public void DoMagic()
         {
-            var msToWait = _random.Next(10, 250);
+            var msToWait = Random.Next(10, 250);
 
             // Of course Thread.Sleep is no best practice, but I just need to mimick some duration
             Thread.Sleep(msToWait);

@@ -13,7 +13,7 @@ namespace NUnitBenchmarker.Benchmark.Tests.Versioning
     public static class VersioningPerformanceTestFactory
     {
         // Note: the higher the number, the longer it takes but the more accurate the numbers will be
-        private const int NumberOfRuns = 10;
+        private const int NumberOfRuns = 100;
 
         private static readonly List<Type> _implementations = new List<Type>();
 
