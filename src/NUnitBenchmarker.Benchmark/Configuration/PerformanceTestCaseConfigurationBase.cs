@@ -19,6 +19,11 @@ namespace NUnitBenchmarker.Configuration
         #region Methods
         public override string ToString()
         {
+            if (!string.IsNullOrWhiteSpace(Version))
+            {
+                return Version;
+            }
+
             return TestName;
         }
         #endregion
@@ -66,6 +71,12 @@ namespace NUnitBenchmarker.Configuration
         /// </summary>
         /// <value>The identifier.</value>
         public string Identifier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        public string Version { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the target implementation type for the particular test case.

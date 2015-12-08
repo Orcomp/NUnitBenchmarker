@@ -127,6 +127,7 @@
     <Compile Include="Configuration\NUnitBenchmarkerConfigurationSection.cs" />
     <Compile Include="Configuration\PerformanceTestCaseConfiguration.cs" />
     <Compile Include="Configuration\PerformanceTestCaseConfigurationBase.cs" />
+    <Compile Include="Extensions\BenchmarkResultExtensions.cs" />
     <Compile Include="ImplementationInfo.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

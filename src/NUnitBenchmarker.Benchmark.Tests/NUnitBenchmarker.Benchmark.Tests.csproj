@@ -104,6 +104,10 @@
     <Compile Include="..\SolutionAssemblyInfo.cs">
       <Link>Properties\SolutionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Versioning\VersioningImplementation.cs" />
+    <Compile Include="Versioning\VersioningPerformanceTest.cs" />
+    <Compile Include="Versioning\VersioningPerformanceTestCaseConfiguration.cs" />
+    <Compile Include="Versioning\VersioningPerformanceTestFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NUnitBenchmarker.Benchmark\NUnitBenchmarker.Benchmark.csproj">
@@ -127,6 +131,7 @@
       <Name>NUnitBenchmarker.UI</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

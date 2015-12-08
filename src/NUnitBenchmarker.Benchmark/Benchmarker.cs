@@ -8,6 +8,7 @@ namespace NUnitBenchmarker
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -493,16 +494,28 @@ namespace NUnitBenchmarker
 
             plotModel.Axes.Add(valueAxis);
 
+            var columns = new Dictionary<string, ColumnSeries>();
+
             foreach (var series in result.Values)
             {
-                var columnSeries = new ColumnSeries
+                if (!columns.ContainsKey(series.Key))
                 {
-                    Title = series.Key
-                };
+                    columns[series.Key] = new ColumnSeries
+                    {
+                        Title = series.Key
+                    };
+                }
+
+                var columnSeries = columns[series.Key];
 
                 var categoryIndex = 0;
-                foreach (var dataPoint in series.Value)
+                foreach (var dataPoint in series.Value.OrderBy(x => x.Key))
                 {
+                    if (!dateAxis.Labels.Contains(dataPoint.Key))
+                    {
+                        dateAxis.Labels.Add(dataPoint.Key);
+                    }
+
                     columnSeries.Items.Add(new ColumnItem(dataPoint.Value, categoryIndex));
                     categoryIndex++;
                 }

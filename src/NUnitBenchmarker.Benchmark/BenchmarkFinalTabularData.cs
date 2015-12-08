@@ -7,6 +7,7 @@
 
 namespace NUnitBenchmarker
 {
+    using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics;
     using System.Linq;
@@ -26,18 +27,16 @@ namespace NUnitBenchmarker
 
             table.Columns.Add(DescriptionColumnName, typeof(string));
 
-            foreach (var value in result.Values)
+            var columnNames = result.GetColumnNames();
+            foreach (var columnName in columnNames.OrderBy(x => x))
             {
-                foreach (var dataPoint in value.Value)
+                var dataPointColumnName = GetColumnName(columnName);
+                if (!table.Columns.Contains(dataPointColumnName))
                 {
-                    var dataPointColumnName = GetColumnName(dataPoint.Key);
-                    if (!table.Columns.Contains(dataPointColumnName))
-                    {
-                        var column = new DataColumn(dataPointColumnName, typeof(double));
-                        column.Caption = GetColumnTitle(dataPoint.Key);
+                    var column = new DataColumn(dataPointColumnName, typeof(double));
+                    column.Caption = GetColumnTitle(columnName);
 
-                        table.Columns.Add(column);
-                    }
+                    table.Columns.Add(column);
                 }
             }
 
