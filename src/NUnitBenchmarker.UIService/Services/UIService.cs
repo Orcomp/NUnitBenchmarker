@@ -44,6 +44,11 @@ namespace NUnitBenchmarker.Services
         {
             _uiServiceHost.OnLogged(loggingEventString);
         }
+
+        public void ExportResults(string directory)
+        {
+            _uiServiceHost.OnExportResults(directory);
+        }
         #endregion
 
         #region Methods

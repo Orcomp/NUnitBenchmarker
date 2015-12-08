@@ -321,11 +321,6 @@ namespace NUnitBenchmarker
             return false;
         }
 
-        //public static void Benchmark(this Action action, IPerformanceTestCaseConfiguration conf, string testName, int testCase)
-        //{
-        //	Benchmark(action, conf, testName, testCase.ToString(CultureInfo.InvariantCulture));
-        //}
-
         private static void Save(string testGroup, string testName, string testCase, double elapsedTime)
         {
             //elapsedTime = RoundToSignificantDigits(elapsedTime, 3);
@@ -341,6 +336,11 @@ namespace NUnitBenchmarker
             }
 
             Results[testName][testGroup].Add(new KeyValuePair<string, double>(testCase, elapsedTime));
+        }
+
+        public static void ExportAllResultsInUi(string directory)
+        {
+            UI.ExportResults(directory);
         }
 
         public static void ExportAllResults(string folderPath = null)

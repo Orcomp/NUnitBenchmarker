@@ -53,4 +53,16 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="ExportResults">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="directory" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExportResultsResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

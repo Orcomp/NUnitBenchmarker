@@ -7,11 +7,22 @@
 
 namespace NUnitBenchmarker.Benchmark.Tests.Versioning
 {
+    using System.IO;
     using NUnit.Framework;
 
     [TestFixture]
     public class VersioningPerformanceTest
     {
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            var resultsFolder = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "results");
+            resultsFolder = Path.GetFullPath(resultsFolder);
+
+            // When using the UI, we will export all tests instead of the local run only
+            Benchmarker.ExportAllResultsInUi(resultsFolder);
+        }
+
         [Test, TestCaseSource(typeof (VersioningPerformanceTestFactory), "TestCases")]
         public void MagicForEachVersion(VersioningPerformanceTestCaseConfiguration configuration)
         {

@@ -15,7 +15,6 @@ namespace NUnitBenchmarker.Services
     [ServiceContract]
     public interface IUIService
     {
-        #region Methods
         /// <summary>
         ///     Sent by the client to get diagnostic ping.
         /// </summary>
@@ -42,6 +41,8 @@ namespace NUnitBenchmarker.Services
         /// </summary>
         [OperationContract]
         void UpdateResult(BenchmarkResult result);
-        #endregion
+
+        [OperationContract]
+        void ExportResults(string directory);
     }
 }

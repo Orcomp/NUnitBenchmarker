@@ -37,6 +37,15 @@ namespace NUnitBenchmarker.Services
             return null;
         }
 
+        public void OnExportResults(string directory)
+        {
+            var handler = ExportResults;
+            if (handler != null)
+            {
+                handler(directory);
+            }
+        }
+
         public void OnLogged(string message)
         {
             var handler = Logged;
@@ -89,5 +98,6 @@ namespace NUnitBenchmarker.Services
         public event Func<string, string> Ping;
         public event Func<TypeSpecification, IEnumerable<TypeSpecification>> GetImplementations;
         public event Action<BenchmarkResult> UpdateResult;
+        public event Action<string> ExportResults;
     }
 }

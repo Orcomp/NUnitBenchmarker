@@ -7,7 +7,6 @@
 
 namespace NUnitBenchmarker
 {
-    #region using...
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -21,8 +20,6 @@ namespace NUnitBenchmarker
     using Properties;
     using UIServiceReference;
     using IUIService = Services.IUIService;
-
-    #endregion
 
     // TODO: Refactor this static helper to an instance which implements IUIService
     public static class UI
@@ -67,6 +64,11 @@ namespace NUnitBenchmarker
         public static string Ping(string message)
         {
             return SendMessageFunc(() => Client.Ping(message), string.Format(Resources.UI_Communication_welcome_to_the_loopback, message));
+        }
+
+        public static void ExportResults(string directory)
+        {
+            SendMessageAction(() => Client.ExportResults(directory));
         }
 
         public static IEnumerable<TypeSpecification> GetImplementations(TypeSpecification interfaceType)

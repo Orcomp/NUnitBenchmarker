@@ -15,6 +15,7 @@ namespace NUnitBenchmarker.Services
     {
         #region Methods
         void OnLogged(string message);
+
         string OnPing(string message);
 
         IEnumerable<TypeSpecification> OnGetImplementations(TypeSpecification interfaceType);
@@ -36,5 +37,7 @@ namespace NUnitBenchmarker.Services
         event Func<string, string> Ping;
         event Func<TypeSpecification, IEnumerable<TypeSpecification>> GetImplementations;
         event Action<BenchmarkResult> UpdateResult;
+        void OnExportResults(string directory);
+        event Action<string> ExportResults;
     }
 }

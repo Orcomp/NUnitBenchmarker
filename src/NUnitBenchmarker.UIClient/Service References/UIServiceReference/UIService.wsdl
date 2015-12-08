@@ -33,6 +33,12 @@
   <wsdl:message name="IUIService_UpdateResult_OutputMessage">
     <wsdl:part name="parameters" element="tns:UpdateResultResponse" />
   </wsdl:message>
+  <wsdl:message name="IUIService_ExportResults_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExportResults" />
+  </wsdl:message>
+  <wsdl:message name="IUIService_ExportResults_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExportResultsResponse" />
+  </wsdl:message>
   <wsdl:portType name="IUIService">
     <wsdl:operation name="Ping">
       <wsdl:input wsaw:Action="http://tempuri.org/IUIService/Ping" message="tns:IUIService_Ping_InputMessage" />
@@ -49,6 +55,10 @@
     <wsdl:operation name="UpdateResult">
       <wsdl:input wsaw:Action="http://tempuri.org/IUIService/UpdateResult" message="tns:IUIService_UpdateResult_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IUIService/UpdateResultResponse" message="tns:IUIService_UpdateResult_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExportResults">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUIService/ExportResults" message="tns:IUIService_ExportResults_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUIService/ExportResultsResponse" message="tns:IUIService_ExportResults_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IUIService" type="tns:IUIService">
@@ -82,6 +92,15 @@
     </wsdl:operation>
     <wsdl:operation name="UpdateResult">
       <soap:operation soapAction="http://tempuri.org/IUIService/UpdateResult" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportResults">
+      <soap:operation soapAction="http://tempuri.org/IUIService/ExportResults" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

@@ -147,6 +147,7 @@ namespace NUnitBenchmarker.ViewModels
 
             _uiServiceHost.Ping += OnPing;
             _uiServiceHost.UpdateResult += OnUpdateResult;
+            _uiServiceHost.ExportResults += OnExportResults;
         }
 
         protected override async Task CloseAsync()
@@ -155,8 +156,14 @@ namespace NUnitBenchmarker.ViewModels
 
             _uiServiceHost.Ping -= OnPing;
             _uiServiceHost.UpdateResult -= OnUpdateResult;
+            _uiServiceHost.ExportResults -= OnExportResults;
 
             await base.CloseAsync();
+        }
+
+        private void OnExportResults(string directory)
+        {
+            Benchmarker.ExportAllResults(BenchmarkResults.ToList(), directory);
         }
 
         private string OnPing(string message)
